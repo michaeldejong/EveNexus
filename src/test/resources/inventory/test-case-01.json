@@ -1,0 +1,39 @@
+{
+	"initialTransactions":[
+		{
+			"transactionId":1,
+			"transactionDateTime":"May 2, 2011 9:07:00 PM",
+			"characterId":0,
+			"quantity":1000,
+			"remaining":1000,
+			"typeName":"",
+			"typeId":1,
+			"price":-100.0,
+			"taxes":17.5,
+			"clientId":0,
+			"clientName":"",
+			"stationId":0,
+			"stationName":"",
+			"isPersonal":false
+		}
+	],
+	"finalTransactions":[
+		{
+			"transactionId":1,
+			"transactionDateTime":"May 2, 2011 9:07:00 PM",
+			"characterId":0,
+			"quantity":1000,
+			"remaining":1000,
+			"typeName":"",
+			"typeId":1,
+			"price":-100.0,
+			"taxes":17.5,
+			"clientId":0,
+			"clientName":"",
+			"stationId":0,
+			"stationName":"",
+			"isPersonal":false
+		}
+	],
+	"generatedProfitEntries":[]
+}

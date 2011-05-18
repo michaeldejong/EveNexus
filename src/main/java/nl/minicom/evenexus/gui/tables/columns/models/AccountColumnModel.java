@@ -1,0 +1,58 @@
+package nl.minicom.evenexus.gui.tables.columns.models;
+
+import nl.minicom.evenexus.gui.tables.Table;
+import nl.minicom.evenexus.gui.tables.columns.Column;
+import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
+import nl.minicom.evenexus.utils.SettingsManager;
+
+public class AccountColumnModel extends ColumnModel {
+
+	public AccountColumnModel(SettingsManager settingsManager) {
+		add(new Column(
+				settingsManager, 
+				"Character", 
+				"name", 
+				SettingsManager.TABLE_ACCOUNT_CHARACTER_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_CHARACTER_WIDTH,
+				174,
+				String.class
+		));
+		
+		add(new Column(
+				settingsManager, 
+				"User ID", 
+				"userid", 
+				SettingsManager.TABLE_ACCOUNT_USERID_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_USERID_WIDTH,
+				88,
+				Long.class,
+				Table.RIGHT_RENDERER
+		));
+		
+		add(new Column(
+				settingsManager, 
+				"API Key", 
+				"apikey", 
+				SettingsManager.TABLE_ACCOUNT_APIKEY_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_APIKEY_WIDTH,
+				450,
+				String.class
+		));
+		
+		add(new Column(
+				settingsManager, 
+				"Character ID", 
+				"charid", 
+				SettingsManager.TABLE_ACCOUNT_CHARID_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_CHARID_WIDTH,
+				88,
+				Long.class,
+				Table.RIGHT_RENDERER
+		));
+	}
+	
+}
