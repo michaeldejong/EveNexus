@@ -49,7 +49,7 @@ public class CharacterImporter {
 		}
 		
 		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter().getCooldown());
-		logger.debug("Scheduling " + task.getImporter().getName() + " importer (characterID: " + task.getApiKey().getCharacterID() + ") at: " + new Date(nextRun));
+		logger.info("Scheduling " + task.getImporter().getName() + " importer (characterID: " + task.getApiKey().getCharacterID() + ") at: " + new Date(nextRun));
 	}
 	
 	public Collection<ImporterTask> getSchedule() {

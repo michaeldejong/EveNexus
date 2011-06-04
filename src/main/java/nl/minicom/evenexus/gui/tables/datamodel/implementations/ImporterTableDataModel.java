@@ -25,9 +25,9 @@ public class ImporterTableDataModel implements ITableDataModel {
 			return createQuery();			
 		}
 		catch (HibernateException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
+			throw e;
 		}
-		return null;
 	}
 
 	private List<Object[]> createQuery() {

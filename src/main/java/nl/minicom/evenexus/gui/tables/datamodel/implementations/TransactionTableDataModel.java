@@ -36,9 +36,9 @@ public class TransactionTableDataModel implements ITableDataModel, ITypeNameFilt
 			return loadTable();
 		}
 		catch (HibernateException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
+			throw e;
 		}
-		return null;
 	}
 
 	private List<Object[]> loadTable() throws HibernateException {

@@ -141,7 +141,7 @@ public class AddCharacterFrame extends CustomDialog {
 							}
 						}
 						catch (Exception e) {
-							logger.error(e);
+							logger.error(e.getLocalizedMessage(), e);
 						}
 						finally {
 							panel.reloadTab();
@@ -206,7 +206,7 @@ public class AddCharacterFrame extends CustomDialog {
 			logger.warn(e);
 		}
 		catch (Throwable e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		return null;
 	}
@@ -222,7 +222,7 @@ public class AddCharacterFrame extends CustomDialog {
 			return false;
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		return true;
 	}

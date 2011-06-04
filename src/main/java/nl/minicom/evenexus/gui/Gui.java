@@ -199,7 +199,7 @@ public class Gui extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

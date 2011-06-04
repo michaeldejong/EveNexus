@@ -58,7 +58,7 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 			setValue(formatter.valueToString(longValue));
 		}
 		catch (ParseException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		
 		return c;

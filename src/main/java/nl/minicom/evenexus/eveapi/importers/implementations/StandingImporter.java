@@ -70,7 +70,7 @@ public class StandingImporter extends ImporterTask {
 			session.saveOrUpdate(standing);
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -32,13 +32,13 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 		try {
 			return loadTable();			
 		}
-		catch (SQLException e) {
-			logger.error(e);
+		catch (HibernateException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			throw e;
 		}
-		return null;
 	}
 
-	private List<Object[]> loadTable() throws SQLException {
+	private List<Object[]> loadTable() throws HibernateException {
 		final String sql = new StringBuilder()
 		.append("SELECT ")
 		.append("journal.date, ")

@@ -73,7 +73,7 @@ public class MarketOrderImporter extends ImporterTask {
 			session.saveOrUpdate(order);
 		} 
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 

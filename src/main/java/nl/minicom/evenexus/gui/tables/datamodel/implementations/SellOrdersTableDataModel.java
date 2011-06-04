@@ -32,23 +32,23 @@ public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilte
 			return loadTable();
 		}
 		catch (HibernateException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
+			throw e;
 		}
-		return null;
 	}
 
 	private List<Object[]> loadTable() throws HibernateException {
 		final String sql = new StringBuilder()
 		.append("SELECT ")
-		.append("marketorders.volentered, ")
-		.append("marketorders.volremaining, ")
-		.append("marketorders.minvolume, ")
-		.append("marketorders.escrow, ")
-		.append("marketorders.price, ")
-		.append("marketorders.bid, ")
-		.append("marketorders.issued, ")
-		.append("invtypes.typeName, ")
-		.append("stastations.stationName ")
+		.append("marketorders.volentered AS volentered, ")
+		.append("marketorders.volremaining AS volremaining, ")
+		.append("marketorders.minvolume AS minvolume, ")
+		.append("marketorders.escrow AS escrow, ")
+		.append("marketorders.price AS price, ")
+		.append("marketorders.bid AS bid, ")
+		.append("marketorders.issued AS issued, ")
+		.append("invtypes.typeName AS typeName, ")
+		.append("stastations.stationName AS stationName ")
 		.append("FROM marketorders, invtypes, stastations ")
 		.append("WHERE marketorders.bid = 0 ")
 		.append("AND marketorders.orderState = 0 ")
@@ -79,15 +79,15 @@ public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilte
 	@Override
 	public String[] getFields() {
 		return new String[] { 
-				"marketorders.volentered",
-				"marketorders.volremaining",
-				"marketorders.minvolume",
-				"marketorders.escrow",
-				"marketorders.price",
-				"marketorders.bid",
-				"marketorders.issued",
-				"invtypes.typeName",
-				"stastations.stationName"
+				"volentered",
+				"volremaining",
+				"minvolume",
+				"escrow",
+				"price",
+				"bid",
+				"issued",
+				"typeName",
+				"stationName"
 		};
 	}
 

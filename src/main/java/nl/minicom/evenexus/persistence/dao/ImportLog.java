@@ -15,10 +15,22 @@ public class ImportLog implements Serializable {
 	private static final long serialVersionUID = -7536922778053044002L;
 
 	@Id
-	private ImportLogIdentifier key = new ImportLogIdentifier(0, 0);
+	private ImportLogIdentifier key;
 
 	@Column(name = "lastrun", nullable = false)
 	private Timestamp lastRun;
+	
+	public ImportLog() {
+		this (new ImportLogIdentifier());
+	}
+	
+	public ImportLog(long importerId, long characterId) {
+		this (new ImportLogIdentifier(importerId, characterId));
+	}
+	
+	public ImportLog(ImportLogIdentifier identifier) {
+		this.key = identifier;
+	}
 		
 	public long getImporterId() {
 		return key.getImporterId();

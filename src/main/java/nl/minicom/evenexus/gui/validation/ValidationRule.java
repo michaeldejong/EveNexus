@@ -74,7 +74,7 @@ public abstract class ValidationRule {
 			}
 		}
 		catch (NumberFormatException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		
 		return false;

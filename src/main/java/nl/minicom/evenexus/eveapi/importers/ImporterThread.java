@@ -26,7 +26,7 @@ public class ImporterThread extends Thread {
 			logger.warn(e);
 		}
 		catch (Throwable e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

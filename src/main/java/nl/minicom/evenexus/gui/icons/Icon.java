@@ -17,7 +17,7 @@ public class Icon {
 			return new ImageIcon(ImageIO.read(Icon.class.getResourceAsStream("/" + iconFileName)));
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		return null;
 	}

@@ -11,10 +11,14 @@ public class ImportLogIdentifier implements Serializable {
 	private static final long serialVersionUID = -6237540725758955743L;
 
 	@Column(name = "importer", nullable = false)
-	private long importerId;
+	private long importerId = 0;
 	
 	@Column(name = "characterid", nullable = false)
-	private long characterId;
+	private long characterId = 0;
+	
+	public ImportLogIdentifier() {
+		this (0, 0);
+	}
 	
 	public ImportLogIdentifier(long importerId, long characterId) {
 		this.importerId = importerId;

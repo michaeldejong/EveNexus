@@ -19,7 +19,7 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-public class DashboardPanel extends TabPanel {
+public class DashboardPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = 9040274995425958160L;
 	private static final Logger logger = LogManager.getRootLogger();
@@ -62,22 +62,12 @@ public class DashboardPanel extends TabPanel {
 	    		.addGap(7)
     	);
     	
-    	ImportListener listener = new ImportListener() {
-			@Override
-			public void onImportComplete() {
-				reloadTab();
-			}
-		};
-    	
-    	application.getImportManager().addListener(Api.CHAR_WALLET_TRANSACTIONS, listener);
-    	
-//		TODO: add this importer.
-//    	InventoryManager.getInstance().addListener(new ImporterListener() {
-//			@Override
-//			public void onNotification() {
-//				reloadTab();
-//			}
-//		});
+    	application.getImportManager().addListener(Api.CHAR_WALLET_TRANSACTIONS, this);
+	}
+	
+	@Override
+	public void onImportComplete() {
+		reloadTab();
 	}
 
 	public void reloadTab() {

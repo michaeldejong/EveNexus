@@ -81,7 +81,7 @@ public class Tray {
 				tray.add(icon);
 			}
 			catch (AWTException e) {
-				logger.error(e);
+				logger.error(e.getLocalizedMessage(), e);
 			}
 		}
 	}

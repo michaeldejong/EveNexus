@@ -122,7 +122,7 @@ public class AboutDialog extends CustomDialog {
 						Desktop.getDesktop().browse(event.getURL().toURI());
 					}
 					catch (Exception e) {
-						logger.error(e);
+						logger.error(e.getLocalizedMessage(), e);
 					} 
 				}
 			}

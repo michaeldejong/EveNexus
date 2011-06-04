@@ -548,6 +548,173 @@ public class StructureUpgrader extends RevisionCollection {
 			}
 		});
 		
+		super.registerRevision(new Revision(166) {
+			@Override
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("ALTER TABLE importlogger ALTER COLUMN ");
+				builder.append("characterid BIGINT unsigned NOT NULL");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(167) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN security").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(168) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN dockingcostpervolume").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(169) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN maxshipvolumedockable").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(170) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN officerentalcost").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(171) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN operationid").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(172) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN x").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(173) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN y").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(174) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN z").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(175) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN reprocessingefficiency").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(176) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN reprocessingstationstake").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(177) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN reprocessinghangarflag").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(178) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN x").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(179) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN y").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(180) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN z").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(181) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN xmin").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(182) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN ymin").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(183) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN zmin").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(184) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN xmax").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(185) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN ymax").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(186) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN zmax").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(187) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN radius").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(188) {
+			@Override
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("MERGE INTO `importers` (`id`, `name`, `cooldown`, `path`) VALUES ");
+				builder.append("(8, 'Journal reference types', 3600000, '/eve/RefTypes.xml.aspx')");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+		
 	}
 	
 	@Override

@@ -94,7 +94,7 @@ public class JournalImporter extends ImporterTask {
 			session.saveOrUpdate(journal);
 		} 
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 }

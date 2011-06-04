@@ -130,7 +130,10 @@ public class Table extends JTable {
 				Map<String, Object> row = new TreeMap<String, Object>();
 				for (int i = 0; i < columnModel.getSize(); i++) {
 					Column column = columnModel.get(i);
-					row.put(column.getName(), value[indexOf(fields, column.getColumn())]);
+					int index = indexOf(fields, column.getColumn());
+					if (index >= 0) {
+						row.put(column.getName(), value[index]);
+					}
 				}
 				data.add(row);
 			}
@@ -140,7 +143,7 @@ public class Table extends JTable {
 			repaint();
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 	
@@ -159,7 +162,7 @@ public class Table extends JTable {
 			result.setRowNumber(getSelectedRow());
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		return result;
 	}
@@ -170,7 +173,7 @@ public class Table extends JTable {
 			// TODO : remove...
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

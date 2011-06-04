@@ -57,7 +57,7 @@ public class CurrencyRenderer extends DefaultTableCellRenderer {
 			setValue(formatter.valueToString(decimalValue));
 		}
 		catch (ParseException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		
 		return c;

@@ -1,15 +1,16 @@
 package nl.minicom.evenexus.eveapi.importers;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.ApiServerManager;
+import nl.minicom.evenexus.eveapi.importers.implementations.RefTypeImporter;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
+import nl.minicom.evenexus.utils.TimeUtils;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -23,27 +24,31 @@ public class ImportManager extends Timer {
 	
 	private static final Logger logger = LogManager.getRootLogger();
 	
-	private final List<CharacterImporter> importers;
 	private final Multimap<Api, ImportListener> listeners;
 	private final ApiServerManager apiServerManager;
 	
 	public ImportManager(ApiServerManager apiServerManager) {
 		this.apiServerManager = apiServerManager;
-		this.importers = new ArrayList<CharacterImporter>();
 		this.listeners = HashMultimap.create();
 	}
 	
 	public void initialize() {
-		if (!importers.isEmpty()) {
-			logger.error("Already initialized!");
-		}
-		else {
-			createCharacterImporters();
-		}
+		createCharacterImporters();
+		createGeneralImporters();
 	}
 	
-	public List<CharacterImporter> getImporters() {
-		return Collections.unmodifiableList(importers);
+	private void createGeneralImporters() {
+		scheduleImporter(new RefTypeImporter(apiServerManager, this));
+	}
+	
+	private void scheduleImporter(ImporterTask task) {
+		long nextRun = task.getNextRun() + 5000;
+		if (nextRun < TimeUtils.getServerTime()) {
+			nextRun = TimeUtils.getServerTime() + 5000;
+		}
+		
+		scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter().getCooldown());
+		logger.info("Scheduling " + task.getImporter().getName() + " importer at: " + new Date(nextRun));
 	}
 
 	private void createCharacterImporters() {
@@ -61,7 +66,7 @@ public class ImportManager extends Timer {
 
 	public void addCharacterImporter(ApiKey apiKey) {
 		logger.debug("Scheduling importers for character: " + apiKey.getCharacterName());
-		importers.add(new CharacterImporter(apiServerManager, this, apiKey));
+		new CharacterImporter(apiServerManager, this, apiKey);
 	}
 
 	public void addListener(Api api, ImportListener listener) {

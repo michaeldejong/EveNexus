@@ -16,6 +16,10 @@ public class StandingIdentifier implements Serializable {
 	@Column(name = "fromid")
 	private long fromId;
 	
+	protected StandingIdentifier() {
+		this (0, 0);
+	}
+	
 	public StandingIdentifier(long characterId, long fromId) {
 		this.characterId = characterId;
 		this.fromId = fromId;

@@ -16,6 +16,10 @@ public class SkillIdentifier implements Serializable {
 	@Column(name = "typeid")
 	private long typeId;
 	
+	protected SkillIdentifier() {
+		this (0, 0);
+	}
+	
 	public SkillIdentifier(long characterId, long typeId) {
 		this.characterId = characterId;
 		this.typeId = typeId;

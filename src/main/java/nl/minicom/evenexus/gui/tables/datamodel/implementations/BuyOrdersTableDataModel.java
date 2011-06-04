@@ -32,21 +32,21 @@ public class BuyOrdersTableDataModel implements ITableDataModel, ITypeNameFilter
 			return loadTable();
 		}
 		catch (HibernateException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
+			throw e;
 		}
-		return null;
 	}
 
 	private List<Object[]> loadTable() throws HibernateException {
 		final String sql = new StringBuilder()
 		.append("SELECT ")
-		.append("marketorders.volentered, ")
-		.append("marketorders.volremaining, ")
-		.append("marketorders.minvolume, ")
-		.append("marketorders.escrow, ")
-		.append("marketorders.issued, ")
-		.append("marketorders.price, ")
-		.append("marketorders.bid, ")
+		.append("marketorders.volentered AS volentered, ")
+		.append("marketorders.volremaining AS volremaining, ")
+		.append("marketorders.minvolume AS minvolume, ")
+		.append("marketorders.escrow AS escrow, ")
+		.append("marketorders.issued AS issued, ")
+		.append("marketorders.price AS price, ")
+		.append("marketorders.bid AS bid, ")
 		.append("invtypes.typeName AS typeName, ")
 		.append("price * -1 AS orderPrice, ")
 		.append("stastations.stationName AS stationName ")

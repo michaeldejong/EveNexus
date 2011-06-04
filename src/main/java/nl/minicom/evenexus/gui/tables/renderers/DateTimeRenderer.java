@@ -46,7 +46,7 @@ public class DateTimeRenderer extends DefaultTableCellRenderer {
 			setValue(formatter.valueToString(timestamp));
 		}
 		catch (ParseException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		
 		return c;

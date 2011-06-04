@@ -36,9 +36,9 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 			return loadTable();			
 		}
 		catch (HibernateException e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
+			throw e;
 		}
-		return null;
 	}
 
 	private List<Object[]> loadTable() throws HibernateException {
@@ -56,7 +56,7 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 		.append("FROM profit ")
 		.append("WHERE LCASE(typeName) LIKE ? ")
 		.append("AND date > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
-		.append("ORDER BY date DESC, transactionID DESC")
+		.append("ORDER BY date DESC, sellTransactionId DESC")
 		.toString();
 		
 		return new Query<List<Object[]>>() {
@@ -80,7 +80,7 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 
 	@Override
 	public String[] getFields() {
-		return new String[] {};
+		return new String[] {"typeName", "date", "quantity", "value", "taxes", "profit", "totalValue", "totalTaxes", "totalProfit"};
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import nl.minicom.evenexus.persistence.dao.Item;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
 import nl.minicom.evenexus.persistence.dao.MarketOrder;
 import nl.minicom.evenexus.persistence.dao.Profit;
+import nl.minicom.evenexus.persistence.dao.RefType;
 import nl.minicom.evenexus.persistence.dao.Skill;
 import nl.minicom.evenexus.persistence.dao.Standing;
 import nl.minicom.evenexus.persistence.dao.Station;
@@ -59,6 +60,7 @@ public class Database {
 			config.addAnnotatedClass(MapRegion.class);
 			config.addAnnotatedClass(MarketOrder.class);
 			config.addAnnotatedClass(Profit.class);
+			config.addAnnotatedClass(RefType.class);
 			config.addAnnotatedClass(Skill.class);
 			config.addAnnotatedClass(Standing.class);
 			config.addAnnotatedClass(Station.class);

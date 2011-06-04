@@ -52,7 +52,8 @@ public class ApiParser {
 		CHAR_STANDINGS(4),
 		CHAR_WALLET_TRANSACTIONS(5),
 		CHAR_WALLET_JOURNAL(6),
-		CHAR_MARKET_ORDERS(7);
+		CHAR_MARKET_ORDERS(7), 
+		EVE_REF_TYPE(8);
 		
 		private long importerID;
 		
@@ -123,7 +124,32 @@ public class ApiParser {
 			}
 		}
 		else {
-			parseAPI(urlWithAdditionalArguments, importer.getPath());
+			boolean parseApi = new Query<Boolean>() {
+				@Override
+				protected Boolean doQuery(Session session) {
+					ImportLogIdentifier id = new ImportLogIdentifier(importer.getId(), 0);
+					ImportLog log = (ImportLog) session.get(ImportLog.class, id);
+					if (log == null) {
+						log = new ImportLog();
+						log.setImporterId(id.getImporterId());
+						log.setCharacterId(id.getCharacterId());
+						log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
+						session.save(log);
+						return true;
+					}
+					else if (log.getLastRun().getTime() + importer.getCooldown() < TimeUtils.getServerTime()) {
+						log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
+						session.update(log);
+						return true;
+					}
+					
+					return false;
+				}
+			}.doQuery(); 
+			
+			if (parseApi) {
+				parseAPI(urlWithAdditionalArguments, importer.getPath());
+			}
 		}
 	}
 	
@@ -166,7 +192,7 @@ public class ApiParser {
 			
 			XmlParser parser = new XmlParser();
 			root = parser.parse(xmlFile);
-			xmlFile.delete();
+//			xmlFile.delete();
 			
 			updateCooldown();
 		}
@@ -187,10 +213,10 @@ public class ApiParser {
 							Timestamp until = TimeUtils.convertToTimestamp(getRoot().get("cachedUntil").get(0).toString());
 							long diffMin = (until.getTime() - current.getTime()) + 3 * 60000;
 							object.setCooldown(diffMin);
-							session.save(object);
+							session.saveOrUpdate(object);
 						}
 						catch (Throwable e) {
-							logger.error(e);
+							logger.error(e.getLocalizedMessage(), e);
 						}
 						return null;
 					}
@@ -217,7 +243,8 @@ public class ApiParser {
 			}
 		}
 		
-		File result = File.createTempFile("EveNexus", ".xml");
+//		File result = File.createTempFile("EveNexus", ".xml");
+		File result = new File(System.nanoTime() + ".xml");
 		FileWriter out = new FileWriter(result, false);
 		out.write(builder.toString());
 		out.close();

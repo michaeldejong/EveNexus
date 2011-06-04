@@ -65,7 +65,7 @@ public class SkillImporter extends ImporterTask {
 			session.saveOrUpdate(skill);
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 

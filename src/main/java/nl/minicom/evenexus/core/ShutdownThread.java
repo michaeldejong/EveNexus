@@ -34,7 +34,7 @@ public class ShutdownThread extends Thread {
 			LogManager.shutdown();
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 

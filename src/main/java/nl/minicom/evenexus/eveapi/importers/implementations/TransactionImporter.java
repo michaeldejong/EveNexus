@@ -122,7 +122,7 @@ public class TransactionImporter extends ImporterTask {
 			}			
 		} 
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 

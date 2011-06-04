@@ -23,6 +23,7 @@ public abstract class Query<T> {
 			if (tx != null) {
 				tx.rollback();
 			}
+			throw e;
 		}
 		finally {
 			session.close();

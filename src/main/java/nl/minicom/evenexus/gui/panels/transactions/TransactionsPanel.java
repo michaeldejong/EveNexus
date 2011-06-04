@@ -23,7 +23,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 
-public class TransactionsPanel extends TabPanel {
+public class TransactionsPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;	
 	private static final Logger logger = LogManager.getRootLogger();
@@ -63,12 +63,12 @@ public class TransactionsPanel extends TabPanel {
 	    		.addGap(7)
     	);
     	
-    	application.getImportManager().addListener(Api.CHAR_WALLET_TRANSACTIONS, new ImportListener() {
-			@Override
-			public void onImportComplete() {
-				reloadTab();
-			}
-		});    	
+    	application.getImportManager().addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
+	}
+	
+	@Override
+	public void onImportComplete() {
+		reloadTab();
 	}
 
 	@Override

@@ -28,13 +28,19 @@ public abstract class ImporterTask extends TimerTask {
 	private final ImportManager importManager;
 	private final ApiKey apiKey;
 	private final Importer importer;
+	private final long minimumCooldown;
 
 	public ImporterTask(ApiServerManager apiServerManager, ImportManager importManager, Api type, ApiKey apiKey) {
+		this (apiServerManager, importManager, type, apiKey, Long.MAX_VALUE);
+	}
+	
+	public ImporterTask(ApiServerManager apiServerManager, ImportManager importManager, Api type, ApiKey apiKey, long minimumCooldown) {
 		this.apiKey = apiKey;
 		this.apiServerManager = apiServerManager;
 		this.importManager = importManager;
 		this.type = type;
 		this.importer = loadImporter(type.getImporterId());
+		this.minimumCooldown = minimumCooldown;
 	}
 	
 	private Importer loadImporter(final long importerId) {
@@ -65,15 +71,17 @@ public abstract class ImporterTask extends TimerTask {
 	}
 
 	public long getNextRun() {
-		ImportLog log = loadImportLog(new ImportLogIdentifier(type.getImporterId(), apiKey.getCharacterID()));
+		ImportLog log = loadImportLog(new ImportLogIdentifier(type.getImporterId(), getCharacterId()));
 		if (log != null && log.getLastRun() != null) {
-			return log.getLastRun().getTime() + getImporter().getCooldown();
+			long cooldown = getImporter().getCooldown();
+			cooldown = Math.min(cooldown, minimumCooldown);
+			return log.getLastRun().getTime() + cooldown;
 		}
 		return 0;
 	}
 	
 	protected void runImporter() throws Exception {
-		logger.info("Running " + getImporter().getName() + " importer (characterID: " + getApiKey().getCharacterID() + ")");
+		logger.info("Running " + getImporter().getName() + " importer (characterID: " + getCharacterId() + ")");
 		ApiParser parser = new ApiParser(apiServerManager, getImporter().getId(), apiKey);
 		if (parser.isAvailable()) {
 			parseApi(parser);
@@ -88,9 +96,15 @@ public abstract class ImporterTask extends TimerTask {
 			@Override
 			protected Void doQuery(Session session) {
 				long importerId = getImporter().getId();
-				long characterId = getApiKey().getCharacterID();
+				long characterId = getCharacterId();
 				ImportLogIdentifier id = new ImportLogIdentifier(importerId, characterId);
 				ImportLog log = (ImportLog) session.get(ImportLog.class, id);
+				if (log == null) {
+					log = new ImportLog();
+					log.setCharacterId(characterId);
+					log.setImporterId(importerId);
+				}
+				
 				log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
 				session.saveOrUpdate(log);
 				return null;
@@ -100,6 +114,13 @@ public abstract class ImporterTask extends TimerTask {
 
 	public Importer getImporter() {
 		return importer;
+	}
+	
+	public long getCharacterId() {
+		if (apiKey != null) {
+			return apiKey.getCharacterID();
+		}
+		return 0;
 	}
 	
 	public Api getApi() {

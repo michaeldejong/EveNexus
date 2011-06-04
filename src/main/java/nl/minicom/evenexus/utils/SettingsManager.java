@@ -82,7 +82,7 @@ public class SettingsManager {
 			}
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 		return null;
 	}
@@ -104,7 +104,7 @@ public class SettingsManager {
 			settings.put(name, value);
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 	
@@ -117,7 +117,7 @@ public class SettingsManager {
 			out.close();
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error(e.getLocalizedMessage(), e);
 		}
 	}
 	
