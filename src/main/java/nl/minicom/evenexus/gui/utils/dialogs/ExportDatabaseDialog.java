@@ -1,12 +1,12 @@
 package nl.minicom.evenexus.gui.utils.dialogs;
 
 import java.io.File;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JFileChooser;
 
-import nl.minicom.evenexus.persistence.Query;
-
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 
 
@@ -20,12 +20,18 @@ public class ExportDatabaseDialog extends DatabaseFileChooser {
 			return;
 		}
 		
-		new Query<Void>() {
+		new nl.minicom.evenexus.persistence.Query<Void>() {
 			@Override
 			protected Void doQuery(Session session) {
-				SQLQuery statement = session.createSQLQuery("SCRIPT TO ? COMPRESSION ZIP");
-				statement.setString(0, file.getAbsolutePath());
-				statement.executeUpdate();
+				try {
+					Connection connection = session.connection();
+					CallableStatement statement = connection.prepareCall("SCRIPT TO ? COMPRESSION ZIP");
+					statement.setString(1, file.getAbsolutePath());
+					statement.execute();
+				} 
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
 				return null;
 			}
 		}.doQuery();
