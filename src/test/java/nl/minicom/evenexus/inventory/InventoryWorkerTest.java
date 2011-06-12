@@ -14,7 +14,6 @@ import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import nl.minicom.evenexus.persistence.versioning.RevisionExecutor;
 import nl.minicom.evenexus.persistence.versioning.StructureUpgrader;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.junit.After;
@@ -29,7 +28,6 @@ public class InventoryWorkerTest {
 	
 	@Before
 	public void setup() {
-		PropertyConfigurator.configure("log4j.properties");
 		dropDatabase();
 		new RevisionExecutor(new StructureUpgrader()).execute();
 	}

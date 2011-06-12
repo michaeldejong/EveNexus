@@ -13,15 +13,15 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.NumberFormatter;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class IntegerRenderer extends DefaultTableCellRenderer {
 	
 	private static final long serialVersionUID = -4703532359023302661L;
 
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(IntegerRenderer.class);
 	
 	private AbstractFormatter formatter = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0", DecimalFormatSymbols.getInstance(Locale.US)));
 
@@ -58,7 +58,7 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 			setValue(formatter.valueToString(longValue));
 		}
 		catch (ParseException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		
 		return c;

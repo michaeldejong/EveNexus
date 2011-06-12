@@ -23,13 +23,8 @@ public class DefaultProgressFrame extends ProgressManager {
 	@Override
 	public final void buildGui() {
 		setTitle(getClass().getPackage().getSpecificationTitle());
-		setIconImage(Icon.getImage("logo_128x128.png"));
+		setIconImage(Icon.getImage("img/other/logo.png"));
 		setAlwaysOnTop(true);
-		
-//		Cannot set Modal, because this will block all other threads that this 
-//		JDialog's thread. Perhaps make this smarter sometime in the future...
-//		
-//		setModal(true);
 		
 		setResizable(false);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

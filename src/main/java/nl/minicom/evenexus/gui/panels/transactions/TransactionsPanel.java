@@ -19,14 +19,14 @@ import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 
 public class TransactionsPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(TransactionsPanel.class);
 
 	private final Table table;
 	private final ColumnModel columnModel;
@@ -74,7 +74,7 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	@Override
 	public void reloadTab() {
 		table.reload();
-		logger.debug("Transaction panel reloaded!");
+		LOG.debug("Transaction panel reloaded!");
 	}
 
 	private ToolBar createTopMenu() {

@@ -17,14 +17,14 @@ import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ProfitPanel extends TabPanel {
 
 	private static final long serialVersionUID = -4187071888216622511L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger logger = LoggerFactory.getLogger(ProfitPanel.class);
 
 	private final Table table;
 	private final ColumnModel columnModel;

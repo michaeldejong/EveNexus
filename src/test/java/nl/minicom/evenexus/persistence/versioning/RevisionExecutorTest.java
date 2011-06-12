@@ -6,7 +6,6 @@ import junit.framework.Assert;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.Version;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
@@ -22,8 +21,6 @@ public class RevisionExecutorTest {
 	
 	@Before
 	public void setup() {
-		PropertyConfigurator.configure("log4j.properties");
-		
 		databaseType = "test";
 		collection = new RevisionCollection(databaseType);
 		executor = new RevisionExecutor(collection);

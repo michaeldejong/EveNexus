@@ -21,7 +21,6 @@ import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
 import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
-import nl.minicom.evenexus.gui.panels.report.dialogs.ReportPanel;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;
@@ -31,16 +30,14 @@ import nl.minicom.evenexus.gui.utils.dialogs.ImportDatabaseDialog;
 import nl.minicom.evenexus.gui.utils.progresswindows.SplashFrame;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Gui extends JFrame {
 
 	private static final long serialVersionUID = 4615845773792192362L;
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(Gui.class);
 	
 	private static final int MIN_HEIGHT = 400;
 	private static final int MIN_WIDTH = 700;
@@ -48,8 +45,6 @@ public class Gui extends JFrame {
 	private static final int WIDTH = 850;
 	
 	public static void main(String[] args) throws Exception {
-		PropertyConfigurator.configure("log4j.properties");
-		
 		Application application = new Application();
 		
 		SplashFrame splashFrame = new SplashFrame();
@@ -68,7 +63,7 @@ public class Gui extends JFrame {
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(getClass().getPackage().getSpecificationTitle() + " - EVE Online trading overview");
-		setIconImage(Icon.getImage("logo_128x128.png"));
+		setIconImage(Icon.getImage("img/other/logo.png"));
 		setLookAndFeel();
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -106,7 +101,7 @@ public class Gui extends JFrame {
 		pane.setFocusable(false);
 		
 		pane.addTab("Dashboard", new DashboardPanel(application));
-		pane.addTab("Reports", new ReportPanel(application));
+//		pane.addTab("Reports", new ReportPanel(application));
 		pane.addTab("Journals", new JournalsPanel(application));
 		pane.addTab("Transactions", new TransactionsPanel(application));
 		pane.addTab("Market orders", new MarketOrdersPanel(application));
@@ -134,7 +129,7 @@ public class Gui extends JFrame {
 		
 		JMenu applicationMenu = new JMenu("Application");
 		
-		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon("database_down_16x16.png"));
+		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon("img/16/database_down.png"));
 		applicationMenu.add(importMenu);
 		importMenu.addActionListener(new ActionListener() {
 			@Override
@@ -143,7 +138,7 @@ public class Gui extends JFrame {
 			}
 		});
 		
-		JMenuItem exportMenu = new JMenuItem("Export database", Icon.getIcon("database_next_16x16.png"));
+		JMenuItem exportMenu = new JMenuItem("Export database", Icon.getIcon("img/16/database_next.png"));
 		applicationMenu.add(exportMenu);
 		exportMenu.addActionListener(new ActionListener() {
 			@Override
@@ -156,7 +151,7 @@ public class Gui extends JFrame {
 		
 		final SettingsDialog settingsDialog = new SettingsDialog(application);
 		
-		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon("process_16x16.png"));
+		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon("img/16/process.png"));
 		applicationMenu.add(proxyMenu);
 		proxyMenu.addActionListener(new ActionListener() {
 			@Override
@@ -167,7 +162,7 @@ public class Gui extends JFrame {
 		
 		applicationMenu.addSeparator();
 		
-		JMenuItem exitMenu = new JMenuItem("Exit", Icon.getIcon("remove_16x16.png"));
+		JMenuItem exitMenu = new JMenuItem("Exit", Icon.getIcon("img/16/remove.png"));
 		applicationMenu.add(exitMenu);
 		exitMenu.addActionListener(new ActionListener() {
 			@Override
@@ -180,7 +175,7 @@ public class Gui extends JFrame {
 		
 		JMenu helpMenu = new JMenu("Help");
 		
-		JMenuItem aboutMenu = new JMenuItem("About", Icon.getIcon("info_16x16.png"));
+		JMenuItem aboutMenu = new JMenuItem("About", Icon.getIcon("img/16/info.png"));
 		helpMenu.add(aboutMenu);
 		aboutMenu.addActionListener(new ActionListener() {
 			@Override
@@ -199,7 +194,7 @@ public class Gui extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

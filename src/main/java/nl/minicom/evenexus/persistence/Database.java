@@ -21,13 +21,9 @@ import org.hibernate.cfg.AnnotationConfiguration;
 
 public class Database {
 	
-	private static SessionFactory factory;
+	private static SessionFactory factory = createSessionFactory();
 	
-	public static final Session createNewSession() {
-		if (factory == null) {
-			factory = createSessionFactory();
-		}
-		
+	public static final synchronized Session createNewSession() {
 		return factory.openSession();
 	}
 	
@@ -47,7 +43,7 @@ public class Database {
 			config.setProperty("hibernate.cache.use_second_level_cache", "false");
 			config.setProperty("hibernate.cache.use_query_cache", "false");
 			config.setProperty("hibernate.hbm2ddl.auto", "");
-			config.setProperty("hibernate.show_sql", "true");
+			config.setProperty("hibernate.show_sql", "false");
 			config.setProperty("hibernate.transaction.factory_class", "org.hibernate.transaction.JDBCTransactionFactory");
 			config.setProperty("hibernate.current_session_context_class", "thread");
 
@@ -67,7 +63,8 @@ public class Database {
 			config.addAnnotatedClass(WalletJournal.class);
 			config.addAnnotatedClass(WalletTransaction.class);
 			
-		} catch (Throwable ex) {
+		} 
+		catch (Throwable ex) {
 			throw new ExceptionInInitializerError(ex);
 		}
 		

@@ -23,14 +23,14 @@ import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class JournalsPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(JournalsPanel.class);
 	
 	private Table table;
 	private final ColumnModel columnModel;
@@ -78,7 +78,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	@Override
 	public void reloadTab() {
 		table.reload();
-		logger.debug("Journal panel reloaded!");
+		LOG.debug("Journal panel reloaded!");
 	}
 	
 	private JPanel createTopMenu() {		

@@ -10,15 +10,15 @@ import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.Skill;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SkillImporter extends ImporterTask {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(SkillImporter.class);
 	
 	public SkillImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey apiKey) {
 		super(apiServerManager, importManager, Api.CHAR_SKILLS, apiKey);
@@ -65,7 +65,7 @@ public class SkillImporter extends ImporterTask {
 			session.saveOrUpdate(skill);
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 

@@ -9,17 +9,17 @@ import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(JournalTableDataModel.class);
 
 	private int period;
 	
@@ -33,7 +33,7 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 			return loadTable();			
 		}
 		catch (HibernateException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 			throw e;
 		}
 	}

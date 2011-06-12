@@ -17,13 +17,13 @@ import javax.swing.UIManager;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.icons.Icon;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Tray {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(Tray.class);
 
 	private final Gui gui;
 	private final TrayIcon icon;
@@ -32,7 +32,7 @@ public class Tray {
 	public Tray(Gui gui) {
 		this.gui = gui;
 
-		Image image = Icon.getImage("logo_48x48.png");
+		Image image = Icon.getImage("img/48/logo.png");
 		Image scaled = image.getScaledInstance(16, 16, BufferedImage.TYPE_INT_RGB);
 		
 		Package parent = getClass().getPackage();
@@ -81,7 +81,7 @@ public class Tray {
 				tray.add(icon);
 			}
 			catch (AWTException e) {
-				logger.error(e.getLocalizedMessage(), e);
+				LOG.error(e.getLocalizedMessage(), e);
 			}
 		}
 	}

@@ -11,21 +11,21 @@ import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ReportPanel extends TabPanel {
 
 	private static final long serialVersionUID = -4187071888216622511L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
 	
 	private ToolBarButton createReport;
 	
 	public ReportPanel(final Application application) {
 		super();	
 		
-        createReport = new ToolBarButton("pie_chart_32x32.png", "Create a new report");
+        createReport = new ToolBarButton("img/32/pie_chart.png", "Create a new report");
         createReport.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -66,6 +66,6 @@ public class ReportPanel extends TabPanel {
 
 	@Override
 	public void reloadTab() {
-		logger.debug("Report panel reloaded!");
+		LOG.debug("Report panel reloaded!");
 	}
 }

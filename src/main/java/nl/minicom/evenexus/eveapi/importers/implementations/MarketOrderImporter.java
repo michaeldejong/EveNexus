@@ -13,15 +13,15 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MarketOrder;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
 
 
 public class MarketOrderImporter extends ImporterTask {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(MarketOrderImporter.class);
 	
 	public MarketOrderImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey settings) {
 		super(apiServerManager, importManager, Api.CHAR_MARKET_ORDERS, settings);
@@ -73,7 +73,7 @@ public class MarketOrderImporter extends ImporterTask {
 			session.saveOrUpdate(order);
 		} 
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 

@@ -19,14 +19,14 @@ import javax.swing.event.HyperlinkListener;
 
 import nl.minicom.evenexus.core.Application;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class AboutDialog extends CustomDialog {
 
 	private static final long serialVersionUID = 8860569373371189189L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(AboutDialog.class);
 		
 	private final Application application;
 	
@@ -122,7 +122,7 @@ public class AboutDialog extends CustomDialog {
 						Desktop.getDesktop().browse(event.getURL().toURI());
 					}
 					catch (Exception e) {
-						logger.error(e.getLocalizedMessage(), e);
+						LOG.error(e.getLocalizedMessage(), e);
 					} 
 				}
 			}

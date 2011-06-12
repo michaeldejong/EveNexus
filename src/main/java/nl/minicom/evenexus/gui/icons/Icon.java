@@ -5,19 +5,19 @@ import java.awt.Image;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Icon {
 
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(Icon.class);
 	
 	public static ImageIcon getIcon(String iconFileName) {
 		try {
 			return new ImageIcon(ImageIO.read(Icon.class.getResourceAsStream("/" + iconFileName)));
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		return null;
 	}

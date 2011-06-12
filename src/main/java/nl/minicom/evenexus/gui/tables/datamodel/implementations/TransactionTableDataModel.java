@@ -10,17 +10,17 @@ import nl.minicom.evenexus.gui.tables.datamodel.ITypeNameFilter;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TransactionTableDataModel implements ITableDataModel, ITypeNameFilter, IPeriodFilter {
 
-	private final static Logger logger = LogManager.getRootLogger();
+	private final static Logger LOG = LoggerFactory.getLogger(TransactionTableDataModel.class);
 
 	private long period;
 	private String typeName;
@@ -36,7 +36,7 @@ public class TransactionTableDataModel implements ITableDataModel, ITypeNameFilt
 			return loadTable();
 		}
 		catch (HibernateException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 			throw e;
 		}
 	}

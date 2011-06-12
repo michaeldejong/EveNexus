@@ -20,14 +20,14 @@ import nl.minicom.evenexus.gui.tables.datamodel.implementations.AccountTableData
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class AccountsPanel extends JPanel {
 
 	private static final long serialVersionUID = -4187071888216622511L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(AccountsPanel.class);
 	
 	private Table table;
 	private ToolBarButton addCharacter;
@@ -41,8 +41,8 @@ public class AccountsPanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         
-        addCharacter = new ToolBarButton("add_32x32.png", "Add new a character");
-        deleteCharacter = new ToolBarButton("remove_32x32.png", "Delete a character");
+        addCharacter = new ToolBarButton("img/32/add.png", "Add new a character");
+        deleteCharacter = new ToolBarButton("img/32/remove.png", "Delete a character");
 
         final AccountsPanel panel = this;
         addCharacter.addActionListener(new ActionListener() {
@@ -121,6 +121,6 @@ public class AccountsPanel extends JPanel {
 		table.getSelectionModel().clearSelection();
 		deleteCharacter.setEnabled(false);
 		table.reload();
-		logger.debug("Account panel reloaded!");
+		LOG.debug("Account panel reloaded!");
 	}
 }

@@ -13,15 +13,15 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.NumberFormatter;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CurrencyRenderer extends DefaultTableCellRenderer {
 	
 	private static final long serialVersionUID = 3654076174730284327L;
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(CurrencyRenderer.class);
 	
 	private Color RED = new Color(200, 16, 16);
 	private Color GREEN = new Color(0, 128, 0);
@@ -57,7 +57,7 @@ public class CurrencyRenderer extends DefaultTableCellRenderer {
 			setValue(formatter.valueToString(decimalValue));
 		}
 		catch (ParseException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		
 		return c;

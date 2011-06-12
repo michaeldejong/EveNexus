@@ -7,17 +7,17 @@ import java.util.List;
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.persistence.Query;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ImporterTableDataModel implements ITableDataModel {
 
-	private final static Logger logger = LogManager.getRootLogger();
+	private final static Logger LOG = LoggerFactory.getLogger(ImporterTableDataModel.class);
 	
 	@Override
 	public List<Object[]> reload() {
@@ -25,7 +25,7 @@ public class ImporterTableDataModel implements ITableDataModel {
 			return createQuery();			
 		}
 		catch (HibernateException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 			throw e;
 		}
 	}

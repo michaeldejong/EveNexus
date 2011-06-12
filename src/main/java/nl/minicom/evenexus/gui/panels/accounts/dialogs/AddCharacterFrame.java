@@ -30,16 +30,16 @@ import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.Importer;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddCharacterFrame extends CustomDialog {
 
 	private static final long serialVersionUID = 5630084784234969950L;
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(AddCharacterFrame.class);
 
 	private final Application application;
 	private final AccountsPanel panel;
@@ -141,7 +141,7 @@ public class AddCharacterFrame extends CustomDialog {
 							}
 						}
 						catch (Exception e) {
-							logger.error(e.getLocalizedMessage(), e);
+							LOG.error(e.getLocalizedMessage(), e);
 						}
 						finally {
 							panel.reloadTab();
@@ -182,7 +182,7 @@ public class AddCharacterFrame extends CustomDialog {
 	private List<EveCharacter> checkCredentials(Map<String, String> request) {
 		List<EveCharacter> characters = getCharacterList(request);
 		if (characters == null || characters.isEmpty()) {
-			logger.warn("Account has no characters listed!");
+			LOG.warn("Account has no characters listed!");
 			return null;
 		}
 		
@@ -191,7 +191,7 @@ public class AddCharacterFrame extends CustomDialog {
 			return characters;
 		}
 		else {
-			logger.warn("API key does not have FULL clearance!");
+			LOG.warn("API key does not have FULL clearance!");
 		}
 		
 		return null;
@@ -203,10 +203,10 @@ public class AddCharacterFrame extends CustomDialog {
 			return processParser(new ApiParser(application.getApiServerManager(), importer.getId(), null, request), request);
 		}
 		catch (WarnableException e) {
-			logger.warn(e);
+			LOG.warn(e.getLocalizedMessage(), e);
 		}
 		catch (Throwable e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		return null;
 	}
@@ -218,11 +218,11 @@ public class AddCharacterFrame extends CustomDialog {
 			(new ApiParser(application.getApiServerManager(), importer.getId(), null, request)).isAvailable();
 		}
 		catch (SecurityNotHighEnoughException e) {
-			logger.warn(e);
+			LOG.warn(e.getLocalizedMessage(), e);
 			return false;
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		return true;
 	}

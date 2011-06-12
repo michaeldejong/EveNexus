@@ -3,13 +3,13 @@ package nl.minicom.evenexus.eveapi.importers;
 
 import nl.minicom.evenexus.eveapi.exceptions.WarnableException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ImporterThread extends Thread {
 	
-	private static Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(ImporterThread.class);
 	
 	private final ImporterTask importer;
 	
@@ -23,10 +23,10 @@ public class ImporterThread extends Thread {
 			importer.runImporter();
 		}
 		catch (WarnableException e) {
-			logger.warn(e);
+			LOG.warn(e.getLocalizedMessage(), e);
 		}
 		catch (Throwable e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

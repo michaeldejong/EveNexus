@@ -117,6 +117,66 @@ public class Item implements Serializable {
 
 	public Double getChanceOfDuplicating() {
 		return chanceOfDuplicating;
+	}
+
+	public void setTypeId(long typeId) {
+		this.typeId = typeId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setGraphicId(Long graphicId) {
+		this.graphicId = graphicId;
+	}
+
+	public void setRadius(Double radius) {
+		this.radius = radius;
+	}
+
+	public void setMass(Double mass) {
+		this.mass = mass;
+	}
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	}
+
+	public void setCapacity(Double capacity) {
+		this.capacity = capacity;
+	}
+
+	public void setPortionSize(Long portionSize) {
+		this.portionSize = portionSize;
+	}
+
+	public void setRaceId(Integer raceId) {
+		this.raceId = raceId;
+	}
+
+	public void setBasePrice(Double basePrice) {
+		this.basePrice = basePrice;
+	}
+
+	public void setPublished(Boolean published) {
+		this.published = published;
+	}
+
+	public void setMarketGroupId(Long marketGroupId) {
+		this.marketGroupId = marketGroupId;
+	}
+
+	public void setChanceOfDuplicating(Double chanceOfDuplicating) {
+		this.chanceOfDuplicating = chanceOfDuplicating;
 	}	
 	
 }

@@ -24,16 +24,16 @@ import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.ScrollableResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Table extends JTable {
 	
 	private static final long serialVersionUID = -5591796667411345474L;
 
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(Table.class);
 
 	public static final DefaultTableCellRenderer CURRENCY_RENDERER = new CurrencyRenderer();
 	public static final DefaultTableCellRenderer LEFT_RENDERER = new AlignLeftRenderer();
@@ -143,7 +143,7 @@ public class Table extends JTable {
 			repaint();
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class Table extends JTable {
 			result.setRowNumber(getSelectedRow());
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		return result;
 	}
@@ -173,7 +173,7 @@ public class Table extends JTable {
 			// TODO : remove...
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

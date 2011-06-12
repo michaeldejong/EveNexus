@@ -8,15 +8,15 @@ import nl.minicom.evenexus.eveapi.importers.ImporterTask;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.RefType;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class RefTypeImporter extends ImporterTask {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(RefTypeImporter.class);
 	
 	public RefTypeImporter(ApiServerManager apiServerManager, ImportManager importManager) {
 		super(apiServerManager, importManager, Api.EVE_REF_TYPE, null, 3600000L);
@@ -55,7 +55,7 @@ public class RefTypeImporter extends ImporterTask {
 			session.saveOrUpdate(refType);
 		} 
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 }

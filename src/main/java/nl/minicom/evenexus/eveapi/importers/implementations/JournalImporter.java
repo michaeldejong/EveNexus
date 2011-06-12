@@ -13,15 +13,15 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.WalletJournal;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
 
 
 public class JournalImporter extends ImporterTask {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(JournalImporter.class);
 	
 	public JournalImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey apiKey) {
 		super(apiServerManager, importManager, Api.CHAR_WALLET_JOURNAL, apiKey);
@@ -94,7 +94,7 @@ public class JournalImporter extends ImporterTask {
 			session.saveOrUpdate(journal);
 		} 
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 }

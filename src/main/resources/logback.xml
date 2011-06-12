@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<filter class="nl.minicom.evenexus.logging.SystemOutFilter" />
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS dd-MM-yyyy}\t%p\t%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.err</target>
+		<filter class="nl.minicom.evenexus.logging.SystemErrFilter" />
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS dd-MM-yyyy}\t%p\t%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log.txt</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>log.%i.txt</FileNamePattern>
+			<MinIndex>0</MinIndex>
+			<MaxIndex>9</MaxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS dd-MM-yyyy}\t%p\t%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="STDERR" />
+		<appender-ref ref="FILE" />
+	</root>
+
+	<logger name="nl.minicom" level="DEBUG" />
+	<logger name="org.hibernate" level="WARN" />
+
+</configuration>

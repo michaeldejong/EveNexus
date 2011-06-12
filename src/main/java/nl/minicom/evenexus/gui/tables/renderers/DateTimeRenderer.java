@@ -11,15 +11,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import nl.minicom.evenexus.gui.tables.formatters.DateTimeFormatter;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DateTimeRenderer extends DefaultTableCellRenderer {
 
 	private static final long serialVersionUID = -3869075201627613304L;
 
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(DateTimeRenderer.class);
 	
 	private AbstractFormatter formatter = new DateTimeFormatter();
 
@@ -46,7 +46,7 @@ public class DateTimeRenderer extends DefaultTableCellRenderer {
 			setValue(formatter.valueToString(timestamp));
 		}
 		catch (ParseException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		
 		return c;

@@ -34,7 +34,7 @@ public abstract class CustomDialog extends JDialog {
 		setResizable(false);
 		setTitle(dialogTitle.getTitle());
 		setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
-		setIconImage(Icon.getImage("logo_128x128.png"));
+		setIconImage(Icon.getImage("img/other/logo.png"));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();

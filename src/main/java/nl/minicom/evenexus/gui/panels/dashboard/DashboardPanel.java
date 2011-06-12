@@ -16,13 +16,13 @@ import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DashboardPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = 9040274995425958160L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(DashboardPanel.class);
 	
 	private final LineGraphEngine chartPanel;
 	private final SettingsManager settingsManager;
@@ -72,7 +72,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 
 	public void reloadTab() {
 		chartPanel.reload();
-		logger.debug("Dashboard panel reloaded!");
+		LOG.debug("Dashboard panel reloaded!");
 	}
 	
 	private ToolBar createTopMenu() {

@@ -19,14 +19,14 @@ import nl.minicom.evenexus.gui.tables.datamodel.implementations.SellOrdersTableD
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MarketOrdersPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(MarketOrdersPanel.class);
 
 	private final Table table1;
 	private final Table table2;
@@ -82,7 +82,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	public void reloadTab() {
 		table1.reload();
 		table2.reload();
-		logger.debug("Market orders panel reloaded!");
+		LOG.debug("Market orders panel reloaded!");
 	}
 
 	private ToolBar createTopMenu() {

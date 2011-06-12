@@ -173,7 +173,7 @@ public class ToolBar extends JPanel {
 	}
 
 	public ToolBarButton createTableSelectColumnsButton(final ColumnSelectionFrame columnSelectionFrame) {
-		ToolBarButton button = new ToolBarButton("add_column_32x32.png", "Show / hide columns");
+		ToolBarButton button = new ToolBarButton("img/32/add_column.png", "Show / hide columns");
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

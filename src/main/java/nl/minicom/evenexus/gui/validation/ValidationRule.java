@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class ValidationRule {
 
 	private List<StateRule> rules = new ArrayList<StateRule>();
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(ValidationRule.class);
 	
 	public ValidationRule(StateRule... stateRules) {
 		for (StateRule rule : stateRules) {
@@ -74,7 +74,7 @@ public abstract class ValidationRule {
 			}
 		}
 		catch (NumberFormatException e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		
 		return false;

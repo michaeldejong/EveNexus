@@ -8,7 +8,7 @@ public class DatabaseConnectionDialog extends CustomDialog {
 
 	private static final long serialVersionUID = 8860569373371189189L;
 	
-//	private static final Logger logger = LogManager.getRootLogger();
+//	private static final Logger logger = LoggerFactory.getRootLogger();
 	
 	public static void showFrame() {
 		new DatabaseConnectionDialog();

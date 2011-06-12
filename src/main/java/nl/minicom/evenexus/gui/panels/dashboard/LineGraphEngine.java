@@ -29,7 +29,7 @@ public class LineGraphEngine extends ChartPanel {
 
 	private static final long serialVersionUID = 6134550946248367873L;
 	
-//	private static final Logger logger = LogManager.getRootLogger();
+//	private static final Logger logger = LoggerFactory.getRootLogger();
 
 	private final List<GraphElement> elements;
 	private int period;

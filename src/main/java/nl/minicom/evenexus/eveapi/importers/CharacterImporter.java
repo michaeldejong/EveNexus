@@ -16,13 +16,13 @@ import nl.minicom.evenexus.eveapi.importers.implementations.TransactionImporter;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CharacterImporter {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(CharacterImporter.class);
 	
 	private final ImportManager importManager;
 	private final Map<Api, ImporterTask> importers;
@@ -49,7 +49,7 @@ public class CharacterImporter {
 		}
 		
 		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter().getCooldown());
-		logger.info("Scheduling " + task.getImporter().getName() + " importer (characterID: " + task.getApiKey().getCharacterID() + ") at: " + new Date(nextRun));
+		LOG.info("Scheduling " + task.getImporter().getName() + " importer (characterID: " + task.getApiKey().getCharacterID() + ") at: " + new Date(nextRun));
 	}
 	
 	public Collection<ImporterTask> getSchedule() {

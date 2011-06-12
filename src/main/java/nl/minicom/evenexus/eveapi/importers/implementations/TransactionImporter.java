@@ -21,15 +21,15 @@ import nl.minicom.evenexus.persistence.dao.Station;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TransactionImporter extends ImporterTask {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(TransactionImporter.class);
 	
 	public TransactionImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey settings) {
 		super(apiServerManager, importManager, Api.CHAR_WALLET_TRANSACTIONS, settings);
@@ -122,7 +122,7 @@ public class TransactionImporter extends ImporterTask {
 			}			
 		} 
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 

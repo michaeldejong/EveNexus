@@ -8,9 +8,9 @@ package nl.minicom.evenexus.core.report.engine;
  */
 public enum DisplayType {
 
-	TABLE(1, "table_48x48.png", "Table", "Selecting this option will format your report in the form of a table."), 
-	GRAPH(2, "chart_48x48.png", "Graph", "Selecting this option will format your report in the form of a graph."), 
-	PIE(3, "pie_chart_48x48.png", "Pie chart", "Selecting this option will format your report in the form of a pie chart.");
+	TABLE(1, "img/48/table.png", "Table", "Selecting this option will format your report in the form of a table."), 
+	GRAPH(2, "img/48/chart.png", "Graph", "Selecting this option will format your report in the form of a graph."), 
+	PIE(3, "img/48/pie_chart.png", "Pie chart", "Selecting this option will format your report in the form of a pie chart.");
 	
 	private final int id;
 	private final String icon;

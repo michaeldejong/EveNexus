@@ -27,17 +27,17 @@ import nl.minicom.evenexus.persistence.dao.ImportLogIdentifier;
 import nl.minicom.evenexus.persistence.dao.Importer;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 
 public class ApiParser {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(ApiParser.class);
 
 	/**
 	 * An enumeration of queryable API services. A service consists of an URL
@@ -184,7 +184,7 @@ public class ApiParser {
 		String hostURL = apiServerManager.getApiServer();
 		
 		try {
-			logger.info("Requesting: " + hostURL + importerPath);
+			LOG.info("Requesting: " + hostURL + importerPath);
 			File xmlFile = downloadFile(url);
 			if (xmlFile == null) {
 				throw new IOException("Could not find: " + hostURL + importerPath);
@@ -192,12 +192,12 @@ public class ApiParser {
 			
 			XmlParser parser = new XmlParser();
 			root = parser.parse(xmlFile);
-//			xmlFile.delete();
+			xmlFile.delete();
 			
 			updateCooldown();
 		}
 		catch (Throwable e) {
-			logger.warn(e);
+			LOG.warn(e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class ApiParser {
 							session.saveOrUpdate(object);
 						}
 						catch (Throwable e) {
-							logger.error(e.getLocalizedMessage(), e);
+							LOG.error(e.getLocalizedMessage(), e);
 						}
 						return null;
 					}
@@ -243,8 +243,7 @@ public class ApiParser {
 			}
 		}
 		
-//		File result = File.createTempFile("EveNexus", ".xml");
-		File result = new File(System.nanoTime() + ".xml");
+		File result = File.createTempFile("EveNexus", ".xml");
 		FileWriter out = new FileWriter(result, false);
 		out.write(builder.toString());
 		out.close();

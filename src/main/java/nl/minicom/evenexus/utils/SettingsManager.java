@@ -11,13 +11,13 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SettingsManager {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(SettingsManager.class);
 		
 	private final SortedProperties settings;
 	private final File file;
@@ -41,7 +41,7 @@ public class SettingsManager {
 				return Integer.parseInt((String) result);
 			}
 			catch (Exception e) {
-				logger.warn(e);
+				LOG.warn(e.getLocalizedMessage(), e);
 			}
 		}	
 		saveObject(name, defaultValue);		
@@ -82,7 +82,7 @@ public class SettingsManager {
 			}
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 		return null;
 	}
@@ -104,7 +104,7 @@ public class SettingsManager {
 			settings.put(name, value);
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 	
@@ -117,7 +117,7 @@ public class SettingsManager {
 			out.close();
 		}
 		catch (Exception e) {
-			logger.error(e.getLocalizedMessage(), e);
+			LOG.error(e.getLocalizedMessage(), e);
 		}
 	}
 	

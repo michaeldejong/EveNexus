@@ -27,7 +27,7 @@ public abstract class DatabaseFileChooser extends JDialog {
 	public DatabaseFileChooser() {
 		setResizable(false);
 		setTitle("Select file");
-		setIconImage(Icon.getImage("logo_128x128.png"));
+		setIconImage(Icon.getImage("img/other/logo.png"));
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();

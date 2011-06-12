@@ -14,14 +14,14 @@ import nl.minicom.evenexus.persistence.dao.ImportLogIdentifier;
 import nl.minicom.evenexus.persistence.dao.Importer;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class ImporterTask extends TimerTask {
 	
-	private static Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(ImporterTask.class);
 
 	private final Api type;
 	private final ApiServerManager apiServerManager;
@@ -81,7 +81,7 @@ public abstract class ImporterTask extends TimerTask {
 	}
 	
 	protected void runImporter() throws Exception {
-		logger.info("Running " + getImporter().getName() + " importer (characterID: " + getCharacterId() + ")");
+		LOG.info("Running " + getImporter().getName() + " importer (characterID: " + getCharacterId() + ")");
 		ApiParser parser = new ApiParser(apiServerManager, getImporter().getId(), apiKey);
 		if (parser.isAvailable()) {
 			parseApi(parser);

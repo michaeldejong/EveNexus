@@ -2,6 +2,8 @@ package nl.minicom.evenexus.persistence.versioning;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,6 +11,8 @@ import org.junit.Test;
 
 public class RevisionCollectionTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(RevisionCollectionTest.class);
+	
 	private RevisionCollection instance;
 	private String revisionType;
 	
@@ -24,7 +28,7 @@ public class RevisionCollectionTest {
 	private final Revision createRevision(int revisionNumber) {
 		return new Revision(revisionNumber) {
 			public void execute(Session session) {
-				System.err.println("Executing revision: " + getRevisionNumber());
+				LOG.debug("Executing revision: " + getRevisionNumber());
 			}
 		};
 	}

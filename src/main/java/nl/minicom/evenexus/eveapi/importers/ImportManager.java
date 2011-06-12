@@ -12,9 +12,9 @@ import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -22,7 +22,7 @@ import com.google.common.collect.Multimap;
 
 public class ImportManager extends Timer {
 	
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(ImportManager.class);
 	
 	private final Multimap<Api, ImportListener> listeners;
 	private final ApiServerManager apiServerManager;
@@ -48,7 +48,7 @@ public class ImportManager extends Timer {
 		}
 		
 		scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter().getCooldown());
-		logger.info("Scheduling " + task.getImporter().getName() + " importer at: " + new Date(nextRun));
+		LOG.info("Scheduling " + task.getImporter().getName() + " importer at: " + new Date(nextRun));
 	}
 
 	private void createCharacterImporters() {
@@ -65,7 +65,7 @@ public class ImportManager extends Timer {
 	}
 
 	public void addCharacterImporter(ApiKey apiKey) {
-		logger.debug("Scheduling importers for character: " + apiKey.getCharacterName());
+		LOG.debug("Scheduling importers for character: " + apiKey.getCharacterName());
 		new CharacterImporter(apiServerManager, this, apiKey);
 	}
 

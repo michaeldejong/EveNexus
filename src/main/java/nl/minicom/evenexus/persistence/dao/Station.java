@@ -63,4 +63,32 @@ public class Station implements Serializable {
 		return stationName;
 	}
 
+	public void setStationId(long stationId) {
+		this.stationId = stationId;
+	}
+
+	public void setStationTypeId(long stationTypeId) {
+		this.stationTypeId = stationTypeId;
+	}
+
+	public void setCorporationId(long corporationId) {
+		this.corporationId = corporationId;
+	}
+
+	public void setSolarSystemId(long solarSystemId) {
+		this.solarSystemId = solarSystemId;
+	}
+
+	public void setConstellationId(long constellationId) {
+		this.constellationId = constellationId;
+	}
+
+	public void setRegionId(long regionId) {
+		this.regionId = regionId;
+	}
+
+	public void setStationName(String stationName) {
+		this.stationName = stationName;
+	}
+
 }

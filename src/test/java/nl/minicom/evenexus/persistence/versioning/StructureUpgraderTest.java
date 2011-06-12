@@ -25,7 +25,6 @@ import nl.minicom.evenexus.persistence.dao.Version;
 import nl.minicom.evenexus.persistence.dao.WalletJournal;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.junit.After;
@@ -43,7 +42,6 @@ public class StructureUpgraderTest {
 	 */
 	@Before
 	public void setup() throws SQLException {
-		PropertyConfigurator.configure("log4j.properties");
 		instance = new StructureUpgrader();
 		dropDatabase();
 	}
