@@ -8,10 +8,14 @@ import java.sql.SQLException;
 import javax.swing.JFileChooser;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ExportDatabaseDialog extends DatabaseFileChooser {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ExportDatabaseDialog.class);
+	
 	private static final long serialVersionUID = -2633245343435662634L;
 	
 	@Override
@@ -30,7 +34,7 @@ public class ExportDatabaseDialog extends DatabaseFileChooser {
 					statement.execute();
 				} 
 				catch (SQLException e) {
-					e.printStackTrace();
+					LOG.error(e.getLocalizedMessage(), e);
 				}
 				return null;
 			}

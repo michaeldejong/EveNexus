@@ -56,10 +56,22 @@ public class Gui extends JFrame {
 	}
 	
 	private final Application application;
+	private final DashboardPanel dashboardPanel;
+	private final JournalsPanel journalsPanel;
+	private final TransactionsPanel transactionPanel;
+	private final MarketOrdersPanel marketOrderPanel;
+	private final ProfitPanel profitPanel;
+	private final AccountsPanel accountsPanel;
 	
 	public Gui(Application application) {
 		super();
 		this.application = application;
+		this.dashboardPanel = new DashboardPanel(application);
+		this.journalsPanel = new JournalsPanel(application);
+		this.transactionPanel = new TransactionsPanel(application);
+		this.marketOrderPanel = new MarketOrdersPanel(application);
+		this.profitPanel = new ProfitPanel(application);
+		this.accountsPanel = new AccountsPanel(application);
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(getClass().getPackage().getSpecificationTitle() + " - EVE Online trading overview");
@@ -100,13 +112,12 @@ public class Gui extends JFrame {
 		JTabbedPane pane = new JTabbedPane();
 		pane.setFocusable(false);
 		
-		pane.addTab("Dashboard", new DashboardPanel(application));
-//		pane.addTab("Reports", new ReportPanel(application));
-		pane.addTab("Journals", new JournalsPanel(application));
-		pane.addTab("Transactions", new TransactionsPanel(application));
-		pane.addTab("Market orders", new MarketOrdersPanel(application));
-		pane.addTab("Profits", new ProfitPanel(application));
-		pane.addTab("Accounts", new AccountsPanel(application));
+		pane.addTab("Dashboard", dashboardPanel);
+		pane.addTab("Journals", journalsPanel);
+		pane.addTab("Transactions", transactionPanel);
+		pane.addTab("Market orders", marketOrderPanel);
+		pane.addTab("Profits", profitPanel);
+		pane.addTab("Accounts", accountsPanel);
 				
 		GroupLayout layout = new GroupLayout(getContentPane());
         setLayout(layout);        
@@ -125,8 +136,9 @@ public class Gui extends JFrame {
 	}
 
 	private JMenuBar createMenu() {
-		JMenuBar bar = new JMenuBar();
+		final Gui gui = this;
 		
+		JMenuBar bar = new JMenuBar();
 		JMenu applicationMenu = new JMenu("Application");
 		
 		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon("img/16/database_down.png"));
@@ -134,7 +146,7 @@ public class Gui extends JFrame {
 		importMenu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new ImportDatabaseDialog();
+				new ImportDatabaseDialog(gui);
 			}
 		});
 		
@@ -196,6 +208,15 @@ public class Gui extends JFrame {
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 		}
+	}
+
+	public void reload() {
+		dashboardPanel.reloadTab();
+		journalsPanel.reloadTab();
+		transactionPanel.reloadTab();
+		marketOrderPanel.reloadTab();
+		profitPanel.reloadTab();
+		accountsPanel.reloadTab();
 	}
 	
 }

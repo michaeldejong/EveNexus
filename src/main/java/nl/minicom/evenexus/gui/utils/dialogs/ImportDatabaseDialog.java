@@ -8,16 +8,26 @@ import java.sql.SQLException;
 
 import javax.swing.JFileChooser;
 
+import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.versioning.RevisionExecutor;
 import nl.minicom.evenexus.persistence.versioning.StructureUpgrader;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ImportDatabaseDialog extends DatabaseFileChooser {
 
 	private static final long serialVersionUID = -2633245343435662634L;
+	private static final Logger LOG = LoggerFactory.getLogger(ImportDatabaseDialog.class);
+	
+	private final Gui gui;
+	
+	public ImportDatabaseDialog(Gui gui) {
+		this.gui = gui;
+	}
 	
 	@Override
 	public void onFileSelect(final File file) {
@@ -36,14 +46,15 @@ public class ImportDatabaseDialog extends DatabaseFileChooser {
 					statement.execute();
 				} 
 				catch (SQLException e) {
-					e.printStackTrace();
+					LOG.error(e.getLocalizedMessage(), e);
 				}
 				return null;
 			}
 		}.doQuery();
 		
 		new RevisionExecutor(new StructureUpgrader()).execute();
-		// TODO: Reload all tabs and importers!
+		
+		gui.reload();
 	}
 
 	@Override
