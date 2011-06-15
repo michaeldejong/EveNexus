@@ -31,7 +31,7 @@ public class AboutDialog extends CustomDialog {
 	private final Application application;
 	
 	public AboutDialog(Application application) {
-		super(DialogTitle.ABOUT_TITLE, 370, 380);
+		super(DialogTitle.ABOUT_TITLE, 370, 368);
 		this.application = application;
 		
 		buildGui();
@@ -69,8 +69,8 @@ public class AboutDialog extends CustomDialog {
 	private JPanel createVersionPanel() {
 		JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Version"), new EmptyBorder(0, 10, 0, 10)));
-		versionPanel.setMinimumSize(new Dimension(0, 64));
-		versionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 64));
+		versionPanel.setMinimumSize(new Dimension(0, 78));
+		versionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
 		
 		JLabel versions = new JLabel(createVersionString());
 		versions.setAlignmentX(JComponent.LEFT_ALIGNMENT);
@@ -93,6 +93,7 @@ public class AboutDialog extends CustomDialog {
 	private String createVersionString() {
 		String applicationVersion = getClass().getPackage().getSpecificationVersion();
 		String databaseVersion = application.getDatabaseVersion();
+		String contentVersion = application.getContentVersion();
 		String buildNumber = getClass().getPackage().getImplementationVersion();
 		
 		if (buildNumber == null || buildNumber.trim().isEmpty()) {
@@ -101,14 +102,15 @@ public class AboutDialog extends CustomDialog {
 		
 		return 	"<html>Application version: " + applicationVersion + " (" + 
 				"build: " + buildNumber + ")<br>" + 
-				"Database version: " + databaseVersion + "<br></html>";
+				"Database version: " + databaseVersion + "<br>" + 
+				"Content version: " + contentVersion + "</html>";
 	}
 	
 	private JPanel createContributionPanel() {
 		JPanel contributionPanel = new JPanel();
 		contributionPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Special thanks to"), new EmptyBorder(0, 10, 0, 10)));
-		contributionPanel.setMinimumSize(new Dimension(0, 125));
-		contributionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
+		contributionPanel.setMinimumSize(new Dimension(0, 112));
+		contributionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 112));
 				
 		JEditorPane contribution = new JEditorPane("text/html", createContributionString());
 		contribution.setEditable(false);
@@ -156,8 +158,7 @@ public class AboutDialog extends CustomDialog {
 				"<a href='http://wiki.eve-id.net/'>EVEDev</a>, for their extensive documentation of the API<br>" + 
 				"<a href='http://cemagraphics.deviantart.com/'>=cemagraphics</a>, for designing the logo<br>" + 
 				"<a href='http://www.wefunction.com/'>WeFunction.com</a>, for all the other icons<br>" + 
-				"<a href='http://www.beanstalkapp.com/'>BeanstalkApp.com</a>, for being a tremendous SVN host<br>" + 
-				"<a href='http://www.lighthouseapp.com/'>LighthouseApp.com</a>, for making sure we don't loose our bugs<br>" + 
+				"<a href='https://github.com/michaeldejong/EveNexus'>GitHub.com</a>, for being a tremendous Git host!<br>" + 
 				"</body>" + 
 				"</html>";
 	}

@@ -126,4 +126,20 @@ public final class Application {
 		return "unknown";
 	}
 	
+	public String getContentVersion() {
+		Validate.isTrue(initialized, "This class has not yet been initialized!");
+		
+		Version currentVersion = new Query<Version>() {
+			@Override
+			protected Version doQuery(Session session) {
+				return (Version) session.get(Version.class, "content");
+			}
+		}.doQuery();
+		
+		if (currentVersion != null) {
+			return currentVersion.getVersion() + "." + currentVersion.getRevision();
+		}
+		return "unknown";
+	}
+	
 }

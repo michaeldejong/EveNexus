@@ -102,6 +102,7 @@ public class SettingsManager {
 	public void saveObject(String name, String value) {
 		try {
 			settings.put(name, value);
+			save();
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
@@ -110,7 +111,10 @@ public class SettingsManager {
 	
 	public void save() {
 		try {
-			saveObject(SETTINGS_VERSION, 1);
+			int newVersion = 1;
+			if (loadInt(SETTINGS_VERSION, 1) < newVersion) {
+				saveObject(SETTINGS_VERSION, newVersion);
+			}
 			FileOutputStream out = new FileOutputStream(file);
 			settings.store(out, null);
 			out.flush();

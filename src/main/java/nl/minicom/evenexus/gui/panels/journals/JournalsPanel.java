@@ -2,8 +2,6 @@ package nl.minicom.evenexus.gui.panels.journals;
 
 
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -87,42 +85,6 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 		
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_JOURNAL_PERIOD);
 		final ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
-		
-		button.setContentAreaFilled(false);
-		button.setRolloverEnabled(false);
-		
-		button.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent arg0) {
-				button.setContentAreaFilled(false);
-				button.setRolloverEnabled(false);
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				button.setContentAreaFilled(true);
-				button.setRolloverEnabled(true);
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
 		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);
