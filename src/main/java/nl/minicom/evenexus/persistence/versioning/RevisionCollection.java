@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 
 public class RevisionCollection {
 
@@ -12,7 +12,7 @@ public class RevisionCollection {
 	private final String revisionType;
 	
 	public RevisionCollection(String revisionType) {
-		Validate.notNull(revisionType);
+		Preconditions.checkNotNull(revisionType);
 		
 		this.revisions = new ArrayList<IRevision>();
 		this.revisionType = revisionType;

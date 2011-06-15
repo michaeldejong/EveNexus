@@ -5,15 +5,16 @@ import java.util.List;
 import nl.minicom.evenexus.persistence.Query;
 import nl.minicom.evenexus.persistence.dao.Version;
 
-import org.apache.commons.lang.Validate;
 import org.hibernate.Session;
+
+import com.google.common.base.Preconditions;
 
 public class RevisionExecutor {
 	
 	private final RevisionCollection revisions;
 	
 	public RevisionExecutor(RevisionCollection revisions) {
-		Validate.notNull(revisions);
+		Preconditions.checkNotNull(revisions);
 		this.revisions = revisions;
 	}
 	

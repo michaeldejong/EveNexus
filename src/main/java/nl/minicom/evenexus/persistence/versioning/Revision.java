@@ -1,14 +1,13 @@
 package nl.minicom.evenexus.persistence.versioning;
 
-import org.apache.commons.lang.Validate;
-
+import com.google.common.base.Preconditions;
 
 public abstract class Revision implements IRevision {
 	
 	private final int revisionNumber;
 	
 	public Revision(int revision) {
-		Validate.isTrue(revision >= 0);
+		Preconditions.checkArgument(revision >= 0);
 		this.revisionNumber = revision;
 	}
 

@@ -12,10 +12,11 @@ import nl.minicom.evenexus.utils.ProgressListener;
 import nl.minicom.evenexus.utils.ProxyManager;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.apache.commons.lang.Validate;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 public final class Application {
 	
@@ -35,7 +36,7 @@ public final class Application {
 	
 	public void initialize(ProgressListener listener, String[] args) throws Exception {
 		synchronized (this) {
-			Validate.isTrue(!initialized, "This class has already been initialized!");
+			Preconditions.checkArgument(!initialized, "This class has already been initialized!");
 						
 			// 3. Initialize program settings.
 			LOG.info("Reading program settings...");
@@ -90,7 +91,7 @@ public final class Application {
 	}
 	
 	public InventoryManager getInventoryManager() {
-		Validate.isTrue(initialized, "This class has not yet been initialized!");
+		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
 		return inventoryManager;
 	}
 	
@@ -111,7 +112,7 @@ public final class Application {
 	}
 
 	public String getDatabaseVersion() {
-		Validate.isTrue(initialized, "This class has not yet been initialized!");
+		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
 		
 		Version currentVersion = new Query<Version>() {
 			@Override
@@ -127,7 +128,7 @@ public final class Application {
 	}
 	
 	public String getContentVersion() {
-		Validate.isTrue(initialized, "This class has not yet been initialized!");
+		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
 		
 		Version currentVersion = new Query<Version>() {
 			@Override
