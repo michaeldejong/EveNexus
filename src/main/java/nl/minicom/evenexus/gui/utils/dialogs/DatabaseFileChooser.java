@@ -24,7 +24,7 @@ public abstract class DatabaseFileChooser extends JDialog {
 	private static int width = 550;
 	private static int height = 400;
 	
-	public DatabaseFileChooser() {
+	public void initialize() {
 		setResizable(false);
 		setTitle("Select file");
 		setIconImage(Icon.getImage("img/other/logo.png"));

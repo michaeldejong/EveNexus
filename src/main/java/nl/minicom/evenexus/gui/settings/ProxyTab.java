@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,7 +24,14 @@ public class ProxyTab extends JPanel {
 	
 	private static final long serialVersionUID = 5594974133127416959L;
 	
+	private final ProxyManager proxyManager;
+	
+	@Inject
 	public ProxyTab(final ProxyManager proxyManager) {
+		this.proxyManager = proxyManager;
+	}
+	
+	public void initialize() {
 		setBackground(Color.WHITE);
 		final JCheckBox proxyEnabledBox = new JCheckBox("Enable proxy settings");
 		proxyEnabledBox.setBackground(Color.WHITE);

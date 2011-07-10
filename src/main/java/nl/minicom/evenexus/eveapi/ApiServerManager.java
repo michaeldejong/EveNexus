@@ -1,14 +1,18 @@
 package nl.minicom.evenexus.eveapi;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import nl.minicom.evenexus.utils.SettingsManager;
 
-
+@Singleton
 public class ApiServerManager {
 
 	public static final String DEFAULT_API_SERVER = "http://api.eve-online.com";
 	
 	private final SettingsManager settingsManager;
 	
+	@Inject
 	public ApiServerManager(SettingsManager settingsManager) {
 		this.settingsManager = settingsManager;
 	}

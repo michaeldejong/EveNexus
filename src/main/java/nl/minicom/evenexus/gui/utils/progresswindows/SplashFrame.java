@@ -16,20 +16,12 @@ public class SplashFrame extends ProgressManager {
 
 	private static final long serialVersionUID = -5496680715749455383L;
 	
-	public SplashFrame() {
-		super();
-		buildGui();
-	}
-	
 	@Override
 	public final void buildGui() {
 		setTitle(getClass().getPackage().getSpecificationTitle());
-//		setAlwaysOnTop(true);
 		setIconImage(Icon.getImage("img/other/logo.png"));
 		setUndecorated(true);
 		setResizable(false);
-		
-		Gui.setLookAndFeel();
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		int xPosition = (int) (env.getMaximumWindowBounds().getWidth() - 487) / 2;
@@ -59,6 +51,8 @@ public class SplashFrame extends ProgressManager {
 		progressBar.setMinimum(0);
 		progressBar.setBounds(54, 163, 383, 16);
 		logo.add(progressBar);
+		
+		Gui.setLookAndFeel();
 	}
 	
 }

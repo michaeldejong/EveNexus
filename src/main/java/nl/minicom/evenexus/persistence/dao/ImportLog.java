@@ -13,11 +13,14 @@ import javax.persistence.Table;
 public class ImportLog implements Serializable {
 	
 	private static final long serialVersionUID = -7536922778053044002L;
+	
+	public static final String KEY = "key";
+	public static final String LAST_RUN = "lastRun";
 
 	@Id
 	private ImportLogIdentifier key;
 
-	@Column(name = "lastrun", nullable = false)
+	@Column(name = LAST_RUN, nullable = false)
 	private Timestamp lastRun;
 	
 	public ImportLog() {

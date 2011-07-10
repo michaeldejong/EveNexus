@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -30,10 +31,13 @@ public class AboutDialog extends CustomDialog {
 		
 	private final Application application;
 	
+	@Inject
 	public AboutDialog(Application application) {
 		super(DialogTitle.ABOUT_TITLE, 370, 368);
 		this.application = application;
-		
+	}
+	
+	public void initialize() {
 		buildGui();
 		setVisible(true);
 		setResizable(true);

@@ -2,14 +2,16 @@ package nl.minicom.evenexus.gui.panels.dashboard;
 
 import java.awt.Color;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
+import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.columns.GraphColumnSelectionFrame;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
@@ -27,19 +29,28 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 	private final LineGraphEngine chartPanel;
 	private final SettingsManager settingsManager;
 
-	public DashboardPanel(Application application) {
-		setBackground(Color.WHITE);
+	@Inject
+	public DashboardPanel(ImportManager importManager,
+			SettingsManager settingsManager,
+			ProfitGraphElement profitGraphElement,
+			TaxesGraphElement taxesGraphElement,
+			SalesGraphElement salesGraphElement,
+			PurchasesGraphElement purchaseGraphElement) {
+		
 
-		settingsManager = application.getSettingsManager();
-		chartPanel = new LineGraphEngine(settingsManager.loadInt(SettingsManager.FILTER_DASHBOARD_PERIOD, 14));
-		chartPanel.addGraphElement(new ProfitGraphElement(settingsManager));
-		chartPanel.addGraphElement(new TaxesGraphElement(settingsManager));
-		chartPanel.addGraphElement(new SalesGraphElement(settingsManager));
-		chartPanel.addGraphElement(new PurchasesGraphElement(settingsManager));		
-		chartPanel.reload();
+		this.settingsManager = settingsManager;
 		
-		chartPanel.setBorder(new LineBorder(Color.GRAY, 1));
-		
+		int period = settingsManager.loadInt(SettingsManager.FILTER_DASHBOARD_PERIOD, 14);
+		this.chartPanel = new LineGraphEngine(period);
+		this.chartPanel.addGraphElement(profitGraphElement);
+		this.chartPanel.addGraphElement(taxesGraphElement);
+		this.chartPanel.addGraphElement(salesGraphElement);
+		this.chartPanel.addGraphElement(purchaseGraphElement);		
+		this.chartPanel.setBorder(new LineBorder(Color.GRAY, 1));
+		this.chartPanel.reload();
+
+		Gui.setLookAndFeel();
+		setBackground(Color.WHITE);
 		ToolBar toolBar = createTopMenu();
         
 		GroupLayout layout = new GroupLayout(this);
@@ -62,7 +73,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 	    		.addGap(7)
     	);
     	
-    	application.getImportManager().addListener(Api.CHAR_WALLET_TRANSACTIONS, this);
+    	importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);
 	}
 	
 	@Override

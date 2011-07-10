@@ -3,42 +3,43 @@ package nl.minicom.evenexus.eveapi.importers.implementations;
 
 import java.math.BigDecimal;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
-import nl.minicom.evenexus.eveapi.ApiServerManager;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MarketOrder;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MarketOrderImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MarketOrderImporter.class);
 	
-	public MarketOrderImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey settings) {
-		super(apiServerManager, importManager, Api.CHAR_MARKET_ORDERS, settings);
+	@Inject
+	public MarketOrderImporter(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager) {
+		super(database, apiParserProvider, importManager, Api.CHAR_MARKET_ORDERS);
 	}
 
-	public void parseApi(ApiParser parser) throws Exception {
-		final Node root = parser.getRoot().get("result").get("rowset");
-		new Query<Void>() {
-			@Override
-			protected Void doQuery(Session session) {
-				MarketOrder.markAllActiveAsExpired(session, getApiKey().getCharacterID());
-				for (int i = root.size() - 1; i >= 0 ; i--) {
-					processRow(root, i, session);
-				}
-				return null;
-			}
-		}.doQuery();
+	@Override
+	@Transactional
+	public void parseApi(Node node, ApiKey apiKey) {
+		Session session = getDatabase().getCurrentSession();
+		final Node root = node.get("result").get("rowset");
+		MarketOrder.markAllActiveAsExpired(session, apiKey.getCharacterID());
+		for (int i = root.size() - 1; i >= 0 ; i--) {
+			processRow(root, i, session);
+		}
 	}
 
 	private void processRow(Node root, int i, Session session) {

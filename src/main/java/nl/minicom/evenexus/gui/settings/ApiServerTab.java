@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -13,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.eveapi.ApiServerManager;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
@@ -24,8 +24,18 @@ public class ApiServerTab extends JPanel {
 	
 	private static final long serialVersionUID = 5594974133127416959L;
 
-	public ApiServerTab(final Application application) {		
+	private final SettingsManager settingsManager;
+	private final ApiServerManager apiServerManager;
+	
+	@Inject
+	public ApiServerTab(SettingsManager settingsManager, 
+			final ApiServerManager apiServerManager) {
 		
+		this.settingsManager = settingsManager;
+		this.apiServerManager = apiServerManager;
+	}
+	
+	public void initialize() {
 		setBackground(Color.WHITE);
 		final JCheckBox userDefinedUserApiServer = new JCheckBox("Use user-defined API server");
 		userDefinedUserApiServer.setBackground(Color.WHITE);
@@ -34,12 +44,12 @@ public class ApiServerTab extends JPanel {
 		final JTextField apiServerField = new JTextField();
 		final JButton apply = new JButton("Apply");
 		
-		Object userDefinedUserApiServerSetting = application.getSettingsManager().loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false);
+		Object userDefinedUserApiServerSetting = settingsManager.loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false);
 		if (userDefinedUserApiServerSetting != null) {
 			userDefinedUserApiServer.setSelected(Boolean.parseBoolean(userDefinedUserApiServerSetting.toString()));
 		}
 		
-		Object proxyServerSetting = application.getSettingsManager().loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, ApiServerManager.DEFAULT_API_SERVER);
+		Object proxyServerSetting = settingsManager.loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, ApiServerManager.DEFAULT_API_SERVER);
 		if (proxyServerSetting != null) {
 			apiServerField.setText(proxyServerSetting.toString());
 		}		
@@ -124,10 +134,10 @@ public class ApiServerTab extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				if (userDefinedUserApiServer.isSelected()) {
 					String apiServer = apiServerField.getText();
-					application.getApiServerManager().setApiServer(apiServer);
+					apiServerManager.setApiServer(apiServer);
 				}
 				else {
-					application.getApiServerManager().disableUserApiServer();
+					apiServerManager.disableUserApiServer();
 				}
 			}
 		});

@@ -1,14 +1,18 @@
 package nl.minicom.evenexus.core;
 
-import nl.minicom.evenexus.eveapi.ApiServerManager;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.Gui;
+import nl.minicom.evenexus.gui.utils.progresswindows.ProgressManager;
+import nl.minicom.evenexus.gui.utils.progresswindows.SplashFrame;
 import nl.minicom.evenexus.inventory.InventoryManager;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.Version;
 import nl.minicom.evenexus.persistence.versioning.ContentUpgrader;
 import nl.minicom.evenexus.persistence.versioning.RevisionExecutor;
 import nl.minicom.evenexus.persistence.versioning.StructureUpgrader;
-import nl.minicom.evenexus.utils.ProgressListener;
 import nl.minicom.evenexus.utils.ProxyManager;
 import nl.minicom.evenexus.utils.SettingsManager;
 
@@ -17,125 +21,98 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
+@Singleton
 public final class Application {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 	
-	private boolean initialized;
+	@Inject private Database database;
+	@Inject private SettingsManager settingsManager;
+	@Inject private InventoryManager inventoryManager;
+	@Inject private RevisionExecutor revisionExecutor;
+	@Inject private ProxyManager proxyManager;
+	@Inject private ImportManager importManager;
+	@Inject private Gui gui;
 	
-	private SettingsManager settingsManager;
-	private InventoryManager inventoryManager;
-	private ProxyManager proxyManager;
-	private ApiServerManager apiServerManager;
-	private ImportManager importManager;
+	private boolean initialized = false;
 	
-	public Application() {
-		this.initialized = false;
+	public static void main(String[] args) throws Exception {
+		SplashFrame frame = new SplashFrame();
+		frame.buildGui();
+		frame.setVisible(true);
+		
+		LOG.info("Creating Guice injector...");
+		frame.update(9, 1, "Creating Guice injector...");
+		Injector injector = Guice.createInjector(new ApplicationModule());
+		Application application = injector.getInstance(Application.class);
+		
+		LOG.info("Launching application...");
+		application.initialize(frame, args);
+		
+		frame.dispose();
 	}
 	
-	public void initialize(ProgressListener listener, String[] args) throws Exception {
+	public void initialize(ProgressManager progressManager, String[] args) throws Exception {
 		synchronized (this) {
 			Preconditions.checkArgument(!initialized, "This class has already been initialized!");
 						
-			// 3. Initialize program settings.
+			// 1. Initialize program settings.
 			LOG.info("Reading program settings...");
-			listener.update(12, 3, "Reading program settings...");
-			settingsManager = new SettingsManager();
+			progressManager.update(9, 2, "Reading program settings...");
+			settingsManager.initialize();
 			
-			// 4. Preparing proxy settings.
-			LOG.info("Preparing proxy settings...");
-			listener.update(12, 4, "Preparing proxy settings...");
-			proxyManager = new ProxyManager(settingsManager);
+			// 2. Preparing proxy settings.
+			LOG.info("Initializing proxy settings...");
+			progressManager.update(9, 3, "Initializing proxy settings...");
+			proxyManager.initialize();
 			
-			// 5. Preparing proxy settings.
-			LOG.info("Preparing api server settings...");
-			listener.update(12, 5, "Preparing api server settings...");
-			apiServerManager = new ApiServerManager(settingsManager);
-	
-			// 6. Connecting to database.
-			LOG.info("Connecting to internal database...");
-			listener.update(12, 6, "Connecting to internal database...");
-			
-			// 7. Check database structure & upgrade.
+			// 3. Check database structure & upgrade.
 			LOG.info("Checking database structure consistency...");
-			listener.update(12, 7, "Checking database structure consistency...");
-			new RevisionExecutor(new StructureUpgrader()).execute();
-			new RevisionExecutor(new ContentUpgrader()).execute();
+			progressManager.update(9, 4, "Checking database structure consistency");
+			revisionExecutor.execute(new StructureUpgrader());
+			revisionExecutor.execute(new ContentUpgrader());
 			
-			// 8. Create inventory manager.
-			LOG.info("Creating inventory manager...");
-			listener.update(12, 8, "Creating inventory manager...");
-			inventoryManager = new InventoryManager();
+			// 4. Create inventory manager.
+			LOG.info("Initializing inventory manager...");
+			progressManager.update(9, 5, "Initializing inventory manager...");
+			inventoryManager.initialize();
 			
-			// 9. Create import manager.
-			LOG.info("Creating import manager...");
-			listener.update(12, 9, "Creating import manager...");
-			importManager = new ImportManager(apiServerManager);
-			
-			// 10. Initializing importers.
+			// 5. Initializing importers.
 			LOG.info("Initializing API importers...");
-			listener.update(12, 10, "Creating import manager...");
+			progressManager.update(9, 6, "Initializing API importers...");
 			importManager.initialize();
 			
-			// 11. Preparing program shutdown hook.
+			// 6. Preparing program shutdown hook.
 			LOG.info("Preparing program shutdown hook...");
-			listener.update(12, 11, "Preparing program shutdown hook...");
+			progressManager.update(9, 7, "Preparing program shutdown hook...");
 			Runtime.getRuntime().addShutdownHook(new ShutdownThread(settingsManager));
 			
-			// 12. Completing initialization.
+			// 7. Completing initialization.
 			LOG.info("Completing initialization...");
-			listener.update(12, 12, "Completing initialization...");
+			progressManager.update(9, 8, "Completing initialization...");
 			initialized = true;
+			
+			// 8. Start the gui.
+			gui.initialize();
 		}
 	}
 	
-	public InventoryManager getInventoryManager() {
-		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
-		return inventoryManager;
-	}
-	
-	public SettingsManager getSettingsManager() {
-		return settingsManager;
-	}
-	
-	public ProxyManager getProxyManager() {
-		return proxyManager;
-	}
-
-	public ApiServerManager getApiServerManager() {
-		return apiServerManager;
-	}
-
-	public ImportManager getImportManager() {
-		return importManager;
-	}
-
 	public String getDatabaseVersion() {
-		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
-		
-		Version currentVersion = new Query<Version>() {
-			@Override
-			protected Version doQuery(Session session) {
-				return (Version) session.get(Version.class, "database");
-			}
-		}.doQuery();
-		
-		if (currentVersion != null) {
-			return currentVersion.getVersion() + "." + currentVersion.getRevision();
-		}
-		return "unknown";
+		return getVersion("database");
 	}
 	
 	public String getContentVersion() {
+		return getVersion("content");
+	}
+	
+	private String getVersion(String type) {
 		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
 		
-		Version currentVersion = new Query<Version>() {
-			@Override
-			protected Version doQuery(Session session) {
-				return (Version) session.get(Version.class, "content");
-			}
-		}.doQuery();
+		Session session = database.getCurrentSession();
+		Version currentVersion = (Version) session.get(Version.class, type);
 		
 		if (currentVersion != null) {
 			return currentVersion.getVersion() + "." + currentVersion.getRevision();

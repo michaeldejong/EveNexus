@@ -6,10 +6,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
+import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +23,18 @@ public class ReportPanel extends TabPanel {
 	
 	private ToolBarButton createReport;
 	
-	public ReportPanel(final Application application) {
+	public ReportPanel(SettingsManager settingsManager, final Database database) {
 		super();	
 		
         createReport = new ToolBarButton("img/32/pie_chart.png", "Create a new report");
         createReport.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		new ReportBuilderDialog();
+        		new ReportBuilderDialog(database);
         	}
         });
         
-        ToolBar toolBar = new ToolBar(application.getSettingsManager());
+        ToolBar toolBar = new ToolBar(settingsManager);
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);        
         layout.setHorizontalGroup(

@@ -3,14 +3,15 @@ package nl.minicom.evenexus.gui.panels.journals;
 
 import java.awt.Color;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
+import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -32,14 +33,16 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	
 	private Table table;
 	private final ColumnModel columnModel;
-	private final Application application;
+	private final SettingsManager settingsManager;
 	
-	public JournalsPanel(Application application) {
-		super();
+	@Inject
+	public JournalsPanel(SettingsManager settingsManager,
+			ImportManager importManager,
+			JournalTableDataModel journalData) {
 		
-		this.application = application;
-		this.columnModel = new JournalColumnModel(application.getSettingsManager());
-		this.table = new Table(new JournalTableDataModel(application.getSettingsManager()), columnModel);
+		this.settingsManager = settingsManager;
+		this.columnModel = new JournalColumnModel(settingsManager);
+		this.table = new Table(journalData, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -65,7 +68,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	    		.addGap(7)
     	);
     	
-    	application.getImportManager().addListener(Api.CHAR_WALLET_JOURNAL, this);
+    	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
 	}
 	
 	@Override
@@ -80,7 +83,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	}
 	
 	private JPanel createTopMenu() {		
-		ToolBar toolBar = new ToolBar(application.getSettingsManager());
+		ToolBar toolBar = new ToolBar(settingsManager);
 		toolBar.setBackground(Color.WHITE);
 		
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_JOURNAL_PERIOD);

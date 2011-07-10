@@ -10,6 +10,7 @@ import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportDisplayPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportFiltersPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportGroupingPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportItemsPanel;
+import nl.minicom.evenexus.persistence.Database;
 
 public class ReportBuilderPagePanel extends JPanel {
 
@@ -19,13 +20,13 @@ public class ReportBuilderPagePanel extends JPanel {
 	private final ReportBuilderPage[] pages;
 	private int currentIndex;
 	
-	public ReportBuilderPagePanel(ReportBuilderDialog dialog, ReportDefinition definition, ReportModel model) {
+	public ReportBuilderPagePanel(ReportBuilderDialog dialog, ReportDefinition definition, ReportModel model, Database database) {
 		this.dialog = dialog;
 		this.currentIndex = 0;
 		this.pages = new ReportBuilderPage[] {
 				new ReportItemsPanel(definition, model),
 				new ReportGroupingPanel(definition, model),
-				new ReportFiltersPanel(definition, model),
+				new ReportFiltersPanel(definition, model, database),
 				new ReportDisplayPanel(definition, model)
 		};
 		

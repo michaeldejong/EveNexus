@@ -1,14 +1,15 @@
 package nl.minicom.evenexus.gui.panels.marketorders;
 
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
+import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -18,6 +19,7 @@ import nl.minicom.evenexus.gui.tables.datamodel.implementations.BuyOrdersTableDa
 import nl.minicom.evenexus.gui.tables.datamodel.implementations.SellOrdersTableDataModel;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
+import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +33,18 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	private final Table table1;
 	private final Table table2;
 	private final ColumnModel columnModel;
-	private final Application application;
+	private final SettingsManager settingsManager;
 
-	public MarketOrdersPanel(Application application) {	
-		super();	
+	@Inject
+	public MarketOrdersPanel(SettingsManager settingsManager,
+			ImportManager importManager,
+			SellOrdersTableDataModel sellOrderData,
+			BuyOrdersTableDataModel buyOrderDate) {	
 		
-		this.application = application;
-		this.columnModel = new MarketOrdersColumnModel(application.getSettingsManager());
-		this.table1 = new Table(new SellOrdersTableDataModel(), columnModel);
-		this.table2 = new Table(new BuyOrdersTableDataModel(), columnModel);
+		this.settingsManager = settingsManager;
+		this.columnModel = new MarketOrdersColumnModel(settingsManager);
+		this.table1 = new Table(sellOrderData, columnModel);
+		this.table2 = new Table(buyOrderDate, columnModel);
 		
 		JScrollPane scrollPane1 = new JScrollPane(table1);
 		scrollPane1.getVerticalScrollBar().setUnitIncrement(16);
@@ -70,7 +75,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	    		.addGap(7)
     	);
     	
-    	application.getImportManager().addListener(Api.CHAR_MARKET_ORDERS, this);
+    	importManager.addListener(Api.CHAR_MARKET_ORDERS, this);
 	}
 	
 	@Override
@@ -86,7 +91,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	}
 
 	private ToolBar createTopMenu() {
-		ToolBar toolBar = new ToolBar(application.getSettingsManager());		
+		ToolBar toolBar = new ToolBar(settingsManager);		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table1, table2);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table1, table2));
 		

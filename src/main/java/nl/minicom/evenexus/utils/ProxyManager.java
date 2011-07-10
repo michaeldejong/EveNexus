@@ -1,12 +1,18 @@
 package nl.minicom.evenexus.utils;
 
+import javax.inject.Inject;
+
 
 public class ProxyManager {
 
 	private final SettingsManager settingsManager;
 	
+	@Inject
 	public ProxyManager(SettingsManager settingsManager) {
 		this.settingsManager = settingsManager;
+	}
+	
+	public void initialize() {
 		setProxyParameters();
 	}
 	

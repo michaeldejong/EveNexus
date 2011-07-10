@@ -6,9 +6,15 @@ import org.hibernate.Transaction;
 
 public abstract class Query<T> {
 	
+	private final Database database;
+	
+	public Query(Database database) {
+		this.database = database;
+	}
+	
 	public T doQuery() {
 		T result = null;
-		Session session = Database.createNewSession();
+		Session session = database.getCurrentSession();
 		Transaction tx = null;
 		
 		try {
@@ -26,7 +32,7 @@ public abstract class Query<T> {
 			throw e;
 		}
 		finally {
-			session.close();
+			database.closeCurrentSession();
 		}
 		
 		return result;

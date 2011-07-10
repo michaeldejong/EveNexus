@@ -1,17 +1,17 @@
 package nl.minicom.evenexus.gui.panels.transactions;
 
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
+import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
-import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
 import nl.minicom.evenexus.gui.tables.columns.models.TransactionColumnModel;
 import nl.minicom.evenexus.gui.tables.datamodel.implementations.TransactionTableDataModel;
@@ -19,8 +19,8 @@ import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TransactionsPanel extends TabPanel implements ImportListener {
@@ -29,15 +29,17 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionsPanel.class);
 
 	private final Table table;
-	private final ColumnModel columnModel;
-	private final Application application;
+	private final SettingsManager settingsManager;
 	
-	public TransactionsPanel(Application application) {
-		super();
+	@Inject
+	public TransactionsPanel(
+			ImportManager importManager,
+			SettingsManager settingsManager,
+			TransactionColumnModel columnModel, 
+			TransactionTableDataModel tableDataModel) {
 		
-		this.application = application;
-		this.columnModel = new TransactionColumnModel(application.getSettingsManager());
-		this.table = new Table(new TransactionTableDataModel(application.getSettingsManager()), columnModel);
+		this.table = new Table(tableDataModel, columnModel);
+		this.settingsManager = settingsManager;
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -63,7 +65,7 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	    		.addGap(7)
     	);
     	
-    	application.getImportManager().addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
+    	importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
 	}
 	
 	@Override
@@ -78,11 +80,11 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	}
 
 	private ToolBar createTopMenu() {
-		ToolBar toolBar = new ToolBar(application.getSettingsManager());
+		ToolBar toolBar = new ToolBar(settingsManager);
 		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table);
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_TRANSACTION_PERIOD);
-		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
+		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(table.getColumns(), table));
 		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);

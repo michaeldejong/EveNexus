@@ -6,6 +6,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -14,7 +17,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
 import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
@@ -27,12 +29,12 @@ import nl.minicom.evenexus.gui.utils.GuiListener;
 import nl.minicom.evenexus.gui.utils.dialogs.AboutDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ExportDatabaseDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ImportDatabaseDialog;
-import nl.minicom.evenexus.gui.utils.progresswindows.SplashFrame;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class Gui extends JFrame {
 
 	private static final long serialVersionUID = 4615845773792192362L;
@@ -44,18 +46,7 @@ public class Gui extends JFrame {
 	private static final int HEIGHT = 550;
 	private static final int WIDTH = 850;
 	
-	public static void main(String[] args) throws Exception {
-		Application application = new Application();
-		
-		SplashFrame splashFrame = new SplashFrame();
-		splashFrame.setVisible(true);		
-		application.initialize(splashFrame, args);
-		splashFrame.setVisible(false);		
-
-		new Gui(application);
-	}
-	
-	private final Application application;
+	private final SettingsManager settingsManager;
 	private final DashboardPanel dashboardPanel;
 	private final JournalsPanel journalsPanel;
 	private final TransactionsPanel transactionPanel;
@@ -63,37 +54,49 @@ public class Gui extends JFrame {
 	private final ProfitPanel profitPanel;
 	private final AccountsPanel accountsPanel;
 	
-	public Gui(Application application) {
-		super();
-		this.application = application;
-		this.dashboardPanel = new DashboardPanel(application);
-		this.journalsPanel = new JournalsPanel(application);
-		this.transactionPanel = new TransactionsPanel(application);
-		this.marketOrderPanel = new MarketOrdersPanel(application);
-		this.profitPanel = new ProfitPanel(application);
-		this.accountsPanel = new AccountsPanel(application);
+	private final Provider<ImportDatabaseDialog> importDatabaseDialogProvider;
+	private final Provider<ExportDatabaseDialog> exportDatabaseDialogProvider;
+	private final Provider<SettingsDialog> settingsDialogProvider;
+	private final Provider<AboutDialog> aboutDialogProvider;
+	
+	@Inject
+	public Gui(SettingsManager settingsManager,
+			DashboardPanel dashboardPanel,
+			JournalsPanel journalsPanel,
+			TransactionsPanel transactionPanel,
+			MarketOrdersPanel marketOrderPanel,
+			ProfitPanel profitPanel,
+			AccountsPanel accountsPanel,
+			Provider<ImportDatabaseDialog> importDatabaseDialogProvider,
+			Provider<ExportDatabaseDialog> exportDatabaseDialogProvider,
+			Provider<SettingsDialog> settingsDialogProvider,
+			Provider<AboutDialog> aboutDialogProvider) {
 		
+		this.settingsManager = settingsManager;
+		this.dashboardPanel = dashboardPanel;
+		this.journalsPanel = journalsPanel;
+		this.transactionPanel = transactionPanel;
+		this.marketOrderPanel = marketOrderPanel;
+		this.profitPanel = profitPanel;
+		this.accountsPanel = accountsPanel;
+		this.importDatabaseDialogProvider = importDatabaseDialogProvider;
+		this.exportDatabaseDialogProvider = exportDatabaseDialogProvider;
+		this.settingsDialogProvider = settingsDialogProvider;
+		this.aboutDialogProvider = aboutDialogProvider;
+	}
+	
+	public void initialize() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(getClass().getPackage().getSpecificationTitle() + " - EVE Online trading overview");
 		setIconImage(Icon.getImage("img/other/logo.png"));
+		setSizeAndPosition();
 		setLookAndFeel();
 		
-		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		int xPos = (int) (env.getMaximumWindowBounds().getWidth() - WIDTH) / 2;
-		int yPos = (int) (env.getMaximumWindowBounds().getHeight() - HEIGHT) / 2;
-		
-		int x = application.getSettingsManager().loadInt(SettingsManager.APPLICATION_X, xPos);
-		int y = application.getSettingsManager().loadInt(SettingsManager.APPLICATION_Y, yPos);
-		int width = application.getSettingsManager().loadInt(SettingsManager.APPLICATION_WIDTH, WIDTH);
-		int height = application.getSettingsManager().loadInt(SettingsManager.APPLICATION_HEIGHT, HEIGHT);
-		setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-		setBounds(x, y, width, height);
-		
-		if (application.getSettingsManager().loadBoolean(SettingsManager.APPLICATION_MAXIMIZED, false)) {
+		if (settingsManager.loadBoolean(SettingsManager.APPLICATION_MAXIMIZED, false)) {
 			setExtendedState(MAXIMIZED_BOTH);
 		}
 		
-		GuiListener guiListener = new GuiListener(this, application.getSettingsManager());
+		GuiListener guiListener = new GuiListener(this, settingsManager);
 		addComponentListener(guiListener);
 		addWindowStateListener(guiListener);
 		addWindowListener(guiListener);
@@ -102,8 +105,18 @@ public class Gui extends JFrame {
 		setVisible(true);		
 	}
 
-	public final Application getApplication() {
-		return application;
+	public void setSizeAndPosition() {
+		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		int xPos = (int) (env.getMaximumWindowBounds().getWidth() - WIDTH) / 2;
+		int yPos = (int) (env.getMaximumWindowBounds().getHeight() - HEIGHT) / 2;
+		
+		int x = settingsManager.loadInt(SettingsManager.APPLICATION_X, xPos);
+		int y = settingsManager.loadInt(SettingsManager.APPLICATION_Y, yPos);
+		int width = settingsManager.loadInt(SettingsManager.APPLICATION_WIDTH, WIDTH);
+		int height = settingsManager.loadInt(SettingsManager.APPLICATION_HEIGHT, HEIGHT);
+		
+		setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+		setBounds(x, y, width, height);
 	}
 
 	private void createGUI() {
@@ -136,8 +149,6 @@ public class Gui extends JFrame {
 	}
 
 	private JMenuBar createMenu() {
-		final Gui gui = this;
-		
 		JMenuBar bar = new JMenuBar();
 		JMenu applicationMenu = new JMenu("Application");
 		
@@ -146,7 +157,7 @@ public class Gui extends JFrame {
 		importMenu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new ImportDatabaseDialog(gui);
+				importDatabaseDialogProvider.get().initialize();
 			}
 		});
 		
@@ -155,20 +166,18 @@ public class Gui extends JFrame {
 		exportMenu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new ExportDatabaseDialog();
+				exportDatabaseDialogProvider.get().initialize();
 			}
 		});
 		
 		applicationMenu.addSeparator();
-		
-		final SettingsDialog settingsDialog = new SettingsDialog(application);
 		
 		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon("img/16/process.png"));
 		applicationMenu.add(proxyMenu);
 		proxyMenu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				settingsDialog.setVisible(true);
+				settingsDialogProvider.get().initialize();
 			}
 		});
 		
@@ -192,7 +201,7 @@ public class Gui extends JFrame {
 		aboutMenu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new AboutDialog(application);
+				aboutDialogProvider.get().initialize();
 			}
 		});
 		

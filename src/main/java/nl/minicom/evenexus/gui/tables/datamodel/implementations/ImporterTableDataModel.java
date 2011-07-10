@@ -4,8 +4,10 @@ package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
@@ -18,6 +20,13 @@ import org.slf4j.LoggerFactory;
 public class ImporterTableDataModel implements ITableDataModel {
 
 	private final static Logger LOG = LoggerFactory.getLogger(ImporterTableDataModel.class);
+	
+	private final Database database;
+	
+	@Inject
+	public ImporterTableDataModel(Database database) {
+		this.database = database;
+	}
 	
 	@Override
 	public List<Object[]> reload() {
@@ -42,21 +51,17 @@ public class ImporterTableDataModel implements ITableDataModel {
 		.append("AND importlogger.importer = importers.id ")
 		.append("ORDER BY nextRun ASC");
 		
-		return new Query<List<Object[]>>() {
-			@Override
-			protected List<Object[]> doQuery(Session session) {
-				List<Object[]> result = new ArrayList<Object[]>();
-				SQLQuery query = session.createSQLQuery(sql.toString());
-				ScrollableResults resultSet = query.scroll();
-				if (resultSet.first()) {
-					do {
-						result.add(resultSet.get().clone());
-					}
-					while (resultSet.next());
-				}
-				return result; 
+		List<Object[]> result = new ArrayList<Object[]>();
+		Session session = database.getCurrentSession();
+		SQLQuery query = session.createSQLQuery(sql.toString());
+		ScrollableResults resultSet = query.scroll();
+		if (resultSet.first()) {
+			do {
+				result.add(resultSet.get().clone());
 			}
-		}.doQuery();
+			while (resultSet.next());
+		}
+		return result; 
 	}
 
 	@Override

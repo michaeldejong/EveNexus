@@ -4,9 +4,11 @@ package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nl.minicom.evenexus.gui.tables.datamodel.IPeriodFilter;
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.hibernate.HibernateException;
@@ -21,9 +23,13 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JournalTableDataModel.class);
 
+	private final Database database;
+	
 	private int period;
 	
-	public JournalTableDataModel(SettingsManager settingsManager) {
+	@Inject
+	public JournalTableDataModel(SettingsManager settingsManager, Database database) {
+		this.database = database;
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK));
 	}
 	
@@ -56,22 +62,18 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 		.append("ORDER BY journal.date DESC, journal.refID DESC")
 		.toString();
 		
-		return new Query<List<Object[]>>() {
-			@Override
-			protected List<Object[]> doQuery(Session session) {
-				List<Object[]> result = new ArrayList<Object[]>();
-				SQLQuery query = session.createSQLQuery(sql);
-				query.setLong(0, period * -1);
-				ScrollableResults resultSet = query.scroll();
-				if (resultSet.first()) {
-					do {
-						result.add(resultSet.get().clone());
-					}
-					while (resultSet.next());
-				}
-				return result;
+		List<Object[]> result = new ArrayList<Object[]>();
+		Session session = database.getCurrentSession();
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setLong(0, period * -1);
+		ScrollableResults resultSet = query.scroll();
+		if (resultSet.first()) {
+			do {
+				result.add(resultSet.get().clone());
 			}
-		}.doQuery();
+			while (resultSet.next());
+		}
+		return result;
 	}
 
 	@Override

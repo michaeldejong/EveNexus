@@ -1,12 +1,13 @@
 package nl.minicom.evenexus.gui.panels.profit;
 
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import nl.minicom.evenexus.core.Application;
+import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -28,14 +29,16 @@ public class ProfitPanel extends TabPanel {
 
 	private final Table table;
 	private final ColumnModel columnModel;
-	private final Application application;
+	private final SettingsManager settingsManager;
 	
-	public ProfitPanel(Application application) {	
-		super();	
+	@Inject
+	public ProfitPanel(SettingsManager settingsManager,
+			ImportManager importManager,
+			ProfitTableDataModel profitData) {	
 		
-		this.application = application;
-		this.columnModel = new ProfitColumnModel(application.getSettingsManager());
-		this.table = new Table(new ProfitTableDataModel(application.getSettingsManager()), columnModel);
+		this.settingsManager = settingsManager;
+		this.columnModel = new ProfitColumnModel(settingsManager);
+		this.table = new Table(profitData, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);		
@@ -69,7 +72,7 @@ public class ProfitPanel extends TabPanel {
 	}
 	
 	private ToolBar createTopMenu() {
-		ToolBar toolBar = new ToolBar(application.getSettingsManager());		
+		ToolBar toolBar = new ToolBar(settingsManager);		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table);
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_PROFIT_PERIOD);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));

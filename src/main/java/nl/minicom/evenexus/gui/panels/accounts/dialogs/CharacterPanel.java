@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -16,7 +17,7 @@ import javax.swing.border.LineBorder;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 
 import org.hibernate.Session;
@@ -26,10 +27,13 @@ public class CharacterPanel extends JPanel {
 	private static final long serialVersionUID = 2461165378577113441L;
 	
 	private final Map<EveCharacter, JCheckBox> characterMap;
+	private final Database database;
 	private final StateRule addRule;
 	
-	public CharacterPanel(final JButton add) {
+	@Inject
+	public CharacterPanel(final JButton add, Database database) {
 		super();
+		this.database = database;
 		this.characterMap = new TreeMap<EveCharacter, JCheckBox>();
 		setBorder(new LineBorder(Color.GRAY, 1));
 		setLayout(null);
@@ -50,12 +54,8 @@ public class CharacterPanel extends JPanel {
 	}
 
 	private boolean characterExists(final long characterId) {
-		return new Query<Boolean>() {
-			@Override
-			protected Boolean doQuery(Session session) {
-				return session.get(ApiKey.class, characterId) != null;
-			}
-		}.doQuery();
+		Session session = database.getCurrentSession();
+		return session.get(ApiKey.class, characterId) != null;
 	}
 	
 	public List<EveCharacter> getSelectedCharacters() {

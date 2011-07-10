@@ -7,6 +7,7 @@ import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.persistence.Database;
 
 public class ReportBuilderDialog extends CustomDialog {
 
@@ -17,15 +18,15 @@ public class ReportBuilderDialog extends CustomDialog {
 
 	private final ReportDefinition definition;
 		
-	public ReportBuilderDialog() {
-		this(new ReportModel());
+	public ReportBuilderDialog(Database database) {
+		this(new ReportModel(), database);
 	}
 	
-	public ReportBuilderDialog(ReportModel model) {
+	public ReportBuilderDialog(ReportModel model, Database database) {
 		super(DialogTitle.REPORT_ITEM_TITLE, 360, 420);
 		this.definition = new ReportDefinition();
 		
-		pageDisplay = new ReportBuilderPagePanel(this, definition, model);
+		pageDisplay = new ReportBuilderPagePanel(this, definition, model, database);
 		navigationPanel = new ReportBuilderPageNavigationPanel(pageDisplay, model);
 		
 		setTitle("Report creation wizard");

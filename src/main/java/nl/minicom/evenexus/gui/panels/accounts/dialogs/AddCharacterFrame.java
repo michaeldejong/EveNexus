@@ -9,26 +9,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.exceptions.SecurityNotHighEnoughException;
 import nl.minicom.evenexus.eveapi.exceptions.WarnableException;
+import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
-import nl.minicom.evenexus.persistence.dao.Importer;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
@@ -41,13 +43,28 @@ public class AddCharacterFrame extends CustomDialog {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AddCharacterFrame.class);
 
-	private final Application application;
 	private final AccountsPanel panel;
+	private final Provider<ApiParser> apiParserProvider;
+	private final CharacterPanel characterPanel;
+	private final ImportManager importManager;
+	private final Database database;
 	
-	public AddCharacterFrame(Application application, AccountsPanel panel) {
+	@Inject
+	public AddCharacterFrame(AccountsPanel panel, 
+			Provider<ApiParser> apiParserProvider,
+			CharacterPanel characterPanel,
+			ImportManager importManager,
+			Database database) {
+		
 		super(DialogTitle.CHARACTER_ADD_TITLE, 400, 375);
-		this.application = application;
+		this.apiParserProvider = apiParserProvider;
+		this.characterPanel = characterPanel;
+		this.importManager = importManager;
+		this.database = database;
 		this.panel = panel;
+	}
+	
+	public void initialize() {
 		buildGui();
 		setVisible(true);
 	}
@@ -60,7 +77,6 @@ public class AddCharacterFrame extends CustomDialog {
 		final JTextField apiKeyField = new JTextField();
 		final JButton check = new JButton("Check API credentials");
 		final JButton add = new JButton("Add character(s)");
-		final CharacterPanel characterPanel = new CharacterPanel(add);
 		check.setEnabled(false);
 		add.setEnabled(false);
 		
@@ -137,7 +153,7 @@ public class AddCharacterFrame extends CustomDialog {
 						try {
 							for (EveCharacter character : characters) {
 								ApiKey apiKey = insertCharacter(character);
-								application.getImportManager().addCharacterImporter(apiKey);
+								importManager.addCharacterImporter(apiKey);
 							}
 						}
 						catch (Exception e) {
@@ -155,28 +171,16 @@ public class AddCharacterFrame extends CustomDialog {
 		setValidation(userIDField, apiKeyField, check);
 	}
 
+	@Transactional
 	private ApiKey insertCharacter(final EveCharacter character) {
-		return new Query<ApiKey>() {
-			@Override
-			protected ApiKey doQuery(Session session) {
-				ApiKey api = new ApiKey();
-				api.setApiKey(character.getApiKey());
-				api.setCharacterID(character.getCharacterId());
-				api.setCharacterName(character.getName());
-				api.setUserID(character.getUserId());
-				session.saveOrUpdate(api);
-				return api;
-			}
-		}.doQuery();
-	}
-
-	private Importer loadImporter(final long importerId) {
-		return new Query<Importer>() {
-			@Override
-			protected Importer doQuery(Session session) {
-				return (Importer) session.get(Importer.class, importerId);
-			}
-		}.doQuery();
+		Session session = database.getCurrentSession();
+		ApiKey api = new ApiKey();
+		api.setApiKey(character.getApiKey());
+		api.setCharacterID(character.getCharacterId());
+		api.setCharacterName(character.getName());
+		api.setUserID(character.getUserId());
+		session.saveOrUpdate(api);
+		return api;
 	}
 	
 	private List<EveCharacter> checkCredentials(Map<String, String> request) {
@@ -199,8 +203,9 @@ public class AddCharacterFrame extends CustomDialog {
 	
 	private List<EveCharacter> getCharacterList(Map<String, String> request) {
 		try {
-			Importer importer = loadImporter(Api.CHAR_LIST.getImporterId());
-			return processParser(new ApiParser(application.getApiServerManager(), importer.getId(), null, request), request);
+			ApiParser parser = apiParserProvider.get();
+			Node root = parser.parseApi(Api.CHAR_LIST, null, request);
+			return processParser(root, request);
 		}
 		catch (WarnableException e) {
 			LOG.warn(e.getLocalizedMessage(), e);
@@ -214,8 +219,9 @@ public class AddCharacterFrame extends CustomDialog {
 	//This should throw an exception when user enters a limited API.
 	private boolean hasSecurityClearance(Map<String, String> request) {
 		try {
-			Importer importer = loadImporter(Api.CHAR_BALANCE.getImporterId());
-			(new ApiParser(application.getApiServerManager(), importer.getId(), null, request)).isAvailable();
+			ApiParser parser = apiParserProvider.get();
+			Node response = parser.parseApi(Api.CHAR_BALANCE, null, request);
+			ApiParser.isAvailable(response);
 		}
 		catch (SecurityNotHighEnoughException e) {
 			LOG.warn(e.getLocalizedMessage(), e);
@@ -227,13 +233,13 @@ public class AddCharacterFrame extends CustomDialog {
 		return true;
 	}
 
-	protected List<EveCharacter> processParser(ApiParser parser, Map<String, String> request) throws Exception {
+	protected List<EveCharacter> processParser(Node root, Map<String, String> request) throws Exception {
 		List<EveCharacter> characters = new ArrayList<EveCharacter>();
-		if (parser.isAvailable()) {
-			Node root = parser.getRoot().get("result").get("rowset");
-			if (root != null) {
-				for (int i = 0; i < root.size() ; i++) {
-					EveCharacter character = processRow(root, i, request);
+		if (ApiParser.isAvailable(root)) {
+			Node node = root.get("result").get("rowset");
+			if (node != null) {
+				for (int i = 0; i < node.size() ; i++) {
+					EveCharacter character = processRow(node, i, request);
 					if (character != null) {
 						characters.add(character);
 					}

@@ -3,41 +3,42 @@ package nl.minicom.evenexus.eveapi.importers.implementations;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
-import nl.minicom.evenexus.eveapi.ApiServerManager;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.WalletJournal;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class JournalImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JournalImporter.class);
 	
-	public JournalImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey apiKey) {
-		super(apiServerManager, importManager, Api.CHAR_WALLET_JOURNAL, apiKey);
+	@Inject
+	public JournalImporter(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager) {
+		super(database, apiParserProvider, importManager, Api.CHAR_WALLET_JOURNAL);
 	}
 
-	public void parseApi(ApiParser parser) throws Exception {
-		final Node root = parser.getRoot().get("result").get("rowset");
-		new Query<Void>() {
-			@Override
-			protected Void doQuery(Session session) {
-				for (int i = root.size() - 1; i >= 0 ; i--) {
-					processRow(root, i, session);
-				}
-				return null;
-			}
-		}.doQuery();
+	@Override
+	@Transactional
+	public void parseApi(Node root, ApiKey apiKey) {
+		Session session = getDatabase().getCurrentSession();
+		final Node node = root.get("result").get("rowset");
+		for (int i = node.size() - 1; i >= 0 ; i--) {
+			processRow(node, i, session);
+		}
 	}
 
 	private void processRow(Node root, int i, Session session) {
@@ -63,18 +64,8 @@ public class JournalImporter extends ImporterTask {
 			BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(row.getAttribute("amount")));
 			BigDecimal balance = BigDecimal.valueOf(Double.parseDouble(row.getAttribute("balance")));
 			String reason = row.getAttribute("reason");	
-			
-			long taxReceiverId = 0L;
-			String taxReceiverIdString = row.getAttribute("taxReceiverID");
-			if (taxReceiverIdString != null && !taxReceiverIdString.isEmpty()) {
-				taxReceiverId = Long.parseLong(taxReceiverIdString);
-			}
-			
-			BigDecimal taxAmount = BigDecimal.ZERO;
-			String taxAmountString = row.getAttribute("taxAmount");
-			if (taxAmountString != null && !taxAmountString.isEmpty()) {
-				taxAmount = BigDecimal.valueOf(Double.parseDouble(taxAmountString));
-			}
+			long taxReceiverId = getTaxReceiverId(row);
+			BigDecimal taxAmount = getTaxAmount(row);
 			
 			WalletJournal journal = new WalletJournal();
 			journal.setRefId(refId);
@@ -96,5 +87,23 @@ public class JournalImporter extends ImporterTask {
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 		}
+	}
+
+	private BigDecimal getTaxAmount(Node row) {
+		BigDecimal taxAmount = BigDecimal.ZERO;
+		String taxAmountString = row.getAttribute("taxAmount");
+		if (taxAmountString != null && !taxAmountString.isEmpty()) {
+			taxAmount = BigDecimal.valueOf(Double.parseDouble(taxAmountString));
+		}
+		return taxAmount;
+	}
+
+	private long getTaxReceiverId(Node row) {
+		long taxReceiverId = 0L;
+		String taxReceiverIdString = row.getAttribute("taxReceiverID");
+		if (taxReceiverIdString != null && !taxReceiverIdString.isEmpty()) {
+			taxReceiverId = Long.parseLong(taxReceiverIdString);
+		}
+		return taxReceiverId;
 	}
 }

@@ -5,18 +5,25 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.inject.Inject;
 import javax.swing.JFileChooser;
 
+import nl.minicom.evenexus.persistence.Database;
+
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.jdbc.Work;
 
 
 public class ExportDatabaseDialog extends DatabaseFileChooser {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExportDatabaseDialog.class);
-	
 	private static final long serialVersionUID = -2633245343435662634L;
+	
+	private final Database database;
+	
+	@Inject
+	public ExportDatabaseDialog(Database database) {
+		this.database = database;
+	}
 	
 	@Override
 	public void onFileSelect(final File file) {
@@ -24,21 +31,17 @@ public class ExportDatabaseDialog extends DatabaseFileChooser {
 			return;
 		}
 		
-		new nl.minicom.evenexus.persistence.Query<Void>() {
+		Work work = new Work() {
 			@Override
-			protected Void doQuery(Session session) {
-				try {
-					Connection connection = session.connection();
-					CallableStatement statement = connection.prepareCall("SCRIPT TO ? COMPRESSION ZIP");
-					statement.setString(1, file.getAbsolutePath());
-					statement.execute();
-				} 
-				catch (SQLException e) {
-					LOG.error(e.getLocalizedMessage(), e);
-				}
-				return null;
+			public void execute(Connection connection) throws SQLException {
+				CallableStatement statement = connection.prepareCall("SCRIPT TO ? COMPRESSION ZIP");
+				statement.setString(1, file.getAbsolutePath());
+				statement.execute();
 			}
-		}.doQuery();
+		};
+		
+		Session session = database.getCurrentSession();
+		session.doWork(work);
 	}
 
 	@Override

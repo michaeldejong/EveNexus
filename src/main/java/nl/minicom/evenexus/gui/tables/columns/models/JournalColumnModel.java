@@ -4,6 +4,8 @@ package nl.minicom.evenexus.gui.tables.columns.models;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.inject.Inject;
+
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -11,6 +13,7 @@ import nl.minicom.evenexus.utils.SettingsManager;
 
 public class JournalColumnModel extends ColumnModel {
 
+	@Inject
 	public JournalColumnModel(SettingsManager settingsManager) {
 		add(new Column(
 				settingsManager,

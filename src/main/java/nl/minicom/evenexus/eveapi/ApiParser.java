@@ -3,7 +3,6 @@ package nl.minicom.evenexus.eveapi;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,16 +14,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+
 import nl.minicom.evenexus.eveapi.exceptions.ApiFailureException;
 import nl.minicom.evenexus.eveapi.exceptions.JournalsExhaustedException;
 import nl.minicom.evenexus.eveapi.exceptions.MarketOrdersExhaustedException;
 import nl.minicom.evenexus.eveapi.exceptions.SecurityNotHighEnoughException;
 import nl.minicom.evenexus.eveapi.exceptions.TransactionsExhaustedException;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.ImportLog;
 import nl.minicom.evenexus.persistence.dao.ImportLogIdentifier;
 import nl.minicom.evenexus.persistence.dao.Importer;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.TimeUtils;
 
 import org.hibernate.Session;
@@ -38,6 +40,37 @@ import org.xml.sax.SAXException;
 public class ApiParser {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ApiParser.class);
+
+	/**
+	 * Tell us if we can access the root Node safely.
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws SQLException
+	 * @throws ApiFailureException 
+	 */
+	public static boolean isAvailable(Node node) throws Exception {
+		boolean hasErrors = false;
+		boolean hasRoot = node != null;
+		Node errorNode = null;
+		
+		if (hasRoot) {
+			errorNode = node.get("error");
+			hasErrors = errorNode != null;
+		}
+		if (hasErrors) {
+			int errorCode = Integer.parseInt(errorNode.getAttribute("code"));
+			switch (errorCode) {
+				case 101: 	throw new TransactionsExhaustedException();
+				case 103: 	throw new JournalsExhaustedException();
+				case 117: 	throw new MarketOrdersExhaustedException();
+				case 200: 	throw new SecurityNotHighEnoughException();
+				default:	throw new ApiFailureException((String) node.get("error").get(0));
+			}			
+		}
+		return hasRoot && !hasErrors;
+	}
 
 	/**
 	 * An enumeration of queryable API services. A service consists of an URL
@@ -65,21 +98,21 @@ public class ApiParser {
 			return importerID;
 		}
 	}
-		
-	private Node root = null;
-	private long importerId;
-	private ApiKey apiKey;
+
 	private final ApiServerManager apiServerManager;
-
-	public ApiParser(ApiServerManager apiServerManager, long importerId, ApiKey apiKey) throws FileNotFoundException, IOException {
-		this(apiServerManager, importerId, apiKey, null);
-	}
-
-	public ApiParser(ApiServerManager apiServerManager, long importerId, final ApiKey apiKey, Map<String, String> additionalArguments) throws FileNotFoundException, IOException {
-		this.apiKey = apiKey;
+	private final Database database;
+	
+	@Inject
+	public ApiParser(ApiServerManager apiServerManager, Database database) {
 		this.apiServerManager = apiServerManager;
-		this.importerId = importerId;
-		
+		this.database = database;
+	}
+	
+	public Node parseApi(Api api, ApiKey apiKey) {
+		return parseApi(api, apiKey, null);
+	}
+	
+	public Node parseApi(Api api, ApiKey apiKey, Map<String, String> additionalArguments) {
 		Map<String, String> arguments = new TreeMap<String, String>();
 		if (apiKey != null) {
 			arguments.put("userID", Integer.toString(apiKey.getUserID()));
@@ -92,74 +125,48 @@ public class ApiParser {
 			allArguments.putAll(additionalArguments);
 		}
 		
-		final Importer importer = getImporter(importerId);
+		final Importer importer = getImporter(api.getImporterId());
 		
 		String urlWithAdditionalArguments = createURL(allArguments, importer.getPath());
 		if (apiKey != null) {
-			boolean parseApi = new Query<Boolean>() {
-				@Override
-				protected Boolean doQuery(Session session) {
-					ImportLogIdentifier id = new ImportLogIdentifier(importer.getId(), apiKey.getCharacterID());
-					ImportLog log = (ImportLog) session.get(ImportLog.class, id);
-					if (log == null) {
-						log = new ImportLog();
-						log.setImporterId(id.getImporterId());
-						log.setCharacterId(id.getCharacterId());
-						log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
-						session.save(log);
-						return true;
-					}
-					else if (log.getLastRun().getTime() + importer.getCooldown() < TimeUtils.getServerTime()) {
-						log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
-						session.update(log);
-						return true;
-					}
-					
-					return false;
-				}
-			}.doQuery(); 
-			
-			if (parseApi) {
-				parseAPI(urlWithAdditionalArguments, importer.getPath());
+			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, apiKey.getCharacterID())) {
+				return parseAPI(urlWithAdditionalArguments, importer.getPath(), api.getImporterId());
 			}
 		}
 		else {
-			boolean parseApi = new Query<Boolean>() {
-				@Override
-				protected Boolean doQuery(Session session) {
-					ImportLogIdentifier id = new ImportLogIdentifier(importer.getId(), 0);
-					ImportLog log = (ImportLog) session.get(ImportLog.class, id);
-					if (log == null) {
-						log = new ImportLog();
-						log.setImporterId(id.getImporterId());
-						log.setCharacterId(id.getCharacterId());
-						log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
-						session.save(log);
-						return true;
-					}
-					else if (log.getLastRun().getTime() + importer.getCooldown() < TimeUtils.getServerTime()) {
-						log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
-						session.update(log);
-						return true;
-					}
-					
-					return false;
-				}
-			}.doQuery(); 
-			
-			if (parseApi) {
-				parseAPI(urlWithAdditionalArguments, importer.getPath());
+			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, 0)) {
+				return parseAPI(urlWithAdditionalArguments, importer.getPath(), api.getImporterId());
 			}
 		}
+		return null;
 	}
 	
+	@Transactional
+	private boolean checkIfWeNeedToImportAndIfSoUpdateCooldown(Importer importer, long characterId) {
+		Session session = database.getCurrentSession();
+		ImportLogIdentifier id = new ImportLogIdentifier(importer.getId(), characterId);
+		ImportLog log = (ImportLog) session.get(ImportLog.class, id);
+		if (log == null) {
+			log = new ImportLog();
+			log.setImporterId(id.getImporterId());
+			log.setCharacterId(characterId);
+			log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
+			session.save(log);
+			return true;
+		}
+		else if (log.getLastRun().getTime() + importer.getCooldown() < TimeUtils.getServerTime()) {
+			log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
+			session.update(log);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Transactional
 	private Importer getImporter(final long importerId) {
-		return new Query<Importer>() {
-			@Override
-			protected Importer doQuery(Session session) {
-				return (Importer) session.get(Importer.class, importerId);
-			}
-		}.doQuery();
+		Session session = database.getCurrentSession();
+		return (Importer) session.get(Importer.class, importerId);
 	}
 
 	private String createURL(Map<String, String> arguments, String importerPath) {
@@ -180,8 +187,9 @@ public class ApiParser {
 		return url;
 	}
 
-	private void parseAPI(String url, String importerPath) {
+	private Node parseAPI(String url, String importerPath, long importerId) {
 		String hostURL = apiServerManager.getApiServer();
+		Node root = null;
 		
 		try {
 			LOG.info("Requesting: " + hostURL + importerPath);
@@ -194,33 +202,31 @@ public class ApiParser {
 			root = parser.parse(xmlFile);
 			xmlFile.delete();
 			
-			updateCooldown();
+			updateCooldown(root, importerId);
 		}
 		catch (Throwable e) {
 			LOG.warn(e.getLocalizedMessage(), e);
 		}
+		
+		return root;
 	}
 
-	private void updateCooldown() {
+	@Transactional
+	private void updateCooldown(Node root, long importerId) {
 		try {
-			if (isAvailable()) {
-				new Query<Void>() {
-					@Override
-					protected Void doQuery(Session session) {
-						try {
-							Importer object = (Importer) session.get(Importer.class, importerId);
-							Timestamp current = TimeUtils.convertToTimestamp(getRoot().get("currentTime").get(0).toString());
-							Timestamp until = TimeUtils.convertToTimestamp(getRoot().get("cachedUntil").get(0).toString());
-							long diffMin = (until.getTime() - current.getTime()) + 3 * 60000;
-							object.setCooldown(diffMin);
-							session.saveOrUpdate(object);
-						}
-						catch (Throwable e) {
-							LOG.error(e.getLocalizedMessage(), e);
-						}
-						return null;
-					}
-				}.doQuery();
+			if (isAvailable(root)) {
+				try {
+					Session session = database.getCurrentSession();
+					Importer object = (Importer) session.get(Importer.class, importerId);
+					Timestamp current = TimeUtils.convertToTimestamp(root.get("currentTime").get(0).toString());
+					Timestamp until = TimeUtils.convertToTimestamp(root.get("cachedUntil").get(0).toString());
+					long diffMin = (until.getTime() - current.getTime()) + 3 * 60000;
+					object.setCooldown(diffMin);
+					session.saveOrUpdate(object);
+				}
+				catch (Throwable e) {
+					LOG.error(e.getLocalizedMessage(), e);
+				}
 			}
 		} 
 		catch (Exception e) {	}
@@ -250,55 +256,6 @@ public class ApiParser {
 		inStream.close();
 		
 		return result;
-	}
-
-	/**
-	 * Returns the root Node. If it is not requested yet, it will send a
-	 * request. If it has been requested already, it will return the cached
-	 * response.
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws SQLException
-	 */
-	public Node getRoot() throws IOException, SAXException, SQLException {
-		return root;
-	}
-
-	/**
-	 * Tell us if we can access the root Node safely.
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws SQLException
-	 * @throws ApiFailureException 
-	 */
-	public boolean isAvailable() throws Exception {
-		boolean hasErrors = false;
-		boolean hasRoot = getRoot() != null;
-		Node errorNode = null;
-		
-		if (hasRoot) {
-			errorNode = getRoot().get("error");
-			hasErrors = errorNode != null;
-		}
-		if (hasErrors) {
-			int errorCode = Integer.parseInt(errorNode.getAttribute("code"));
-			switch (errorCode) {
-				case 101: 	throw new TransactionsExhaustedException();
-				case 103: 	throw new JournalsExhaustedException();
-				case 117: 	throw new MarketOrdersExhaustedException();
-				case 200: 	throw new SecurityNotHighEnoughException();
-				default:	throw new ApiFailureException((String) getRoot().get("error").get(0));
-			}			
-		}
-		return hasRoot && !hasErrors;
-	}
-
-	public ApiKey getSettings() {
-		return apiKey;
 	}
 
 }

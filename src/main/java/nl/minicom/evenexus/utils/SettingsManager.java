@@ -2,7 +2,6 @@ package nl.minicom.evenexus.utils;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,10 +10,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@Singleton
 public class SettingsManager {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SettingsManager.class);
@@ -22,9 +23,12 @@ public class SettingsManager {
 	private final SortedProperties settings;
 	private final File file;
 	
-	public SettingsManager() throws FileNotFoundException, IOException {
+	public SettingsManager() {
 		settings = new SortedProperties();
 		file = new File("session.properties");
+	}
+	
+	public void initialize() throws IOException {
 		if (!file.exists()) {
 			file.createNewFile();
 		}

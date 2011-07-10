@@ -5,12 +5,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
-import nl.minicom.evenexus.eveapi.ApiServerManager;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
 import nl.minicom.evenexus.persistence.dao.Skill;
@@ -19,6 +21,7 @@ import nl.minicom.evenexus.persistence.dao.Standing;
 import nl.minicom.evenexus.persistence.dao.StandingIdentifier;
 import nl.minicom.evenexus.persistence.dao.Station;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.TimeUtils;
 
 import org.hibernate.Session;
@@ -30,24 +33,20 @@ import org.slf4j.LoggerFactory;
 public class TransactionImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionImporter.class);
-	
-	public TransactionImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey settings) {
-		super(apiServerManager, importManager, Api.CHAR_WALLET_TRANSACTIONS, settings);
+
+	@Inject
+	public TransactionImporter(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager) {
+		super(database, apiParserProvider, importManager, Api.CHAR_WALLET_TRANSACTIONS);
 	}
-	
-	public void parseApi(ApiParser parser) throws Exception {
-		final int brokerRelation = getSkillLevel(getApiKey().getCharacterID(), 3446);
-		final int accounting = getSkillLevel(getApiKey().getCharacterID(), 16622);
-		final Node root = parser.getRoot().get("result").get("rowset");
-		new Query<Void>() {
-			@Override
-			protected Void doQuery(Session session) {
-				for (int i = root.size() - 1; i >= 0 ; i--) {
-					processRow(root, i, brokerRelation, accounting, session);
-				}
-				return null;
-			}
-		}.doQuery();
+
+	@Override
+	public void parseApi(Node node, ApiKey apiKey) {
+		final int brokerRelation = getSkillLevel(apiKey.getCharacterID(), 3446);
+		final int accounting = getSkillLevel(apiKey.getCharacterID(), 16622);
+		final Node root = node.get("result").get("rowset");
+		for (int i = root.size() - 1; i >= 0 ; i--) {
+			processRow(root, i, apiKey, brokerRelation, accounting);
+		}
 	}
 	
 	private int getSkillLevel(long characterId, long skillId) {
@@ -60,25 +59,25 @@ public class TransactionImporter extends ImporterTask {
 		return level;
 	}
 	
+	@Transactional
 	private Skill getSkill(final SkillIdentifier id) {
-		return new Query<Skill>() {
-			@Override
-			protected Skill doQuery(Session session) {
-				return (Skill) session.get(Skill.class, id);
-			}
-		}.doQuery();
+		Session session = getDatabase().getCurrentSession();
+		return (Skill) session.get(Skill.class, id);
 	}
 
-	private void processRow(Node root, int i, int brokerRelation, int accounting, Session session) {
+	private void processRow(Node root, int i, ApiKey apiKey, int brokerRelation, int accounting) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, brokerRelation, accounting, session);
+				persistChangeData(row, apiKey, brokerRelation, accounting);
 			}
 		}
 	}
 
-	private void persistChangeData(Node row, int brokerRelation, int accounting, Session session) {
+	@Transactional
+	private void persistChangeData(Node row, ApiKey apiKey, int brokerRelation, int accounting) {
+		Session session = getDatabase().getCurrentSession();
+
 		try {
 			Timestamp currentTime = TimeUtils.convertToTimestamp(row.getAttribute("transactionDateTime"));
 			long transactionID = Long.parseLong(row.getAttribute("transactionID")); 
@@ -93,8 +92,8 @@ public class TransactionImporter extends ImporterTask {
 			boolean isBuy = ("buy").equals(row.getAttribute("transactionType")); 
 			boolean isPersonal = ("personal").equals(row.getAttribute("transactionFor"));
 			
-			BigDecimal corporationStanding = getCorporationStanding(stationId);
-			BigDecimal factionStanding = getFactionStanding(stationId);
+			BigDecimal corporationStanding = getCorporationStanding(apiKey, stationId);
+			BigDecimal factionStanding = getFactionStanding(apiKey, stationId);
 			
 			BigDecimal taxes = (BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.0005).multiply(BigDecimal.valueOf(brokerRelation)))).divide(BigDecimal.valueOf(Math.exp(((BigDecimal.valueOf(0.1).multiply(factionStanding)).add(BigDecimal.valueOf(0.04).multiply(corporationStanding)).doubleValue()))), 3, RoundingMode.HALF_UP);
 			if (!isBuy) {
@@ -106,7 +105,7 @@ public class TransactionImporter extends ImporterTask {
 				transaction = new WalletTransaction();
 				transaction.setTransactionId(transactionID);
 				transaction.setTransactionDateTime(currentTime);
-				transaction.setCharacterId(getApiKey().getCharacterID());
+				transaction.setCharacterId(apiKey.getCharacterID());
 				transaction.setQuantity(quantity);
 				transaction.setRemaining(quantity);
 				transaction.setTypeName(typeName);
@@ -126,36 +125,30 @@ public class TransactionImporter extends ImporterTask {
 		}
 	}
 
-	private BigDecimal getCorporationStanding(final long stationId) {
-		return new Query<BigDecimal>() {
-			@Override
-			protected BigDecimal doQuery(Session session) {
-				Station station = (Station) session.get(Station.class, stationId);
-				if (station != null) {
-					long characterId = getApiKey().getCharacterID();
-					StandingIdentifier id = new StandingIdentifier(characterId, station.getCorporationId());
-					Standing standing = (Standing) session.get(Standing.class, id);
-					return standing.getStanding();
-				}
-				return BigDecimal.ZERO;
-			}
-		}.doQuery();
+	@Transactional
+	private BigDecimal getCorporationStanding(ApiKey apiKey, long stationId) {
+		Session session = getDatabase().getCurrentSession();
+		Station station = (Station) session.get(Station.class, stationId);
+		if (station != null) {
+			long characterId = apiKey.getCharacterID();
+			StandingIdentifier id = new StandingIdentifier(characterId, station.getCorporationId());
+			Standing standing = (Standing) session.get(Standing.class, id);
+			return standing.getStanding();
+		}
+		return BigDecimal.ZERO;
 	}
 
-	private BigDecimal getFactionStanding(final long mapRegionId) {
-		return new Query<BigDecimal>() {
-			@Override
-			protected BigDecimal doQuery(Session session) {
-				MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
-				if (region != null) {
-					long characterId = getApiKey().getCharacterID();
-					StandingIdentifier id = new StandingIdentifier(characterId, region.getFactionId());
-					Standing standing = (Standing) session.get(Standing.class, id);
-					return standing.getStanding();
-				}
-				return BigDecimal.ZERO;
-			}
-		}.doQuery();
+	@Transactional
+	private BigDecimal getFactionStanding(ApiKey apiKey, long mapRegionId) {
+		Session session = getDatabase().getCurrentSession();
+		MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
+		if (region != null) {
+			long characterId = apiKey.getCharacterID();
+			StandingIdentifier id = new StandingIdentifier(characterId, region.getFactionId());
+			Standing standing = (Standing) session.get(Standing.class, id);
+			return standing.getStanding();
+		}
+		return BigDecimal.ZERO;
 	}
 
 }

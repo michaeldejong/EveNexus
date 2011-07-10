@@ -10,7 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.TestModule;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.ImportLog;
 import nl.minicom.evenexus.persistence.dao.Importer;
@@ -25,15 +25,18 @@ import nl.minicom.evenexus.persistence.dao.Version;
 import nl.minicom.evenexus.persistence.dao.WalletJournal;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 public class StructureUpgraderTest {
 	
+	private RevisionExecutor executor;
+	private RevisionUtil util;
 	private StructureUpgrader instance;
 	
 	/**
@@ -42,13 +45,16 @@ public class StructureUpgraderTest {
 	 */
 	@Before
 	public void setup() throws SQLException {
+		Injector injector = Guice.createInjector(new TestModule());
+		executor = injector.getInstance(RevisionExecutor.class);
+		util = injector.getInstance(RevisionUtil.class);
 		instance = new StructureUpgrader();
-		dropDatabase();
+		util.dropDatabase();
 	}
 	
 	@After
 	public void tearDown() throws SQLException {
-		dropDatabase();
+		util.dropDatabase();
 	}
 	
 	@Test
@@ -64,7 +70,7 @@ public class StructureUpgraderTest {
 	@Test
 	public void testFinalStructure() throws SQLException {
 		// Upgrade structure
-		Version version = new RevisionExecutor(instance).execute();
+		Version version = executor.execute(instance);
 		
 		// Assert versioning
 		Assert.assertEquals(version.getType(), "database");
@@ -76,16 +82,15 @@ public class StructureUpgraderTest {
 		Assert.assertTrue(structureCheck(Importer.class));
 		Assert.assertTrue(structureCheck(ImportLog.class));
 		Assert.assertTrue(structureCheck(Item.class));
-		Assert.assertTrue(structureCheck(WalletJournal.class));
 		Assert.assertTrue(structureCheck(MapRegion.class));
 		Assert.assertTrue(structureCheck(MarketOrder.class));
 		Assert.assertTrue(structureCheck(Profit.class));
 		Assert.assertTrue(structureCheck(Skill.class));
 		Assert.assertTrue(structureCheck(Standing.class));
 		Assert.assertTrue(structureCheck(Station.class));
+		Assert.assertTrue(structureCheck(WalletJournal.class));
 		Assert.assertTrue(structureCheck(WalletTransaction.class));
 		Assert.assertTrue(structureCheck(Version.class));
-		
 	}
 	
 	private boolean structureCheck(Class<? extends Serializable> entityClass) {
@@ -93,7 +98,7 @@ public class StructureUpgraderTest {
 		Field[] fields = entityClass.getDeclaredFields();
 		
 		List<String> columnNames = listFields(fields);		
-		Object[] dbColumnNames = listDbColumnNames(table.name());
+		Object[] dbColumnNames = util.listDbColumnNames(table.name());
 		for (int i = 0; i < dbColumnNames.length; i++) {
 			String dbColumnName = ((Object[]) dbColumnNames[i])[0].toString().toLowerCase();
 			if (columnNames.contains(dbColumnName)) {
@@ -111,38 +116,15 @@ public class StructureUpgraderTest {
 		List<String> columnNames = new ArrayList<String>();
 		for (Field field : fields) {
 			Column annotation = field.getAnnotation(Column.class);
+			Id idAnnotation = field.getAnnotation(Id.class);
 			if (annotation != null) {
 				columnNames.add(annotation.name().toLowerCase());
 			}
-			else {
-				Id idAnnotation = field.getAnnotation(Id.class);
-				if (idAnnotation != null) {
-					columnNames.addAll(listFields(field.getType().getDeclaredFields()));
-				}
+			else if (idAnnotation != null) {
+				columnNames.addAll(listFields(field.getType().getDeclaredFields()));
 			}
 		}
 		return columnNames;
 	}
-	
-	private Object[] listDbColumnNames(final String tableName) {
-		return new Query<Object[]>() {
-			@Override
-			protected Object[] doQuery(Session session) {
-				String sql = "SHOW COLUMNS FROM " + tableName;
-				SQLQuery query = session.createSQLQuery(sql);
-				return query.list().toArray();
-			}
-		}.doQuery();
-	}
 
-	private void dropDatabase() {
-		new Query<Void>() {
-			@Override
-			protected Void doQuery(Session session) {
-				session.createSQLQuery("DROP ALL OBJECTS").executeUpdate();
-				return null;
-			}
-		}.doQuery();
-	}
-	
 }

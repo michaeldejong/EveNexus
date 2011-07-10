@@ -13,8 +13,10 @@ public class Importer implements Serializable {
 	
 	private static final long serialVersionUID = 1380783496560770755L;
 	
+	public static final String ID = "id";
+	
 	@Id
-	@Column(name = "id", nullable = false)
+	@Column(name = ID, nullable = false)
 	private long id;
 
 	@Column(name = "name", nullable = false)

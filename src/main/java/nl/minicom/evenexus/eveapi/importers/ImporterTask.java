@@ -4,17 +4,22 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
-import nl.minicom.evenexus.eveapi.ApiServerManager;
-import nl.minicom.evenexus.persistence.Query;
+import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.ImportLog;
 import nl.minicom.evenexus.persistence.dao.ImportLogIdentifier;
 import nl.minicom.evenexus.persistence.dao.Importer;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.TimeUtils;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,113 +29,119 @@ public abstract class ImporterTask extends TimerTask {
 	private static final Logger LOG = LoggerFactory.getLogger(ImporterTask.class);
 
 	private final Api type;
-	private final ApiServerManager apiServerManager;
+	private final Database database;
 	private final ImportManager importManager;
-	private final ApiKey apiKey;
-	private final Importer importer;
-	private final long minimumCooldown;
+	private final Provider<ApiParser> apiParserProvider;
+	private final long minimumDelay;
+	
+	private ApiKey apiKey;
 
-	public ImporterTask(ApiServerManager apiServerManager, ImportManager importManager, Api type, ApiKey apiKey) {
-		this (apiServerManager, importManager, type, apiKey, Long.MAX_VALUE);
+	@Inject
+	protected ImporterTask(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager, Api type) {
+		this (database, apiParserProvider, importManager, type, 0);
 	}
 	
-	public ImporterTask(ApiServerManager apiServerManager, ImportManager importManager, Api type, ApiKey apiKey, long minimumCooldown) {
-		this.apiKey = apiKey;
-		this.apiServerManager = apiServerManager;
-		this.importManager = importManager;
+	@Inject
+	protected ImporterTask(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager, Api type, long minimumDelay) {
 		this.type = type;
-		this.importer = loadImporter(type.getImporterId());
-		this.minimumCooldown = minimumCooldown;
+		this.database = database;
+		this.importManager = importManager;
+		this.apiParserProvider = apiParserProvider;
+		this.minimumDelay = minimumDelay;
 	}
 	
-	private Importer loadImporter(final long importerId) {
-		return new Query<Importer>() {
-			@Override
-			protected Importer doQuery(Session session) {
-				return (Importer) session.get(Importer.class, importerId);
-			}
-		}.doQuery();
+	public abstract void parseApi(Node root, ApiKey apiKey) throws Exception;
+
+	protected Database getDatabase() {
+		return database;
 	}
 	
-	private ImportLog loadImportLog(final ImportLogIdentifier importLogId) {
-		return new Query<ImportLog>() {
-			@Override
-			protected ImportLog doQuery(Session session) {
-				return (ImportLog) session.get(ImportLog.class, importLogId);
-			}
-		}.doQuery();
+	protected final void triggerImportCompleteEvent() {
+		importManager.triggerImportCompleteEvent(type);
 	}
 
-	protected final void triggerImportCompleteEvent() {
-		importManager.triggerImportCompleteEvent(getApi());
+	public void initialize(ApiKey apiKey) {
+		this.apiKey = apiKey;
 	}
 
 	@Override
 	public final void run() {
-		new ImporterThread(this).start();
+		ImporterThread thread = new ImporterThread(this);
+		thread.initialize(apiKey);
+		thread.start();
+	}
+	
+	protected void runImporter(ApiKey apiKey) throws Exception {
+		if (apiKey != null) {
+			LOG.info("Running " + getName() + " importer (characterID: " + apiKey.getCharacterID() + ")");
+		}
+		else {
+			LOG.info("Running " + getName() + " importer");
+		}
+		
+		ApiParser parser = apiParserProvider.get();
+		Node root = parser.parseApi(type, apiKey);
+		if (ApiParser.isAvailable(root)) {
+			parseApi(root, apiKey);
+		}
+		
+		updateLastRun(apiKey);
+		triggerImportCompleteEvent();
+	}
+	
+	private void updateLastRun(ApiKey apiKey) throws SQLException {
+		Session session = database.getCurrentSession();
+		long importerId = type.getImporterId();
+		long characterId = 0;
+		if (apiKey != null) {
+			characterId = apiKey.getCharacterID();
+		}
+		
+		ImportLogIdentifier id = new ImportLogIdentifier(importerId, characterId);
+		ImportLog log = (ImportLog) session.get(ImportLog.class, id);
+		if (log == null) {
+			log = new ImportLog();
+			log.setCharacterId(characterId);
+			log.setImporterId(importerId);
+		}
+		
+		log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
+		session.saveOrUpdate(log);
 	}
 
-	public long getNextRun() {
-		ImportLog log = loadImportLog(new ImportLogIdentifier(type.getImporterId(), getCharacterId()));
+	public long getNextRun(long characterId) {
+		ImportLog log = getImportLog(type.getImporterId(), characterId);
 		if (log != null && log.getLastRun() != null) {
-			long cooldown = getImporter().getCooldown();
-			cooldown = Math.min(cooldown, minimumCooldown);
+			long cooldown = getImporter(type.getImporterId()).getCooldown();
+			cooldown = Math.max(cooldown, minimumDelay);
 			return log.getLastRun().getTime() + cooldown;
 		}
 		return 0;
 	}
 	
-	protected void runImporter() throws Exception {
-		LOG.info("Running " + getImporter().getName() + " importer (characterID: " + getCharacterId() + ")");
-		ApiParser parser = new ApiParser(apiServerManager, getImporter().getId(), apiKey);
-		if (parser.isAvailable()) {
-			parseApi(parser);
-		}
-		
-		updateLastRun();
-		triggerImportCompleteEvent();
+	@Transactional
+	public ImportLog getImportLog(long importerId, long characterId) {
+		Session session = database.getCurrentSession();
+		ImportLogIdentifier id = new ImportLogIdentifier(importerId, characterId);
+		return (ImportLog) session.createCriteria(ImportLog.class)
+			.add(Restrictions.eq(ImportLog.KEY, id))
+			.uniqueResult();
 	}
 	
-	private void updateLastRun() throws SQLException {
-		new Query<Void>() {
-			@Override
-			protected Void doQuery(Session session) {
-				long importerId = getImporter().getId();
-				long characterId = getCharacterId();
-				ImportLogIdentifier id = new ImportLogIdentifier(importerId, characterId);
-				ImportLog log = (ImportLog) session.get(ImportLog.class, id);
-				if (log == null) {
-					log = new ImportLog();
-					log.setCharacterId(characterId);
-					log.setImporterId(importerId);
-				}
-				
-				log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
-				session.saveOrUpdate(log);
-				return null;
-			}
-		}.doQuery();
+	@Transactional
+	public Importer getImporter(long importerId) {
+		Session session = database.getCurrentSession();
+		return (Importer) session.createCriteria(Importer.class)
+			.add(Restrictions.eq(Importer.ID, importerId))
+			.uniqueResult();
 	}
 
-	public Importer getImporter() {
-		return importer;
-	}
-	
-	public long getCharacterId() {
-		if (apiKey != null) {
-			return apiKey.getCharacterID();
-		}
-		return 0;
-	}
-	
 	public Api getApi() {
 		return type;
 	}
-	
-	public ApiKey getApiKey() {
-		return apiKey;
+
+	public String getName() {
+		return type.name();
 	}
-	
-	public abstract void parseApi(ApiParser parser) throws Exception;
 	
 }

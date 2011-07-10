@@ -185,7 +185,6 @@ public class MarketOrder implements Serializable {
 
 	public static void markAllActiveAsExpired(Session session, long characterId) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 }

@@ -4,21 +4,22 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.gui.panels.accounts.dialogs.AddCharacterFrame;
 import nl.minicom.evenexus.gui.tables.Table;
-import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
 import nl.minicom.evenexus.gui.tables.columns.models.AccountColumnModel;
 import nl.minicom.evenexus.gui.tables.datamodel.implementations.AccountTableDataModel;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
+import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,22 +34,25 @@ public class AccountsPanel extends JPanel {
 	private ToolBarButton addCharacter;
 	private ToolBarButton deleteCharacter;
 	
-	public AccountsPanel(final Application application) {
+	@Inject
+	public AccountsPanel(SettingsManager settingsManager,
+			AccountTableDataModel accountData,
+			AccountColumnModel accountModel,
+			final Provider<AddCharacterFrame> addCharacterFrameProvider) {
+		
 		setBackground(Color.WHITE);	
 		
-		ColumnModel tableModel = new AccountColumnModel(application.getSettingsManager());
-		table = new Table(new AccountTableDataModel(), tableModel);
+		table = new Table(accountData, accountModel);
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         
         addCharacter = new ToolBarButton("img/32/add.png", "Add new a character");
         deleteCharacter = new ToolBarButton("img/32/remove.png", "Delete a character");
 
-        final AccountsPanel panel = this;
         addCharacter.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		new AddCharacterFrame(application, panel).buildGui();
+        		addCharacterFrameProvider.get().initialize();
         	}
         });
         
@@ -63,8 +67,8 @@ public class AccountsPanel extends JPanel {
         	}
         });
         
-        ToolBar toolBar = new ToolBar(application.getSettingsManager());
-        ToolBarButton columnSelectButton = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(tableModel, table));
+        ToolBar toolBar = new ToolBar(settingsManager);
+        ToolBarButton columnSelectButton = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(accountModel, table));
         
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);        

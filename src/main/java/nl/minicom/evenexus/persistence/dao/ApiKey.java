@@ -37,7 +37,7 @@ public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 	@Column(name = "userid", nullable = false)
 	private int userId;
 	
-	public long getCharacterID() {
+	public Long getCharacterID() {
 		return charId;
 	}
 
@@ -67,11 +67,6 @@ public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 
 	public void setUserID(int userId) {
 		this.userId = userId;
-	}
-
-	@Override
-	public int compareTo(ApiKey o) {
-		return 0;
 	}
 	
 	public int getSkillLevel(Session session, long skillId) {
@@ -111,6 +106,11 @@ public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 		}
 
 		return returnValue;
+	}
+
+	@Override
+	public int compareTo(ApiKey o) {
+		return 0;
 	}
 
 }

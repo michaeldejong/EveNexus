@@ -1,13 +1,13 @@
 package nl.minicom.evenexus.eveapi.importers;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
-import nl.minicom.evenexus.eveapi.ApiServerManager;
 import nl.minicom.evenexus.eveapi.importers.implementations.JournalImporter;
 import nl.minicom.evenexus.eveapi.importers.implementations.MarketOrderImporter;
 import nl.minicom.evenexus.eveapi.importers.implementations.SkillImporter;
@@ -19,41 +19,66 @@ import nl.minicom.evenexus.utils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 
 public class CharacterImporter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CharacterImporter.class);
 	
 	private final ImportManager importManager;
+	private final Provider<JournalImporter> journalImporterProvider;
+	private final Provider<MarketOrderImporter> marketOrderImporterProvider;
+	private final Provider<SkillImporter> skillImporterProvider;
+	private final Provider<StandingImporter> standingImporterProvider;
+	private final Provider<TransactionImporter> transactionImporterProvider;
 	private final Map<Api, ImporterTask> importers;
 	
-	public CharacterImporter(ApiServerManager apiServerManager, ImportManager importManager, ApiKey apiKey) {
+	private ApiKey apiKey = null;
+	
+	@Inject
+	public CharacterImporter(ImportManager importManager, 
+			Provider<JournalImporter> journalImporterProvider,
+			Provider<MarketOrderImporter> marketOrderImporterProvider,
+			Provider<SkillImporter> skillImporterProvider,
+			Provider<StandingImporter> standingImporterProvider,
+			Provider<TransactionImporter> transactionImporterProvider) {
+		
 		this.importManager = importManager;
+		this.journalImporterProvider = journalImporterProvider;
+		this.marketOrderImporterProvider = marketOrderImporterProvider;
+		this.skillImporterProvider = skillImporterProvider;
+		this.standingImporterProvider = standingImporterProvider;
+		this.transactionImporterProvider = transactionImporterProvider;
 		this.importers = new TreeMap<Api, ImporterTask>();
-		scheduleApiImporters(apiServerManager, apiKey);
 	}
 
-	private void scheduleApiImporters(ApiServerManager apiServerManager, ApiKey apiKey) {
-		scheduleApiImporter(new JournalImporter(apiServerManager, importManager, apiKey));
-		scheduleApiImporter(new MarketOrderImporter(apiServerManager, importManager, apiKey));
-		scheduleApiImporter(new SkillImporter(apiServerManager, importManager, apiKey));
-		scheduleApiImporter(new StandingImporter(apiServerManager, importManager, apiKey));
-		scheduleApiImporter(new TransactionImporter(apiServerManager, importManager, apiKey));
+	public void scheduleApiImporters(ApiKey apiKey) {
+		Preconditions.checkNotNull(apiKey);
+		if (this.apiKey != null) {
+			throw new IllegalStateException("CharacterImporter already initialized!");
+		}
+		
+		this.apiKey = apiKey;
+		
+		scheduleApiImporter(journalImporterProvider.get());
+		scheduleApiImporter(marketOrderImporterProvider.get());
+		scheduleApiImporter(skillImporterProvider.get());
+		scheduleApiImporter(standingImporterProvider.get());
+		scheduleApiImporter(transactionImporterProvider.get());
 	}
 	
 	private void scheduleApiImporter(ImporterTask task) {
 		importers.put(task.getApi(), task);		
-		long nextRun = task.getNextRun() + 5000;
+		long nextRun = task.getNextRun(apiKey.getCharacterID()) + 5000;
 		if (nextRun < TimeUtils.getServerTime()) {
 			nextRun = TimeUtils.getServerTime() + 5000;
 		}
 		
-		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter().getCooldown());
-		LOG.info("Scheduling " + task.getImporter().getName() + " importer (characterID: " + task.getApiKey().getCharacterID() + ") at: " + new Date(nextRun));
-	}
-	
-	public Collection<ImporterTask> getSchedule() {
-		return Collections.unmodifiableCollection(importers.values());
+		task.initialize(apiKey);
+		
+		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter(task.getApi().getImporterId()).getCooldown());
+		LOG.info("Scheduling " + task.getName() + " importer (characterID: " + apiKey.getCharacterID() + ") at: " + new Date(nextRun));
 	}
 	
 }

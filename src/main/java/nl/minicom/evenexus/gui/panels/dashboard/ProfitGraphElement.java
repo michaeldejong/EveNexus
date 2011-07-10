@@ -7,7 +7,10 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.TreeMap;
 
-import nl.minicom.evenexus.persistence.Query;
+import javax.inject.Inject;
+
+import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.hibernate.SQLQuery;
@@ -20,13 +23,19 @@ public class ProfitGraphElement implements GraphElement {
 	private static final String visibleSetting = SettingsManager.DASHBOARD_GRAPH_PROFITS_VISIBLE;
 
 	private final SettingsManager settingsManager;
+	private final Database database;
+	
 	private final Map<Integer, Double> data;
 	private boolean isVisible;
 	
-	public ProfitGraphElement(SettingsManager settingsManager) {
+	@Inject
+	public ProfitGraphElement(SettingsManager settingsManager, Database database) {
 		this.settingsManager = settingsManager;
+		this.database = database;
+		
 		this.data = new TreeMap<Integer, Double>();
 		this.isVisible = settingsManager.loadBoolean(visibleSetting, true);
+		
 		reload();
 	}
 
@@ -42,26 +51,22 @@ public class ProfitGraphElement implements GraphElement {
 	}
 
 	@Override
+	@Transactional
 	public void reload() {
-		new Query<Void>() {
-			@Override
-			protected Void doQuery(Session session) {
-				SQLQuery query = session.createSQLQuery("SELECT SUM(quantity * (value + taxes)) AS totalProfit, day FROM (SELECT quantity, value, taxes, date, DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(date) AS day FROM profit WHERE date > DATEADD('DAY', ?, CURRENT_TIMESTAMP())) AS a GROUP BY day ORDER BY day ASC");
-				query.setLong(0, -28);
+		Session session = database.getCurrentSession();
+		SQLQuery query = session.createSQLQuery("SELECT SUM(quantity * (value + taxes)) AS totalProfit, day FROM (SELECT quantity, value, taxes, date, DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(date) AS day FROM profit WHERE date > DATEADD('DAY', ?, CURRENT_TIMESTAMP())) AS a GROUP BY day ORDER BY day ASC");
+		query.setLong(0, -28);
 
-				ScrollableResults result = query.scroll();
-				if (result.first()) {
-					data.clear();
-					do {
-						double profit = ((BigDecimal) result.get(0)).doubleValue();
-						int daysAgo = (Integer) result.get(1);
-						data.put(daysAgo, profit);
-					}
-					while (result.next());
-				}
-				return null;
+		ScrollableResults result = query.scroll();
+		if (result.first()) {
+			data.clear();
+			do {
+				double profit = ((BigDecimal) result.get(0)).doubleValue();
+				int daysAgo = (Integer) result.get(1);
+				data.put(daysAgo, profit);
 			}
-		}.doQuery();
+			while (result.next());
+		}
 	}
 
 	@Override
