@@ -105,7 +105,7 @@
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>dependencies/</classpathPrefix>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							<mainClass>nl.minicom.evenexus.gui.Gui</mainClass>
+							<mainClass>nl.minicom.evenexus.core.Application</mainClass>
 						</manifest>
 						<manifestEntries>
 							<Implementation-Version>${buildNumber}</Implementation-Version>
