@@ -8,9 +8,9 @@
 	<inceptionYear>2010</inceptionYear>
 
 	<scm>
-		<url>https://michaeldejong@github.com/michaeldejong/EveNexus.git</url>
-		<connection>scm:git:https://michaeldejong@github.com/michaeldejong/EveNexus.git</connection>
-		<developerConnection>scm:git:https://michaeldejong@github.com/michaeldejong/EveNexus.git</developerConnection>
+		<url>git://github.com/michaeldejong/EveNexus.git</url>
+		<connection>scm:git:git://github.com/michaeldejong/EveNexus.git</connection>
+		<developerConnection>scm:git:git://github.com/michaeldejong/EveNexus.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
