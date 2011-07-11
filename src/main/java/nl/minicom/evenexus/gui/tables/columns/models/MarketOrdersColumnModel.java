@@ -76,7 +76,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		add(new Column(
 				settingsManager,
 				"Price",
-				"orderPrice",
+				"price",
 				SettingsManager.TABLE_MARKETORDER_PRICE_VISIBLE,
 				true,
 				SettingsManager.TABLE_MARKETORDER_PRICE_WIDTH,

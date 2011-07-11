@@ -544,7 +544,7 @@ public class StructureUpgrader extends RevisionCollection {
 			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("UPDATE transactions SET remaining = quantity");
-				session.createSQLQuery(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		

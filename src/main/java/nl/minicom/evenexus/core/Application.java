@@ -78,7 +78,7 @@ public final class Application {
 			// 4. Create inventory manager.
 			LOG.info("Initializing inventory manager...");
 			progressManager.update(9, 5, "Initializing inventory manager...");
-			inventoryManager.initialize();
+			inventoryManager.processUnprocessedTransactions();
 			
 			// 5. Initializing importers.
 			LOG.info("Initializing API importers...");

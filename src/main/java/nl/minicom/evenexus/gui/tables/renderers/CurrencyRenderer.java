@@ -46,7 +46,10 @@ public class CurrencyRenderer extends DefaultTableCellRenderer {
 		}
 		
 		BigDecimal decimalValue = (BigDecimal) value;
-		if (decimalValue.signum() == -1) {
+		if (isSelected) {
+			c.setForeground(Color.WHITE);
+		}
+		else if (decimalValue.signum() == -1) {
 			c.setForeground(RED);
 		}
 		else {
