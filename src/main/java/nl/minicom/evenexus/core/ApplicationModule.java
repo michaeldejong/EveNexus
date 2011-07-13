@@ -1,5 +1,7 @@
 package nl.minicom.evenexus.core;
 
+import javax.inject.Singleton;
+
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.inventory.InventoryManager;
@@ -22,13 +24,12 @@ public class ApplicationModule extends AbstractModule {
 		bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class), 
 				new TransactionalInterceptor(database));
 		
-		bind(Application.class).asEagerSingleton();
-		bind(SettingsManager.class).asEagerSingleton();
-		bind(InventoryManager.class).asEagerSingleton();
-		bind(RevisionExecutor.class).asEagerSingleton();
-		bind(ProxyManager.class).asEagerSingleton();;
-		bind(ImportManager.class).asEagerSingleton();
-		bind(Gui.class).asEagerSingleton();
+		bind(Application.class).in(Singleton.class);
+		bind(SettingsManager.class).in(Singleton.class);
+		bind(InventoryManager.class).in(Singleton.class);
+		bind(RevisionExecutor.class).in(Singleton.class);
+		bind(ProxyManager.class).in(Singleton.class);
+		bind(ImportManager.class).in(Singleton.class);
 	}
 
 }

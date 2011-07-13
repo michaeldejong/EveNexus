@@ -27,6 +27,7 @@ import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;
 import nl.minicom.evenexus.gui.utils.dialogs.AboutDialog;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ExportDatabaseDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ImportDatabaseDialog;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -58,6 +59,7 @@ public class Gui extends JFrame {
 	private final Provider<ExportDatabaseDialog> exportDatabaseDialogProvider;
 	private final Provider<SettingsDialog> settingsDialogProvider;
 	private final Provider<AboutDialog> aboutDialogProvider;
+	private final Provider<BugReportDialog> bugReportDialogProvider;
 	
 	@Inject
 	public Gui(SettingsManager settingsManager,
@@ -70,7 +72,8 @@ public class Gui extends JFrame {
 			Provider<ImportDatabaseDialog> importDatabaseDialogProvider,
 			Provider<ExportDatabaseDialog> exportDatabaseDialogProvider,
 			Provider<SettingsDialog> settingsDialogProvider,
-			Provider<AboutDialog> aboutDialogProvider) {
+			Provider<AboutDialog> aboutDialogProvider,
+			Provider<BugReportDialog> bugReportDialogProvider) {
 		
 		this.settingsManager = settingsManager;
 		this.dashboardPanel = dashboardPanel;
@@ -83,6 +86,7 @@ public class Gui extends JFrame {
 		this.exportDatabaseDialogProvider = exportDatabaseDialogProvider;
 		this.settingsDialogProvider = settingsDialogProvider;
 		this.aboutDialogProvider = aboutDialogProvider;
+		this.bugReportDialogProvider = bugReportDialogProvider;
 	}
 	
 	public void initialize() {
@@ -102,7 +106,9 @@ public class Gui extends JFrame {
 		addWindowListener(guiListener);
 		
 		createGUI();
-		setVisible(true);		
+		setVisible(true);
+		
+		bugReportDialogProvider.get().setVisible(true);
 	}
 
 	public void setSizeAndPosition() {

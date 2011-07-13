@@ -715,6 +715,16 @@ public class StructureUpgrader extends RevisionCollection {
 			}
 		});
 		
+		super.registerRevision(new Revision(189) {
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("CREATE TABLE IF NOT EXISTS bugreports (");
+				builder.append("issueNumber BIGINT NOT NULL, ");
+				builder.append("PRIMARY KEY (`issueNumber`))");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+		
 	}
 	
 	@Override

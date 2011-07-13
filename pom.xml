@@ -123,6 +123,11 @@
 			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.api.v2</groupId>
+			<artifactId>github-java-sdk</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
 			<version>7.0.0.pre5</version>

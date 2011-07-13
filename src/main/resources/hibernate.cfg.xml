@@ -21,6 +21,7 @@
 		<property name="hibernate.current_session_context_class">thread</property>
 
 		<mapping class="nl.minicom.evenexus.persistence.dao.ApiKey" />
+		<mapping class="nl.minicom.evenexus.persistence.dao.BugReport" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.Importer" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.ImportLog" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.Item" />

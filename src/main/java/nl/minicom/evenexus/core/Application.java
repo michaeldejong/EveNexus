@@ -51,8 +51,9 @@ public final class Application {
 		
 		LOG.info("Launching application...");
 		application.initialize(frame, args);
-		
 		frame.dispose();
+		
+		application.initializeGui();
 	}
 	
 	public void initialize(ProgressManager progressManager, String[] args) throws Exception {
@@ -94,10 +95,11 @@ public final class Application {
 			LOG.info("Completing initialization...");
 			progressManager.update(9, 8, "Completing initialization...");
 			initialized = true;
-			
-			// 8. Start the gui.
-			gui.initialize();
 		}
+	}
+	
+	private void initializeGui() {
+		gui.initialize();
 	}
 	
 	public String getDatabaseVersion() {

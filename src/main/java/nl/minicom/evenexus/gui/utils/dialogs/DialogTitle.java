@@ -9,7 +9,7 @@ import nl.minicom.evenexus.gui.icons.Icon;
 public class DialogTitle {
 
 	public static final DialogTitle WARNING_TITLE = new DialogTitle("Warning", DialogTitle.class.getPackage().getSpecificationTitle() + " ran into a little trouble.", "img/48/warning.png");
-	public static final DialogTitle ERROR_TITLE = new DialogTitle("Bug report", DialogTitle.class.getPackage().getSpecificationTitle() + " encountered a problem. Please help me improve " + DialogTitle.class.getPackage().getSpecificationTitle() + ", by reporting this bug.", "img/48/remove.png");
+	public static final DialogTitle BUG_REPORT = new DialogTitle("Bug report", DialogTitle.class.getPackage().getSpecificationTitle() + " encountered a problem. Please help me improve " + DialogTitle.class.getPackage().getSpecificationTitle() + ", by reporting this bug.", "img/48/bug_report.png");
 	public static final DialogTitle CHARACTER_ADD_TITLE = new DialogTitle("Add a new character", "Please enter your account's FULL API details here.", "img/48/user_add.png");
 	public static final DialogTitle ABOUT_TITLE = new DialogTitle("About " + DialogTitle.class.getPackage().getSpecificationTitle(), "So, what do you want to know?", "img/48/logo.png");
 	public static final DialogTitle DATABASE_EXPORT_TITLE = new DialogTitle("Export database", "Export transactions, journals, orders and other API details.", "img/48/database_next.png");

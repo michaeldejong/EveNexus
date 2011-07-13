@@ -13,16 +13,22 @@ import org.hibernate.cfg.Configuration;
 public class Database {
 
 	private final Map<Thread, Session> sessionMapping;
-	private final SessionFactory sessionFactory;
+	private SessionFactory sessionFactory = null;
 	
 	public Database() {
-		Configuration config = new Configuration();
-		config.configure("hibernate.cfg.xml");
 		this.sessionMapping = new HashMap<Thread, Session>();
-		this.sessionFactory = config.buildSessionFactory();
+	}
+	
+	private void ensureInitialized() {
+		if (sessionFactory == null) {
+			Configuration config = new Configuration();
+			config.configure("hibernate.cfg.xml");
+			this.sessionFactory = config.buildSessionFactory();
+		}
 	}
 	
 	public Session getCurrentSession() {
+		ensureInitialized();
 		Session session = sessionMapping.get(Thread.currentThread());
 		if (session == null || !session.isOpen()) {
 			session = sessionFactory.openSession();
