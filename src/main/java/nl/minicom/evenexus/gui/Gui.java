@@ -27,7 +27,6 @@ import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;
 import nl.minicom.evenexus.gui.utils.dialogs.AboutDialog;
-import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ExportDatabaseDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ImportDatabaseDialog;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -48,6 +47,7 @@ public class Gui extends JFrame {
 	private static final int WIDTH = 850;
 	
 	private final SettingsManager settingsManager;
+	
 	private final DashboardPanel dashboardPanel;
 	private final JournalsPanel journalsPanel;
 	private final TransactionsPanel transactionPanel;
@@ -59,7 +59,6 @@ public class Gui extends JFrame {
 	private final Provider<ExportDatabaseDialog> exportDatabaseDialogProvider;
 	private final Provider<SettingsDialog> settingsDialogProvider;
 	private final Provider<AboutDialog> aboutDialogProvider;
-	private final Provider<BugReportDialog> bugReportDialogProvider;
 	
 	@Inject
 	public Gui(SettingsManager settingsManager,
@@ -72,8 +71,7 @@ public class Gui extends JFrame {
 			Provider<ImportDatabaseDialog> importDatabaseDialogProvider,
 			Provider<ExportDatabaseDialog> exportDatabaseDialogProvider,
 			Provider<SettingsDialog> settingsDialogProvider,
-			Provider<AboutDialog> aboutDialogProvider,
-			Provider<BugReportDialog> bugReportDialogProvider) {
+			Provider<AboutDialog> aboutDialogProvider) {
 		
 		this.settingsManager = settingsManager;
 		this.dashboardPanel = dashboardPanel;
@@ -82,14 +80,21 @@ public class Gui extends JFrame {
 		this.marketOrderPanel = marketOrderPanel;
 		this.profitPanel = profitPanel;
 		this.accountsPanel = accountsPanel;
+		
 		this.importDatabaseDialogProvider = importDatabaseDialogProvider;
 		this.exportDatabaseDialogProvider = exportDatabaseDialogProvider;
 		this.settingsDialogProvider = settingsDialogProvider;
 		this.aboutDialogProvider = aboutDialogProvider;
-		this.bugReportDialogProvider = bugReportDialogProvider;
 	}
 	
 	public void initialize() {
+		dashboardPanel.initialize();
+		journalsPanel.initialize();
+		transactionPanel.initialize();
+		marketOrderPanel.initialize();
+		profitPanel.initialize();
+		accountsPanel.initialize();
+		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(getClass().getPackage().getSpecificationTitle() + " - EVE Online trading overview");
 		setIconImage(Icon.getImage("img/other/logo.png"));
@@ -107,8 +112,6 @@ public class Gui extends JFrame {
 		
 		createGUI();
 		setVisible(true);
-		
-		bugReportDialogProvider.get().setVisible(true);
 	}
 
 	public void setSizeAndPosition() {

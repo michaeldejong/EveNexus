@@ -43,6 +43,12 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 		this.settingsManager = settingsManager;
 		this.columnModel = new JournalColumnModel(settingsManager);
 		this.table = new Table(journalData, columnModel);
+    	
+    	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
+	}
+
+	public void initialize() {
+		table.initialize();
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -67,8 +73,6 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	    		.addComponent(scrollPane)
 	    		.addGap(7)
     	);
-    	
-    	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
 	}
 	
 	@Override

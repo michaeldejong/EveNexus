@@ -3,7 +3,6 @@ package nl.minicom.evenexus.core;
 import javax.inject.Singleton;
 
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
-import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;

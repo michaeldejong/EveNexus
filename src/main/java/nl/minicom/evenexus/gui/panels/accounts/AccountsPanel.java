@@ -30,42 +30,51 @@ public class AccountsPanel extends JPanel {
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(AccountsPanel.class);
 	
-	private Table table;
-	private ToolBarButton addCharacter;
-	private ToolBarButton deleteCharacter;
+	private final Table table;
+	private final AccountColumnModel accountModel;
+	private final SettingsManager settingsManager;
+	private final ToolBarButton addCharacter;
+	private final ToolBarButton deleteCharacter;
 	
 	@Inject
 	public AccountsPanel(SettingsManager settingsManager,
 			AccountTableDataModel accountData,
 			AccountColumnModel accountModel,
 			final Provider<AddCharacterFrame> addCharacterFrameProvider) {
-		
-		setBackground(Color.WHITE);	
+
+		this.settingsManager = settingsManager;
+		this.accountModel = accountModel;
 		
 		table = new Table(accountData, accountModel);
+		
+		addCharacter = new ToolBarButton("img/32/add.png", "Add new a character");
+		deleteCharacter = new ToolBarButton("img/32/remove.png", "Delete a character");
+		
+		addCharacter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addCharacterFrameProvider.get().initialize();
+			}
+		});
+		
+		deleteCharacter.setEnabled(false);
+		deleteCharacter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (int row : table.getSelectedRows()) {
+					table.delete(row);
+				}
+				reloadTab();
+			}
+		});
+	}
+
+	public void initialize() {
+		table.initialize();
+		
+		setBackground(Color.WHITE);	
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        
-        addCharacter = new ToolBarButton("img/32/add.png", "Add new a character");
-        deleteCharacter = new ToolBarButton("img/32/remove.png", "Delete a character");
-
-        addCharacter.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) {
-        		addCharacterFrameProvider.get().initialize();
-        	}
-        });
-        
-        deleteCharacter.setEnabled(false);
-        deleteCharacter.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) {
-        		for (int row : table.getSelectedRows()) {
-        			table.delete(row);
-        		}
-        		reloadTab();
-        	}
-        });
         
         ToolBar toolBar = new ToolBar(settingsManager);
         ToolBarButton columnSelectButton = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(accountModel, table));

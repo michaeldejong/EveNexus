@@ -47,11 +47,12 @@ public class Table extends JTable {
 	private final List<Map<String, Object>> data;
 	
 	public Table(ITableDataModel tableDataModel, ColumnModel columns) {
-		super();
 		this.data = new ArrayList<Map<String, Object>>();
 		this.tableDataModel = tableDataModel;
 		this.columnModel = columns;
-		
+	}
+	
+	public void initialize() {
 		setRowHeight(21);		
 		getTableHeader().setReorderingAllowed(false);
 		setFillsViewportHeight(true);

@@ -45,7 +45,7 @@ public final class Application {
 		frame.setVisible(true);
 		
 		LOG.info("Creating Guice injector...");
-		frame.update(9, 1, "Creating Guice injector...");
+		frame.update(9, 0, "Creating Guice injector...");
 		Injector injector = Guice.createInjector(new ApplicationModule());
 		Application application = injector.getInstance(Application.class);
 		
@@ -59,11 +59,16 @@ public final class Application {
 	public void initialize(ProgressManager progressManager, String[] args) throws Exception {
 		synchronized (this) {
 			Preconditions.checkArgument(!initialized, "This class has already been initialized!");
-						
-			// 1. Initialize program settings.
+			
+			// 0. Initialize program settings.
 			LOG.info("Reading program settings...");
-			progressManager.update(9, 2, "Reading program settings...");
+			progressManager.update(9, 1, "Reading program settings...");
 			settingsManager.initialize();
+			
+			// 1. Establishing database connection
+			LOG.info("Establishing database connection...");
+			progressManager.update(9, 2, "Establishing database connection...");
+			database.getCurrentSession();
 			
 			// 2. Preparing proxy settings.
 			LOG.info("Initializing proxy settings...");

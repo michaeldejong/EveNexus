@@ -39,6 +39,10 @@ public class ProfitPanel extends TabPanel {
 		this.settingsManager = settingsManager;
 		this.columnModel = new ProfitColumnModel(settingsManager);
 		this.table = new Table(profitData, columnModel);
+	}	
+
+	public void initialize() {
+		table.initialize();
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);		
@@ -100,5 +104,5 @@ public class ProfitPanel extends TabPanel {
 		
 		return toolBar;
 	}
-	
+
 }

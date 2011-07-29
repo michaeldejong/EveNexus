@@ -23,16 +23,14 @@ public class TaxesGraphElement implements GraphElement {
 
 	private final SettingsManager settingsManager;
 	private final Database database;
-	
 	private final Map<Integer, Double> data;
 	private boolean isVisible;
 	
 	@Inject
 	public TaxesGraphElement(SettingsManager settingsManager, Database database) {
+		this.data = new TreeMap<Integer, Double>();
 		this.settingsManager = settingsManager;
 		this.database = database;
-		
-		this.data = new TreeMap<Integer, Double>();
 		this.isVisible = settingsManager.loadBoolean(visibleSetting, true);
 	}
 	

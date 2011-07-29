@@ -41,6 +41,12 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		this.table = new Table(tableDataModel, columnModel);
 		this.settingsManager = settingsManager;
 		
+		importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
+	}
+	
+	public void initialize() {
+		table.initialize();
+		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		ToolBar panel = createTopMenu();
@@ -64,8 +70,6 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
     			.addComponent(scrollPane)
 	    		.addGap(7)
     	);
-    	
-    	importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
 	}
 	
 	@Override

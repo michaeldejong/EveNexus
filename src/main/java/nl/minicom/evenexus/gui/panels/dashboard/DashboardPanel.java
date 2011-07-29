@@ -26,8 +26,13 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 	private static final long serialVersionUID = 9040274995425958160L;
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardPanel.class);
 	
-	private final LineGraphEngine chartPanel;
+	private final ImportManager importManager;
 	private final SettingsManager settingsManager;
+	private final ProfitGraphElement profitGraphElement;
+	private final TaxesGraphElement taxesGraphElement;
+	private final SalesGraphElement salesGraphElement;
+	private final PurchasesGraphElement purchasesGraphElement;
+	private final LineGraphEngine chartPanel;
 
 	@Inject
 	public DashboardPanel(ImportManager importManager,
@@ -35,19 +40,25 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 			ProfitGraphElement profitGraphElement,
 			TaxesGraphElement taxesGraphElement,
 			SalesGraphElement salesGraphElement,
-			PurchasesGraphElement purchaseGraphElement) {
-		
+			PurchasesGraphElement purchasesGraphElement) {
 
-		this.settingsManager = settingsManager;
-		
 		int period = settingsManager.loadInt(SettingsManager.FILTER_DASHBOARD_PERIOD, 14);
+		this.settingsManager = settingsManager;
+		this.importManager = importManager;
+		this.profitGraphElement = profitGraphElement;
+		this.taxesGraphElement = taxesGraphElement;
+		this.salesGraphElement = salesGraphElement;
+		this.purchasesGraphElement = purchasesGraphElement;
 		this.chartPanel = new LineGraphEngine(period);
-		this.chartPanel.addGraphElement(profitGraphElement);
-		this.chartPanel.addGraphElement(taxesGraphElement);
-		this.chartPanel.addGraphElement(salesGraphElement);
-		this.chartPanel.addGraphElement(purchaseGraphElement);		
-		this.chartPanel.setBorder(new LineBorder(Color.GRAY, 1));
-		this.chartPanel.reload();
+	}
+	
+	public void initialize() {
+		chartPanel.addGraphElement(profitGraphElement);
+		chartPanel.addGraphElement(taxesGraphElement);
+		chartPanel.addGraphElement(salesGraphElement);
+		chartPanel.addGraphElement(purchasesGraphElement);		
+		chartPanel.setBorder(new LineBorder(Color.GRAY, 1));
+		chartPanel.reload();
 
 		Gui.setLookAndFeel();
 		setBackground(Color.WHITE);

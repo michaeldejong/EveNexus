@@ -45,6 +45,13 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 		this.columnModel = new MarketOrdersColumnModel(settingsManager);
 		this.table1 = new Table(sellOrderData, columnModel);
 		this.table2 = new Table(buyOrderDate, columnModel);
+    	
+    	importManager.addListener(Api.CHAR_MARKET_ORDERS, this);
+	}
+
+	public void initialize() {
+		table1.initialize();
+		table2.initialize();
 		
 		JScrollPane scrollPane1 = new JScrollPane(table1);
 		scrollPane1.getVerticalScrollBar().setUnitIncrement(16);
@@ -74,8 +81,6 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
     			.addComponent(scrollPane2)
 	    		.addGap(7)
     	);
-    	
-    	importManager.addListener(Api.CHAR_MARKET_ORDERS, this);
 	}
 	
 	@Override

@@ -35,8 +35,6 @@ public class ProfitGraphElement implements GraphElement {
 		
 		this.data = new TreeMap<Integer, Double>();
 		this.isVisible = settingsManager.loadBoolean(visibleSetting, true);
-		
-		reload();
 	}
 
 	@Override
