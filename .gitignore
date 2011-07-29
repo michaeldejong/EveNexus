@@ -44,3 +44,5 @@ target/*
 ####################
 database/*
 log.txt
+session.properties
+
