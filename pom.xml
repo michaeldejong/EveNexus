@@ -133,11 +133,6 @@
 					<targetJdk>1.6</targetJdk>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>emma</groupId>
-				<artifactId>maven-emma-plugin</artifactId>
-				<version>0.5</version>
-			</plugin>
 		</plugins>
 	</build>
 
