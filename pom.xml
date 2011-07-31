@@ -134,7 +134,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+				<groupId>emma</groupId>
 				<artifactId>maven-emma-plugin</artifactId>
 				<version>0.5</version>
 			</plugin>
