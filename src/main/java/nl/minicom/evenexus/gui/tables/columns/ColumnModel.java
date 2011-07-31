@@ -3,7 +3,21 @@ package nl.minicom.evenexus.gui.tables.columns;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import nl.minicom.evenexus.gui.tables.renderers.AlignLeftRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.AlignRightRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
+
 public class ColumnModel {
+	
+	@Inject public static AlignLeftRenderer ALIGN_LEFT;
+	@Inject public static AlignRightRenderer ALIGN_RIGHT;
+	@Inject public static CurrencyRenderer CURRENCY;
+	@Inject public static DateTimeRenderer DATE_TIME;
+	@Inject public static IntegerRenderer INTEGER;
 	
 	private List<Column> columns;
 	private List<Column> visibleColumns;

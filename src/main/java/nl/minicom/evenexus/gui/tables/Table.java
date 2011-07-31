@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -18,11 +18,7 @@ import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.gui.tables.columns.listeners.TableColumnResizeModelListener;
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
-import nl.minicom.evenexus.gui.tables.renderers.AlignLeftRenderer;
-import nl.minicom.evenexus.gui.tables.renderers.AlignRightRenderer;
-import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
-import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
-import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
 import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
@@ -35,24 +31,23 @@ public class Table extends JTable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Table.class);
 
-	public static final DefaultTableCellRenderer CURRENCY_RENDERER = new CurrencyRenderer();
-	public static final DefaultTableCellRenderer LEFT_RENDERER = new AlignLeftRenderer();
-	public static final DefaultTableCellRenderer RIGHT_RENDERER = new AlignRightRenderer();
-	public static final DefaultTableCellRenderer DATE_TIME_RENDERER = new DateTimeRenderer();
-	public static final DefaultTableCellRenderer INTEGER_RENDERER = new IntegerRenderer();
-
-	private ScrollableResults result;
-	private final ColumnModel columnModel;
-	private final ITableDataModel tableDataModel;
 	private final List<Map<String, Object>> data;
+	private final BugReportDialog dialog;
 	
-	public Table(ITableDataModel tableDataModel, ColumnModel columns) {
+	private ScrollableResults result;
+	private ColumnModel columnModel;
+	private ITableDataModel tableDataModel;
+	
+	@Inject
+	public Table(BugReportDialog dialog) {
 		this.data = new ArrayList<Map<String, Object>>();
-		this.tableDataModel = tableDataModel;
-		this.columnModel = columns;
+		this.dialog = dialog;
 	}
 	
-	public void initialize() {
+	public void initialize(ITableDataModel tableDataModel, ColumnModel columns) {
+		this.tableDataModel = tableDataModel;
+		this.columnModel = columns;
+
 		setRowHeight(21);		
 		getTableHeader().setReorderingAllowed(false);
 		setFillsViewportHeight(true);
@@ -145,6 +140,7 @@ public class Table extends JTable {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 	
@@ -164,6 +160,7 @@ public class Table extends JTable {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 		return result;
 	}
@@ -175,6 +172,7 @@ public class Table extends JTable {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 	

@@ -29,6 +29,8 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionsPanel.class);
 
 	private final Table table;
+	private final TransactionColumnModel columnModel;
+	private final TransactionTableDataModel tableDataModel;
 	private final SettingsManager settingsManager;
 	
 	@Inject
@@ -36,16 +38,19 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 			ImportManager importManager,
 			SettingsManager settingsManager,
 			TransactionColumnModel columnModel, 
-			TransactionTableDataModel tableDataModel) {
+			TransactionTableDataModel tableDataModel,
+			Table table) {
 		
-		this.table = new Table(tableDataModel, columnModel);
+		this.table = table;
+		this.tableDataModel = tableDataModel;
+		this.columnModel = columnModel;
 		this.settingsManager = settingsManager;
 		
 		importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
 	}
 	
 	public void initialize() {
-		table.initialize();
+		table.initialize(tableDataModel, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);

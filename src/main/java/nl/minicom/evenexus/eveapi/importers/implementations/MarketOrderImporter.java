@@ -10,6 +10,8 @@ import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
+import nl.minicom.evenexus.eveapi.importers.ImporterThread;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MarketOrder;
@@ -26,9 +28,18 @@ public class MarketOrderImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MarketOrderImporter.class);
 	
+	private final BugReportDialog dialog;
+	
 	@Inject
-	public MarketOrderImporter(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager) {
-		super(database, apiParserProvider, importManager, Api.CHAR_MARKET_ORDERS);
+	public MarketOrderImporter(
+			Database database, 
+			Provider<ApiParser> apiParserProvider, 
+			Provider<ImporterThread> importerThreadProvider, 
+			ImportManager importManager,
+			BugReportDialog dialog) {
+		
+		super(database, apiParserProvider, importerThreadProvider, importManager, Api.CHAR_MARKET_ORDERS);
+		this.dialog = dialog;
 	}
 
 	@Override
@@ -75,6 +86,7 @@ public class MarketOrderImporter extends ImporterTask {
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 

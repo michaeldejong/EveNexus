@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nl.minicom.evenexus.gui.tables.datamodel.IPeriodFilter;
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.utils.SettingsManager;
 
@@ -24,12 +25,14 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(JournalTableDataModel.class);
 
 	private final Database database;
+	private final BugReportDialog dialog;
 	
 	private int period;
 	
 	@Inject
-	public JournalTableDataModel(SettingsManager settingsManager, Database database) {
+	public JournalTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
+		this.dialog = dialog;
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK));
 	}
 	
@@ -40,6 +43,7 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 		}
 		catch (HibernateException e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 			throw e;
 		}
 	}

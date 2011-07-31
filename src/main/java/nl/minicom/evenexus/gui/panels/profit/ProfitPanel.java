@@ -29,20 +29,23 @@ public class ProfitPanel extends TabPanel {
 
 	private final Table table;
 	private final ColumnModel columnModel;
+	private final ProfitTableDataModel profitData;
 	private final SettingsManager settingsManager;
 	
 	@Inject
 	public ProfitPanel(SettingsManager settingsManager,
 			ImportManager importManager,
-			ProfitTableDataModel profitData) {	
+			ProfitTableDataModel profitData,
+			Table table) {	
 		
 		this.settingsManager = settingsManager;
 		this.columnModel = new ProfitColumnModel(settingsManager);
-		this.table = new Table(profitData, columnModel);
+		this.profitData = profitData;
+		this.table = table;
 	}	
 
 	public void initialize() {
-		table.initialize();
+		table.initialize(profitData, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);		

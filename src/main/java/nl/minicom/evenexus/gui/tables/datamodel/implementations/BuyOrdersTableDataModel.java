@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.gui.tables.datamodel.ITypeNameFilter;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 
 import org.hibernate.HibernateException;
@@ -23,12 +24,14 @@ public class BuyOrdersTableDataModel implements ITableDataModel, ITypeNameFilter
 	private static final Logger LOG = LoggerFactory.getLogger(BuyOrdersTableDataModel.class);
 
 	private final Database database;
+	private final BugReportDialog dialog;
 	
 	private String typeName;
 	
 	@Inject
-	public BuyOrdersTableDataModel(Database database) {
+	public BuyOrdersTableDataModel(Database database, BugReportDialog dialog) {
 		this.database = database;
+		this.dialog = dialog;
 		setTypeName(null);
 	}
 	
@@ -39,6 +42,7 @@ public class BuyOrdersTableDataModel implements ITableDataModel, ITypeNameFilter
 		}
 		catch (HibernateException e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 			throw e;
 		}
 	}

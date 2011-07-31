@@ -30,9 +30,11 @@ public class AccountsPanel extends JPanel {
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(AccountsPanel.class);
 	
-	private final Table table;
-	private final AccountColumnModel accountModel;
 	private final SettingsManager settingsManager;
+	private final AccountTableDataModel accountData;
+	private final AccountColumnModel accountModel;
+	private final Table table;
+	
 	private final ToolBarButton addCharacter;
 	private final ToolBarButton deleteCharacter;
 	
@@ -40,12 +42,13 @@ public class AccountsPanel extends JPanel {
 	public AccountsPanel(SettingsManager settingsManager,
 			AccountTableDataModel accountData,
 			AccountColumnModel accountModel,
+			final Table table,
 			final Provider<AddCharacterFrame> addCharacterFrameProvider) {
 
 		this.settingsManager = settingsManager;
+		this.accountData = accountData;
 		this.accountModel = accountModel;
-		
-		table = new Table(accountData, accountModel);
+		this.table = table;
 		
 		addCharacter = new ToolBarButton("img/32/add.png", "Add new a character");
 		deleteCharacter = new ToolBarButton("img/32/remove.png", "Delete a character");
@@ -70,7 +73,7 @@ public class AccountsPanel extends JPanel {
 	}
 
 	public void initialize() {
-		table.initialize();
+		table.initialize(accountData, accountModel);
 		
 		setBackground(Color.WHITE);	
 		JScrollPane scrollPane = new JScrollPane(table);

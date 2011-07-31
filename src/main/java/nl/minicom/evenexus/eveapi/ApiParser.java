@@ -21,6 +21,7 @@ import nl.minicom.evenexus.eveapi.exceptions.JournalsExhaustedException;
 import nl.minicom.evenexus.eveapi.exceptions.MarketOrdersExhaustedException;
 import nl.minicom.evenexus.eveapi.exceptions.SecurityNotHighEnoughException;
 import nl.minicom.evenexus.eveapi.exceptions.TransactionsExhaustedException;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.ImportLog;
@@ -99,11 +100,13 @@ public class ApiParser {
 		}
 	}
 
+	private final BugReportDialog dialog;
 	private final ApiServerManager apiServerManager;
 	private final Database database;
 	
 	@Inject
-	public ApiParser(ApiServerManager apiServerManager, Database database) {
+	public ApiParser(ApiServerManager apiServerManager, Database database, BugReportDialog dialog) {
+		this.dialog = dialog;
 		this.apiServerManager = apiServerManager;
 		this.database = database;
 	}
@@ -192,7 +195,7 @@ public class ApiParser {
 		Node root = null;
 		
 		try {
-			LOG.info("Requesting: " + hostURL + importerPath);
+			LOG.debug("Requesting: " + hostURL + importerPath);
 			File xmlFile = downloadFile(url);
 			if (xmlFile == null) {
 				throw new IOException("Could not find: " + hostURL + importerPath);
@@ -226,6 +229,7 @@ public class ApiParser {
 				}
 				catch (Throwable e) {
 					LOG.error(e.getLocalizedMessage(), e);
+					dialog.setVisible(true);
 				}
 			}
 		} 

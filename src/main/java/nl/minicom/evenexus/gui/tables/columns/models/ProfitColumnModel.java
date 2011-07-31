@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 import javax.inject.Inject;
 
-import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -24,7 +23,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_DATE_WIDTH,
 				130, 
 				Timestamp.class, 
-				Table.DATE_TIME_RENDERER
+				ColumnModel.DATE_TIME
 		));
 		
 		add(new Column(
@@ -47,7 +46,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_QUANTITY_WIDTH,
 				74,
 				Long.class,
-				Table.INTEGER_RENDERER
+				ColumnModel.INTEGER
 		));
 		
 		add(new Column(
@@ -59,7 +58,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_UNIT_PROFIT_WITHOUT_TAXES_WIDTH,
 				100, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -71,7 +70,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_TOTAL_PROFIT_WITHOUT_TAXES_WIDTH,
 				100, 
 				BigDecimal.class,  
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -83,7 +82,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_UNIT_TAXES_WIDTH,
 				100, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -95,7 +94,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_TOTAL_TAXES_WIDTH,
 				100, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -107,7 +106,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_UNIT_PROFIT_WITH_TAXES_WIDTH,
 				128, 
 				BigDecimal.class,  
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -119,7 +118,7 @@ public class ProfitColumnModel extends ColumnModel {
 				SettingsManager.TABLE_PROFIT_TOTAL_PROFIT_WITH_TAXES_WIDTH,
 				128, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 	}
 	

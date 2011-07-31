@@ -2,7 +2,6 @@ package nl.minicom.evenexus.gui.tables.columns.models;
 
 import javax.inject.Inject;
 
-import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -31,7 +30,7 @@ public class AccountColumnModel extends ColumnModel {
 				SettingsManager.TABLE_ACCOUNT_USERID_WIDTH,
 				88,
 				Long.class,
-				Table.RIGHT_RENDERER
+				ColumnModel.ALIGN_RIGHT
 		));
 		
 		add(new Column(
@@ -54,7 +53,7 @@ public class AccountColumnModel extends ColumnModel {
 				SettingsManager.TABLE_ACCOUNT_CHARID_WIDTH,
 				88,
 				Long.class,
-				Table.RIGHT_RENDERER
+				ColumnModel.ALIGN_RIGHT
 		));
 	}
 	

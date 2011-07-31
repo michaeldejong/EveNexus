@@ -7,6 +7,8 @@ import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
+import nl.minicom.evenexus.eveapi.importers.ImporterThread;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.RefType;
@@ -21,10 +23,19 @@ import org.slf4j.LoggerFactory;
 public class RefTypeImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(RefTypeImporter.class);
+	
+	private final BugReportDialog dialog;
 
 	@Inject
-	public RefTypeImporter(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager) {
-		super(database, apiParserProvider, importManager, Api.EVE_REF_TYPE);
+	public RefTypeImporter(
+			Database database, 
+			Provider<ApiParser> apiParserProvider, 
+			Provider<ImporterThread> importerThreadProvider, 
+			ImportManager importManager,
+			BugReportDialog dialog) {
+		
+		super(database, apiParserProvider, importerThreadProvider, importManager, Api.EVE_REF_TYPE);
+		this.dialog = dialog;
 	}
 
 	@Override
@@ -58,6 +69,7 @@ public class RefTypeImporter extends ImporterTask {
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 }

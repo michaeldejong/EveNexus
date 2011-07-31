@@ -11,11 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
+import javax.inject.Inject;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.icons.Icon;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +27,15 @@ public class Tray {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Tray.class);
 
-	private final Gui gui;
 	private final TrayIcon icon;
 	private final SystemTray tray;
+	private final BugReportDialog dialog;
+
+	private Gui gui = null;
 	
-	public Tray(Gui gui) {
-		this.gui = gui;
+	@Inject
+	public Tray(BugReportDialog dialog) {
+		this.dialog = dialog;
 
 		Image image = Icon.getImage("img/48/logo.png");
 		Image scaled = image.getScaledInstance(16, 16, BufferedImage.TYPE_INT_RGB);
@@ -39,6 +44,10 @@ public class Tray {
 		icon = new TrayIcon(scaled, parent.getSpecificationTitle() + " " + parent.getSpecificationVersion());
 		tray = SystemTray.getSystemTray();
 	}
+
+	public void setGui(Gui gui) {
+		this.gui = gui;
+	}
 	
 	public void createTray() {
 		if (SystemTray.isSupported()) {
@@ -46,9 +55,11 @@ public class Tray {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					tray.remove(icon);
-					gui.setVisible(true);
-					gui.setState(JFrame.NORMAL);
-					gui.toFront();
+					if (gui != null) {
+						gui.setVisible(true);
+						gui.setState(JFrame.NORMAL);
+						gui.toFront();
+					}
 				}
 			};
 
@@ -82,6 +93,7 @@ public class Tray {
 			}
 			catch (AWTException e) {
 				LOG.error(e.getLocalizedMessage(), e);
+				dialog.setVisible(true);
 			}
 		}
 	}

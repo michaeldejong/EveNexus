@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 import javax.inject.Inject;
 
-import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -24,7 +23,7 @@ public class JournalColumnModel extends ColumnModel {
 				SettingsManager.TABLE_JOURNAL_DATE_WIDTH, 
 				147,
 				Timestamp.class,
-				Table.DATE_TIME_RENDERER
+				ColumnModel.DATE_TIME
 		));
 		
 		add(new Column(
@@ -69,7 +68,7 @@ public class JournalColumnModel extends ColumnModel {
 				SettingsManager.TABLE_JOURNAL_AMOUNT_WIDTH,
 				166,
 				Long.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -81,7 +80,7 @@ public class JournalColumnModel extends ColumnModel {
 				SettingsManager.TABLE_JOURNAL_BALANCE_WIDTH,
 				100, 
 				BigDecimal.class,
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -104,7 +103,7 @@ public class JournalColumnModel extends ColumnModel {
 				SettingsManager.TABLE_JOURNAL_TAXED_WIDTH,
 				100,
 				BigDecimal.class,
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 	}
 	

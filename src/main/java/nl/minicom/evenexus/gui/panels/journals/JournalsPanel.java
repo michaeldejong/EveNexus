@@ -14,7 +14,6 @@ import nl.minicom.evenexus.eveapi.importers.ImportListener;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
-import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
 import nl.minicom.evenexus.gui.tables.columns.models.JournalColumnModel;
 import nl.minicom.evenexus.gui.tables.datamodel.implementations.JournalTableDataModel;
@@ -31,24 +30,27 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(JournalsPanel.class);
 	
-	private Table table;
-	private final ColumnModel columnModel;
 	private final SettingsManager settingsManager;
+	private final JournalColumnModel columnModel;
+	private final JournalTableDataModel journalData;
+	private final Table table;
 	
 	@Inject
 	public JournalsPanel(SettingsManager settingsManager,
 			ImportManager importManager,
-			JournalTableDataModel journalData) {
+			JournalTableDataModel journalData,
+			Table table) {
 		
 		this.settingsManager = settingsManager;
 		this.columnModel = new JournalColumnModel(settingsManager);
-		this.table = new Table(journalData, columnModel);
+		this.journalData = journalData;
+		this.table = table;
     	
     	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
 	}
 
 	public void initialize() {
-		table.initialize();
+		table.initialize(journalData, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);

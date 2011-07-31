@@ -8,6 +8,8 @@ import nl.minicom.evenexus.eveapi.ApiParser;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
+import nl.minicom.evenexus.eveapi.importers.ImporterThread;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.Skill;
@@ -22,10 +24,19 @@ import org.slf4j.LoggerFactory;
 public class SkillImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SkillImporter.class);
+	
+	private final BugReportDialog dialog;
 
 	@Inject
-	public SkillImporter(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager) {
-		super(database, apiParserProvider, importManager, Api.CHAR_SKILLS);
+	public SkillImporter(
+			Database database, 
+			Provider<ApiParser> apiParserProvider, 
+			Provider<ImporterThread> importerThreadProvider, 
+			ImportManager importManager,
+			BugReportDialog dialog) {
+		
+		super(database, apiParserProvider, importerThreadProvider, importManager, Api.CHAR_SKILLS);
+		this.dialog = dialog;
 	}
 
 	@Override
@@ -67,6 +78,7 @@ public class SkillImporter extends ImporterTask {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 

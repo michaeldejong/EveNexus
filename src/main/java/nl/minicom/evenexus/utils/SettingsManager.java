@@ -10,7 +10,10 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +23,13 @@ public class SettingsManager {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SettingsManager.class);
 		
+	private final BugReportDialog dialog;
 	private final SortedProperties settings;
 	private final File file;
 	
-	public SettingsManager() {
+	@Inject
+	public SettingsManager(BugReportDialog dialog) {
+		this.dialog = dialog;
 		settings = new SortedProperties();
 		file = new File("session.properties");
 	}
@@ -87,6 +93,7 @@ public class SettingsManager {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 		return null;
 	}
@@ -110,6 +117,7 @@ public class SettingsManager {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 	
@@ -126,6 +134,7 @@ public class SettingsManager {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 	

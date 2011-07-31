@@ -4,6 +4,7 @@ package nl.minicom.evenexus.eveapi.importers;
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.eveapi.exceptions.WarnableException;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 
 import org.slf4j.Logger;
@@ -14,16 +15,18 @@ public class ImporterThread extends Thread {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ImporterThread.class);
 	
-	private final ImporterTask importer;
+	private final BugReportDialog dialog;
 	
+	private ImporterTask importer;
 	private ApiKey apiKey;
 	
 	@Inject
-	public ImporterThread(ImporterTask importer) {
-		this.importer = importer;
+	public ImporterThread(BugReportDialog dialog) {
+		this.dialog = dialog;
 	}
 	
-	public void initialize(ApiKey apiKey) {
+	public void initialize(ImporterTask importer, ApiKey apiKey) {
+		this.importer = importer;
 		this.apiKey = apiKey;
 	}
 
@@ -37,6 +40,7 @@ public class ImporterThread extends Thread {
 		}
 		catch (Throwable e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 	}
 	

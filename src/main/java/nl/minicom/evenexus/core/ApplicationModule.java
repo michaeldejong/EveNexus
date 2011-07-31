@@ -3,6 +3,11 @@ package nl.minicom.evenexus.core;
 import javax.inject.Singleton;
 
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
+import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
@@ -29,6 +34,14 @@ public class ApplicationModule extends AbstractModule {
 		bind(RevisionExecutor.class).in(Singleton.class);
 		bind(ProxyManager.class).in(Singleton.class);
 		bind(ImportManager.class).in(Singleton.class);
+		
+		bind(BugReportDialog.class).in(Singleton.class);
+		
+		bind(CurrencyRenderer.class).in(Singleton.class);
+		bind(IntegerRenderer.class).in(Singleton.class);
+		bind(DateTimeRenderer.class).in(Singleton.class);
+		
+		requestStaticInjection(ColumnModel.class);
 	}
 
 }

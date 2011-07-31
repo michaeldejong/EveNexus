@@ -30,11 +30,13 @@ public class AboutDialog extends CustomDialog {
 	private static final Logger LOG = LoggerFactory.getLogger(AboutDialog.class);
 		
 	private final Application application;
+	private final BugReportDialog dialog;
 	
 	@Inject
-	public AboutDialog(Application application) {
+	public AboutDialog(Application application, BugReportDialog dialog) {
 		super(DialogTitle.ABOUT_TITLE, 370, 368);
 		this.application = application;
+		this.dialog = dialog;
 	}
 	
 	public void initialize() {
@@ -129,6 +131,7 @@ public class AboutDialog extends CustomDialog {
 					}
 					catch (Exception e) {
 						LOG.error(e.getLocalizedMessage(), e);
+						dialog.setVisible(true);
 					} 
 				}
 			}

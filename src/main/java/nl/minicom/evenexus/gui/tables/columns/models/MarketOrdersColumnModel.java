@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 import javax.inject.Inject;
 
-import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -35,7 +34,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				SettingsManager.TABLE_MARKETORDER_VOLENTERED_WIDTH,
 				87,
 				Long.class,
-				Table.INTEGER_RENDERER
+				ColumnModel.INTEGER
 		));
 		
 		add(new Column(
@@ -47,7 +46,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				SettingsManager.TABLE_MARKETORDER_VOLREMAINING_WIDTH,
 				86,
 				Long.class,
-				Table.INTEGER_RENDERER
+				ColumnModel.INTEGER
 		));
 		
 		add(new Column(
@@ -59,7 +58,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				SettingsManager.TABLE_MARKETORDER_MINVOLUME_WIDTH,
 				50,
 				Long.class,
-				Table.INTEGER_RENDERER
+				ColumnModel.INTEGER
 		));
 		
 		add(new Column(
@@ -82,7 +81,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				SettingsManager.TABLE_MARKETORDER_PRICE_WIDTH,
 				137,
 				BigDecimal.class,
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -94,7 +93,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				SettingsManager.TABLE_MARKETORDER_ISSUED_WIDTH,
 				100, 
 				Timestamp.class,
-				Table.DATE_TIME_RENDERER
+				ColumnModel.DATE_TIME
 		));
 	}
 	

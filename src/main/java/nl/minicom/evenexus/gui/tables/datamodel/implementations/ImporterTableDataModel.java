@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 
 import org.hibernate.HibernateException;
@@ -22,10 +23,12 @@ public class ImporterTableDataModel implements ITableDataModel {
 	private final static Logger LOG = LoggerFactory.getLogger(ImporterTableDataModel.class);
 	
 	private final Database database;
+	private final BugReportDialog dialog;
 	
 	@Inject
-	public ImporterTableDataModel(Database database) {
+	public ImporterTableDataModel(Database database, BugReportDialog dialog) {
 		this.database = database;
+		this.dialog = dialog;
 	}
 	
 	@Override
@@ -35,6 +38,7 @@ public class ImporterTableDataModel implements ITableDataModel {
 		}
 		catch (HibernateException e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 			throw e;
 		}
 	}

@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 import javax.inject.Inject;
 
-import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -24,7 +23,7 @@ public class TransactionColumnModel extends ColumnModel {
 				SettingsManager.TABLE_TRANSACTION_DATE_WIDTH,
 				138, 
 				Timestamp.class, 
-				Table.DATE_TIME_RENDERER
+				ColumnModel.DATE_TIME
 		));
 		
 		add(new Column(
@@ -69,7 +68,7 @@ public class TransactionColumnModel extends ColumnModel {
 				SettingsManager.TABLE_TRANSACTION_QUANTITY_WIDTH,
 				80, 
 				Long.class, 
-				Table.INTEGER_RENDERER
+				ColumnModel.INTEGER
 		));
 		
 		add(new Column(
@@ -81,7 +80,7 @@ public class TransactionColumnModel extends ColumnModel {
 				SettingsManager.TABLE_TRANSACTION_PRICE_WIDTH,
 				132, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -93,7 +92,7 @@ public class TransactionColumnModel extends ColumnModel {
 				SettingsManager.TABLE_TRANSACTION_TAXES_WIDTH,
 				100, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -105,7 +104,7 @@ public class TransactionColumnModel extends ColumnModel {
 				SettingsManager.TABLE_TRANSACTION_TOTAL_WITHOUT_TAXES_WIDTH,
 				100, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 		
 		add(new Column(
@@ -117,7 +116,7 @@ public class TransactionColumnModel extends ColumnModel {
 				SettingsManager.TABLE_TRANSACTION_TOTAL_WITH_TAXES_WIDTH,
 				131, 
 				BigDecimal.class, 
-				Table.CURRENCY_RENDERER
+				ColumnModel.CURRENCY
 		));
 	}
 	

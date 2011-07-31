@@ -4,7 +4,6 @@ package nl.minicom.evenexus.gui.tables.columns;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.table.TableCellRenderer;
 
-import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 
@@ -28,7 +27,7 @@ public class Column {
 	}
 		
 	public Column(SettingsManager settingsManager, String name, String column, String visibleSetting, boolean defaultVisible, String widthSetting, int defaultWidth, Class<?> classReference) {
-		this(settingsManager, name, column, visibleSetting, defaultVisible, widthSetting, defaultWidth, classReference, Table.LEFT_RENDERER);
+		this(settingsManager, name, column, visibleSetting, defaultVisible, widthSetting, defaultWidth, classReference, ColumnModel.ALIGN_LEFT);
 	}
 		
 	public Column(SettingsManager settingsManager, String name, String column, String visibleSetting, boolean defaultVisible, String widthSetting, int defaultWidth, Class<?> classReference, TableCellRenderer renderer) {

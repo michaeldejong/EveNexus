@@ -40,6 +40,7 @@ public final class Application {
 	private boolean initialized = false;
 	
 	public static void main(String[] args) throws Exception {
+		LOG.info("");
 		SplashFrame frame = new SplashFrame();
 		frame.buildGui();
 		frame.setVisible(true);

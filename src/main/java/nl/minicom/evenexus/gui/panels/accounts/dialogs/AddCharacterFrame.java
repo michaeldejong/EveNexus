@@ -23,6 +23,7 @@ import nl.minicom.evenexus.eveapi.exceptions.SecurityNotHighEnoughException;
 import nl.minicom.evenexus.eveapi.exceptions.WarnableException;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
 import nl.minicom.evenexus.gui.validation.StateRule;
@@ -48,13 +49,15 @@ public class AddCharacterFrame extends CustomDialog {
 	private final CharacterPanel characterPanel;
 	private final ImportManager importManager;
 	private final Database database;
+	private final BugReportDialog dialog;
 	
 	@Inject
 	public AddCharacterFrame(AccountsPanel panel, 
 			Provider<ApiParser> apiParserProvider,
 			CharacterPanel characterPanel,
 			ImportManager importManager,
-			Database database) {
+			Database database,
+			BugReportDialog dialog) {
 		
 		super(DialogTitle.CHARACTER_ADD_TITLE, 400, 375);
 		this.apiParserProvider = apiParserProvider;
@@ -62,6 +65,7 @@ public class AddCharacterFrame extends CustomDialog {
 		this.importManager = importManager;
 		this.database = database;
 		this.panel = panel;
+		this.dialog = dialog;
 	}
 	
 	public void initialize() {
@@ -158,6 +162,7 @@ public class AddCharacterFrame extends CustomDialog {
 						}
 						catch (Exception e) {
 							LOG.error(e.getLocalizedMessage(), e);
+							dialog.setVisible(true);
 						}
 						finally {
 							panel.reloadTab();
@@ -212,6 +217,7 @@ public class AddCharacterFrame extends CustomDialog {
 		}
 		catch (Throwable e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 		return null;
 	}
@@ -229,6 +235,7 @@ public class AddCharacterFrame extends CustomDialog {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 		return true;
 	}

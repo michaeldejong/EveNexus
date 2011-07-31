@@ -8,10 +8,13 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Locale;
 
+import javax.inject.Inject;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.NumberFormatter;
+
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +25,15 @@ public class CurrencyRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 3654076174730284327L;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyRenderer.class);
+	private static final Color RED = new Color(200, 16, 16);
+	private static final Color GREEN = new Color(0, 128, 0);
+	private static final AbstractFormatter FORMATTER = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0.00", DecimalFormatSymbols.getInstance(Locale.US)));
 	
-	private Color RED = new Color(200, 16, 16);
-	private Color GREEN = new Color(0, 128, 0);
-	private AbstractFormatter formatter = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0.00", DecimalFormatSymbols.getInstance(Locale.US)));
+	private final BugReportDialog dialog;
 
-	public CurrencyRenderer() {
-		super();
+	@Inject
+	public CurrencyRenderer(BugReportDialog dialog) {
+		this.dialog = dialog;
 		setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
 	}
 		
@@ -57,10 +62,11 @@ public class CurrencyRenderer extends DefaultTableCellRenderer {
 		}
 		
 		try {
-			setValue(formatter.valueToString(decimalValue));
+			setValue(FORMATTER.valueToString(decimalValue));
 		}
 		catch (ParseException e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 		}
 		
 		return c;

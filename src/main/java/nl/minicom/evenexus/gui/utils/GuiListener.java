@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
 
+import javax.inject.Inject;
 import javax.swing.JFrame;
 
 import nl.minicom.evenexus.gui.Gui;
@@ -18,9 +19,14 @@ public class GuiListener implements ComponentListener, WindowStateListener, Wind
 	private final Tray tray;
 	private final SettingsManager settingsManager;
 	
-	public GuiListener(Gui gui, SettingsManager settingsManager) {
-		this.tray = new Tray(gui);
+	@Inject
+	public GuiListener(SettingsManager settingsManager, Tray tray) {
+		this.tray = tray;
 		this.settingsManager = settingsManager;
+	}
+
+	public void setGui(Gui gui) {
+		tray.setGui(gui);
 	}
 	
 	// WindowListener

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nl.minicom.evenexus.gui.tables.datamodel.IPeriodFilter;
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.gui.tables.datamodel.ITypeNameFilter;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.utils.SettingsManager;
 
@@ -25,13 +26,15 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	private final static Logger LOG = LoggerFactory.getLogger(ProfitTableDataModel.class);
 
 	private final Database database;
+	private final BugReportDialog dialog;
 	
 	private int period;
 	private String typeName;
 	
 	@Inject
-	public ProfitTableDataModel(SettingsManager settingsManager, Database database) {
+	public ProfitTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
+		this.dialog = dialog;
 		
 		setTypeName(null);
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_PROFIT_PERIOD, IPeriodFilter.WEEK));
@@ -44,6 +47,7 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 		}
 		catch (HibernateException e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
 			throw e;
 		}
 	}

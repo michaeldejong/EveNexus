@@ -2,6 +2,7 @@ package nl.minicom.evenexus.gui.panels.marketorders;
 
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
@@ -33,25 +34,30 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	private final Table table1;
 	private final Table table2;
 	private final ColumnModel columnModel;
+	private final SellOrdersTableDataModel sellOrderData;
+	private final BuyOrdersTableDataModel buyOrderData;
 	private final SettingsManager settingsManager;
 
 	@Inject
 	public MarketOrdersPanel(SettingsManager settingsManager,
 			ImportManager importManager,
 			SellOrdersTableDataModel sellOrderData,
-			BuyOrdersTableDataModel buyOrderDate) {	
+			BuyOrdersTableDataModel buyOrderDate,
+			Provider<Table> tableProvider) {	
 		
-		this.settingsManager = settingsManager;
+		this.table1 = tableProvider.get();
+		this.table2 = tableProvider.get();
 		this.columnModel = new MarketOrdersColumnModel(settingsManager);
-		this.table1 = new Table(sellOrderData, columnModel);
-		this.table2 = new Table(buyOrderDate, columnModel);
+		this.sellOrderData = sellOrderData;
+		this.buyOrderData = buyOrderDate;
+		this.settingsManager = settingsManager;
     	
     	importManager.addListener(Api.CHAR_MARKET_ORDERS, this);
 	}
 
 	public void initialize() {
-		table1.initialize();
-		table2.initialize();
+		table1.initialize(sellOrderData, columnModel);
+		table2.initialize(buyOrderData, columnModel);
 		
 		JScrollPane scrollPane1 = new JScrollPane(table1);
 		scrollPane1.getVerticalScrollBar().setUnitIncrement(16);

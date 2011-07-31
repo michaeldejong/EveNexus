@@ -27,6 +27,7 @@ import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;
 import nl.minicom.evenexus.gui.utils.dialogs.AboutDialog;
+import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ExportDatabaseDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.ImportDatabaseDialog;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -55,11 +56,13 @@ public class Gui extends JFrame {
 	private final ProfitPanel profitPanel;
 	private final AccountsPanel accountsPanel;
 	
+	private final GuiListener guiListener;
+	
 	private final Provider<ImportDatabaseDialog> importDatabaseDialogProvider;
 	private final Provider<ExportDatabaseDialog> exportDatabaseDialogProvider;
 	private final Provider<SettingsDialog> settingsDialogProvider;
 	private final Provider<AboutDialog> aboutDialogProvider;
-	
+
 	@Inject
 	public Gui(SettingsManager settingsManager,
 			DashboardPanel dashboardPanel,
@@ -68,10 +71,12 @@ public class Gui extends JFrame {
 			MarketOrdersPanel marketOrderPanel,
 			ProfitPanel profitPanel,
 			AccountsPanel accountsPanel,
+			GuiListener guiListener,
 			Provider<ImportDatabaseDialog> importDatabaseDialogProvider,
 			Provider<ExportDatabaseDialog> exportDatabaseDialogProvider,
 			Provider<SettingsDialog> settingsDialogProvider,
-			Provider<AboutDialog> aboutDialogProvider) {
+			Provider<AboutDialog> aboutDialogProvider,
+			Provider<BugReportDialog> brd) {
 		
 		this.settingsManager = settingsManager;
 		this.dashboardPanel = dashboardPanel;
@@ -80,6 +85,8 @@ public class Gui extends JFrame {
 		this.marketOrderPanel = marketOrderPanel;
 		this.profitPanel = profitPanel;
 		this.accountsPanel = accountsPanel;
+		
+		this.guiListener = guiListener;
 		
 		this.importDatabaseDialogProvider = importDatabaseDialogProvider;
 		this.exportDatabaseDialogProvider = exportDatabaseDialogProvider;
@@ -105,7 +112,7 @@ public class Gui extends JFrame {
 			setExtendedState(MAXIMIZED_BOTH);
 		}
 		
-		GuiListener guiListener = new GuiListener(this, settingsManager);
+		guiListener.setGui(this);
 		addComponentListener(guiListener);
 		addWindowStateListener(guiListener);
 		addWindowListener(guiListener);

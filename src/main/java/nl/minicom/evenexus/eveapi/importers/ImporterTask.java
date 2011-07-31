@@ -32,21 +32,34 @@ public abstract class ImporterTask extends TimerTask {
 	private final Database database;
 	private final ImportManager importManager;
 	private final Provider<ApiParser> apiParserProvider;
+	private final Provider<ImporterThread> importerThreadProvider;
 	private final long minimumDelay;
 	
 	private ApiKey apiKey;
 
 	@Inject
-	protected ImporterTask(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager, Api type) {
-		this (database, apiParserProvider, importManager, type, 0);
+	protected ImporterTask(Database database, 
+			Provider<ApiParser> apiParserProvider, 
+			Provider<ImporterThread> importerThreadProvider,
+			ImportManager importManager, 
+			Api type) {
+		
+		this (database, apiParserProvider, importerThreadProvider, importManager, type, 0);
 	}
 	
 	@Inject
-	protected ImporterTask(Database database, Provider<ApiParser> apiParserProvider, ImportManager importManager, Api type, long minimumDelay) {
+	protected ImporterTask(Database database, 
+			Provider<ApiParser> apiParserProvider, 
+			Provider<ImporterThread> importerThreadProvider,
+			ImportManager importManager, 
+			Api type, 
+			long minimumDelay) {
+		
 		this.type = type;
 		this.database = database;
 		this.importManager = importManager;
 		this.apiParserProvider = apiParserProvider;
+		this.importerThreadProvider = importerThreadProvider;
 		this.minimumDelay = minimumDelay;
 	}
 	
@@ -66,8 +79,8 @@ public abstract class ImporterTask extends TimerTask {
 
 	@Override
 	public final void run() {
-		ImporterThread thread = new ImporterThread(this);
-		thread.initialize(apiKey);
+		ImporterThread thread = importerThreadProvider.get();
+		thread.initialize(this, apiKey);
 		thread.start();
 	}
 	
