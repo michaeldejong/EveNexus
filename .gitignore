@@ -45,4 +45,6 @@ target/*
 database/*
 log.txt
 session.properties
-
+.pmd
+.checkstyle
+.ruleset
