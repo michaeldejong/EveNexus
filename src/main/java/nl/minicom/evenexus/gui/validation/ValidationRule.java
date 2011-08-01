@@ -20,7 +20,7 @@ public abstract class ValidationRule {
 		}
 	}
 	
-	public void addStateRule(StateRule rule) {
+	public final void addStateRule(StateRule rule) {
 		if (!rules.contains(rule)) {
 			rules.add(rule);
 			rule.addValidationRule(this);

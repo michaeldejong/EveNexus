@@ -16,7 +16,9 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	@Column(name = "selltransactionid", nullable = false)
 	private long sellTransactionId;
 	
-	public ProfitIdentifier() { }
+	public ProfitIdentifier() {
+		// Do nothing.
+	}
 	
 	public ProfitIdentifier(long buyTransactionId, long sellTransactionId) {
 		this.buyTransactionId = buyTransactionId;
@@ -43,8 +45,8 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	public final boolean equals(Object other) {
 		if (other instanceof ProfitIdentifier) {
 			ProfitIdentifier otherId = (ProfitIdentifier) other;
-			return 	buyTransactionId == otherId.buyTransactionId && 
-					sellTransactionId == otherId.sellTransactionId;
+			return buyTransactionId == otherId.buyTransactionId 
+				&& sellTransactionId == otherId.sellTransactionId;
 		}
 		return false;
 	}

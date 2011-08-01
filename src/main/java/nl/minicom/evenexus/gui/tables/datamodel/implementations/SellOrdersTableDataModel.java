@@ -98,7 +98,7 @@ public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilte
 	}
 
 	@Override
-	public void setTypeName(String name) {
+	public final void setTypeName(String name) {
 		if (name == null || name.isEmpty()) {
 			typeName = "%";
 			return;

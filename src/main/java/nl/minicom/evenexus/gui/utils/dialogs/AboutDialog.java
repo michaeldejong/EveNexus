@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -74,7 +75,7 @@ public class AboutDialog extends CustomDialog {
 	
 	private JPanel createVersionPanel() {
 		JPanel versionPanel = new JPanel();
-		versionPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Version"), new EmptyBorder(0, 10, 0, 10)));
+		versionPanel.setBorder(createTitledBorder("Version"));
 		versionPanel.setMinimumSize(new Dimension(0, 78));
 		versionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
 		
@@ -106,15 +107,15 @@ public class AboutDialog extends CustomDialog {
 			buildNumber = "unknown";
 		}
 		
-		return 	"<html>Application version: " + applicationVersion + " (" + 
-				"build: " + buildNumber + ")<br>" + 
-				"Database version: " + databaseVersion + "<br>" + 
-				"Content version: " + contentVersion + "</html>";
+		return "<html>Application version: " + applicationVersion + " (" 
+			+ "build: " + buildNumber + ")<br>" 
+			+ "Database version: " + databaseVersion + "<br>" 
+			+ "Content version: " + contentVersion + "</html>";
 	}
 	
 	private JPanel createContributionPanel() {
 		JPanel contributionPanel = new JPanel();
-		contributionPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Special thanks to"), new EmptyBorder(0, 10, 0, 10)));
+		contributionPanel.setBorder(createTitledBorder("Special thanks to"));
 		contributionPanel.setMinimumSize(new Dimension(0, 112));
 		contributionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 112));
 				
@@ -151,28 +152,39 @@ public class AboutDialog extends CustomDialog {
 		return contributionPanel;
 	}
 
+	private CompoundBorder createTitledBorder(String title) {
+		TitledBorder titleBorder = BorderFactory.createTitledBorder(title);
+		return new CompoundBorder(titleBorder, new EmptyBorder(0, 10, 0, 10));
+	}
+
 	private String createContributionString() {
 		Font font = UIManager.getFont("Label.font");
        
-		return 	"<html>" + 
-				"<head>" +
-				"<style>" + 
-				"BODY { font-family: " + font.getFamily() + "; font-size: " + font.getSize() + "pt; }" + 
-				"</style>" + 
-				"</head>" + 
-				"<body>" + 
-				"<a href='http://www.eve-online.com/'>CCP Games</a>, for the game itself and an awesome API<br>" + 
-				"<a href='http://wiki.eve-id.net/'>EVEDev</a>, for their extensive documentation of the API<br>" + 
-				"<a href='http://cemagraphics.deviantart.com/'>=cemagraphics</a>, for designing the logo<br>" + 
-				"<a href='http://www.wefunction.com/'>WeFunction.com</a>, for all the other icons<br>" + 
-				"<a href='https://github.com/michaeldejong/EveNexus'>GitHub.com</a>, for being a tremendous Git host!<br>" + 
-				"</body>" + 
-				"</html>";
+		StringBuilder builder = new StringBuilder();
+		builder.append("<html>");
+		builder.append("<head>");
+		builder.append("<style>");
+		builder.append("BODY { font-family: " + font.getFamily() + "; font-size: " + font.getSize() + "pt; }");
+		builder.append("</style>");
+		builder.append("</head>");
+		builder.append("<body>");
+		builder.append("<a href='http://www.eve-online.com/'>CCP Games</a>, ");
+		builder.append("for the game itself and an awesome API<br>");
+		builder.append("<a href='http://wiki.eve-id.net/'>EVEDev</a>, ");
+		builder.append("for their extensive documentation of the API<br>");
+		builder.append("<a href='http://cemagraphics.deviantart.com/'>=cemagraphics</a>, for designing the logo<br>");
+		builder.append("<a href='http://www.wefunction.com/'>WeFunction.com</a>, for all the other icons<br>");
+		builder.append("<a href='https://github.com/michaeldejong/EveNexus'>GitHub.com</a>, ");
+		builder.append("for being a tremendous Git host!<br>");
+		builder.append("</body>");
+		builder.append("</html>");
+		
+		return builder.toString();
 	}
 
 	private JPanel createDevPanel() {
 		JPanel devPanel = new JPanel();
-		devPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Developer"), new EmptyBorder(0, 10, 0, 10)));
+		devPanel.setBorder(createTitledBorder("Developer"));
 		devPanel.setMinimumSize(new Dimension(0, 50));
 		devPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 		

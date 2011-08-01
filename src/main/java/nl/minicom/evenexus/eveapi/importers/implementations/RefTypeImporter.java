@@ -43,7 +43,7 @@ public class RefTypeImporter extends ImporterTask {
 	public void parseApi(Node node, ApiKey apiKey) {
 		Session session = getDatabase().getCurrentSession();
 		final Node root = node.get("result").get("rowset");
-		for (int i = root.size() - 1; i >= 0 ; i--) {
+		for (int i = root.size() - 1; i >= 0; i--) {
 			processRow(root, i, session);
 		}
 	}

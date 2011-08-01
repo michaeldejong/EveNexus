@@ -64,10 +64,6 @@ public class WalletTransaction implements Serializable {
 	@Column(name = "ispersonal")
 	private boolean isPersonal;
 	
-	public WalletTransaction() {
-		// Do nothing.
-	}
-	
 	public Timestamp getTransactionDateTime() {
 		return transactionDateTime;
 	}
@@ -202,20 +198,20 @@ public class WalletTransaction implements Serializable {
 		if (other instanceof WalletTransaction) {
 			WalletTransaction transaction = (WalletTransaction) other;
 			
-			return 	transactionId == transaction.transactionId &&
-					transactionDateTime.equals(transaction.transactionDateTime) &&
-					characterId == transaction.characterId &&
-					quantity == transaction.quantity && 
-					remaining == transaction.remaining && 
-					typeName.equals(transaction.typeName) && 
-					typeId == transaction.typeId && 
-					price.compareTo(transaction.price) == 0 && 
-					taxes.compareTo(transaction.taxes) == 0 && 
-					clientId == transaction.clientId && 
-					clientName.equals(transaction.clientName) && 
-					stationId == transaction.stationId && 
-					stationName.equals(transaction.stationName) && 
-					isPersonal == transaction.isPersonal;
+			return transactionId == transaction.transactionId 
+				&& transactionDateTime.equals(transaction.transactionDateTime) 
+				&& characterId == transaction.characterId 
+				&& quantity == transaction.quantity 
+				&& remaining == transaction.remaining 
+				&& typeName.equals(transaction.typeName) 
+				&& typeId == transaction.typeId 
+				&& price.compareTo(transaction.price) == 0 
+				&& taxes.compareTo(transaction.taxes) == 0 
+				&& clientId == transaction.clientId 
+				&& clientName.equals(transaction.clientName) 
+				&& stationId == transaction.stationId 
+				&& stationName.equals(transaction.stationName) 
+				&& isPersonal == transaction.isPersonal;
 		}
 		return false;
 	}

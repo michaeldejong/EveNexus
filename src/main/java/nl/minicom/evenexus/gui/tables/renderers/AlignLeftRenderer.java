@@ -14,7 +14,7 @@ public class AlignLeftRenderer extends DefaultTableCellRenderer {
 		
 	@Override
 	public String getText() {
-		return(" " + super.getText() + " ");
+		return " " + super.getText() + " ";
 	}
 	
 }

@@ -59,12 +59,16 @@ public class TimeUtils {
 	public static String convertToDate(long timestamp) {
 		Calendar calendar = convertToCalendar(timestamp);
 		calendar.setTimeZone(GregorianCalendar.getInstance().getTimeZone());
-		return 	twoDigit(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
-				twoDigit(calendar.get(Calendar.MINUTE)) + ":" + 
-				twoDigit(calendar.get(Calendar.SECOND)) + " - " +  
-				twoDigit(calendar.get(Calendar.DAY_OF_MONTH)) + "/" + 
-				twoDigit(calendar.get(Calendar.MONTH) + 1) + "/" + 
-				calendar.get(Calendar.YEAR);			
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(twoDigit(calendar.get(Calendar.HOUR_OF_DAY)) + ":");
+		builder.append(twoDigit(calendar.get(Calendar.MINUTE)) + ":");
+		builder.append(twoDigit(calendar.get(Calendar.SECOND)) + " - ");
+		builder.append(twoDigit(calendar.get(Calendar.DAY_OF_MONTH)) + "/");
+		builder.append(twoDigit(calendar.get(Calendar.MONTH) + 1) + "/");
+		builder.append(calendar.get(Calendar.YEAR));
+		
+		return builder.toString();
 	}
 	
 	/**
@@ -74,12 +78,15 @@ public class TimeUtils {
 	 */
 	public static String convertToDate2(long timestamp) {
 		Calendar calendar = convertToCalendar(timestamp);
-		return 	calendar.get(Calendar.YEAR) + "/" + 		
-				twoDigit(calendar.get(Calendar.MONTH) + 1) + "/" + 
-				twoDigit(calendar.get(Calendar.DAY_OF_MONTH)) + "-" + 
-				twoDigit(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
-				twoDigit(calendar.get(Calendar.MINUTE)) + ":" + 
-				twoDigit(calendar.get(Calendar.SECOND));  
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(calendar.get(Calendar.YEAR) + "/");
+		builder.append(twoDigit(calendar.get(Calendar.MONTH) + 1) + "/");
+		builder.append(twoDigit(calendar.get(Calendar.DAY_OF_MONTH)) + "-");
+		builder.append(twoDigit(calendar.get(Calendar.HOUR_OF_DAY)) + ":");
+		builder.append(twoDigit(calendar.get(Calendar.MINUTE)) + ":");
+		builder.append(twoDigit(calendar.get(Calendar.SECOND)));
+		return builder.toString();
 	}
 
 	/**
@@ -89,7 +96,7 @@ public class TimeUtils {
 	 */
 	private static String twoDigit(int i) {
 		if (i > 9) {
-			return i + "";
+			return Integer.toString(i);
 		}
 		else {
 			return "0" + i;

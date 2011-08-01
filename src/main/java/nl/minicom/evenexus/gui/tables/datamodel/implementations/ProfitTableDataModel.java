@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, IPeriodFilter {
 
-	private final static Logger LOG = LoggerFactory.getLogger(ProfitTableDataModel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProfitTableDataModel.class);
 
 	private final Database database;
 	private final BugReportDialog dialog;
@@ -91,7 +91,7 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	}
 
 	@Override
-	public void setTypeName(String name) {
+	public final void setTypeName(String name) {
 		if (name == null || name.isEmpty()) {
 			typeName = "%";
 			return;
@@ -100,7 +100,7 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	}
 
 	@Override
-	public void setPeriod(int days) {
+	public final void setPeriod(int days) {
 		period = days;
 	}
 

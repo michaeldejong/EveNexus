@@ -233,7 +233,10 @@ public class ApiParser {
 				}
 			}
 		} 
-		catch (Exception e) {	}
+		catch (Exception e) {
+			LOG.error(e.getLocalizedMessage(), e);
+			// TODO: show bug reporter.
+		}
 	}
 
 	private File downloadFile(String urlString) throws IOException {

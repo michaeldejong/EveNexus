@@ -34,11 +34,13 @@ public class DateTimeRenderer extends DefaultTableCellRenderer {
 
 	@Override
 	public String getText() {
-		return(" " + super.getText() + " ");
+		return (" " + super.getText() + " ");
 	}
 	
 	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	public Component getTableCellRendererComponent(JTable table, Object value, 
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		
 		Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 		if (!(value instanceof Timestamp)) {

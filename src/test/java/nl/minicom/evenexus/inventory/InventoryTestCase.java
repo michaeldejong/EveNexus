@@ -9,28 +9,28 @@ import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import org.junit.Ignore;
 
 @Ignore
-public class InventoryTestCase {
+public final class InventoryTestCase {
 
-		private List<WalletTransaction> initialTransactions;
-		private List<WalletTransaction> finalTransactions;
-		private List<Profit> generatedProfitEntries;
+	private final List<WalletTransaction> initialTransactions;
+	private final List<WalletTransaction> finalTransactions;
+	private final List<Profit> generatedProfitEntries;
 
-		private InventoryTestCase() {
-			this.initialTransactions = new ArrayList<WalletTransaction>();
-			this.finalTransactions = new ArrayList<WalletTransaction>();
-			this.generatedProfitEntries = new ArrayList<Profit>();
-		}
-		
-		public List<WalletTransaction> getInitialTransactions() {
-			return initialTransactions;
-		}
-		
-		public List<WalletTransaction> getFinalTransactions() {
-			return finalTransactions;
-		}
-		
-		public List<Profit> getGeneratedProfitEntries() {
-			return generatedProfitEntries;
-		}
-		
+	InventoryTestCase() {
+		this.initialTransactions = new ArrayList<WalletTransaction>();
+		this.finalTransactions = new ArrayList<WalletTransaction>();
+		this.generatedProfitEntries = new ArrayList<Profit>();
 	}
+
+	public List<WalletTransaction> getInitialTransactions() {
+		return initialTransactions;
+	}
+
+	public List<WalletTransaction> getFinalTransactions() {
+		return finalTransactions;
+	}
+
+	public List<Profit> getGeneratedProfitEntries() {
+		return generatedProfitEntries;
+	}
+
+}

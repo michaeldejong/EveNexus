@@ -30,8 +30,7 @@ public class BugReportDialog extends CustomDialog {
 
 	private static final long serialVersionUID = -5916859438472895593L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(BugReportDialog.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BugReportDialog.class);
 
 	private final BugReporter reporter;
 

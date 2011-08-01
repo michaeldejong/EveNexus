@@ -39,7 +39,7 @@ public class CurrencyRenderer extends DefaultTableCellRenderer {
 		
 	@Override
 	public String getText() {
-		return(" " + super.getText() + " ISK ");
+		return " " + super.getText() + " ISK ";
 	}
 	
 	@Override

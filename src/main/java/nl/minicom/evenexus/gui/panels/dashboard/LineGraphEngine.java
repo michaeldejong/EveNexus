@@ -24,12 +24,14 @@ import org.jfree.data.time.TimePeriodValue;
 import org.jfree.data.time.TimePeriodValues;
 import org.jfree.data.time.TimePeriodValuesCollection;
 import org.jfree.ui.RectangleInsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LineGraphEngine extends ChartPanel {
 
 	private static final long serialVersionUID = 6134550946248367873L;
 	
-//	private static final Logger logger = LoggerFactory.getRootLogger();
+	private static final Logger LOG = LoggerFactory.getLogger(LineGraphEngine.class);
 
 	private final List<GraphElement> elements;
 	private int period;
@@ -118,7 +120,8 @@ public class LineGraphEngine extends ChartPanel {
 //			});
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error(e.getLocalizedMessage(), e);
+			// TODO: show bug reporter.
 		}
 	}
 

@@ -88,7 +88,7 @@ public class InventoryWorkerTest {
 			builder.append(line);
 		}
 		
-		Type type = new TypeToken<InventoryTestCase>() {}.getType();
+		Type type = new TypeToken<InventoryTestCase>() { }.getType();
 		return new Gson().fromJson(builder.toString(), type);
 	}
 	

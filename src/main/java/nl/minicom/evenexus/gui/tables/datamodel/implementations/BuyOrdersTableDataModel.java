@@ -100,7 +100,7 @@ public class BuyOrdersTableDataModel implements ITableDataModel, ITypeNameFilter
 	}
 
 	@Override
-	public void setTypeName(String name) {
+	public final void setTypeName(String name) {
 		if (name == null || name.isEmpty()) {
 			typeName = "%";
 			return;

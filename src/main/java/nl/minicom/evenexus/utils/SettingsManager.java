@@ -146,7 +146,7 @@ public class SettingsManager {
 		public Enumeration keys() {
 			Enumeration keysEnum = super.keys();
 			Vector keyList = new Vector();
-			while(keysEnum.hasMoreElements()){
+			while (keysEnum.hasMoreElements()) {
 				keyList.add(keysEnum.nextElement());
 			}
 			Collections.sort(keyList);

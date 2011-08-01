@@ -96,13 +96,13 @@ public class Profit implements Serializable {
 		if (other instanceof Profit) {
 			Profit profit = (Profit) other;
 			
-			return 	id.equals(profit.id) && 
-					typeID == profit.typeID && 
-					typeName.equals(profit.typeName) &&
-					date.equals(profit.date) && 
-					quantity == profit.quantity && 
-					value.compareTo(profit.value) == 0 && 
-					taxes.compareTo(profit.taxes) == 0;
+			return id.equals(profit.id) 
+				&& typeID == profit.typeID 
+				&& typeName.equals(profit.typeName) 
+				&& date.equals(profit.date) 
+				&& quantity == profit.quantity 
+				&& value.compareTo(profit.value) == 0 
+				&& taxes.compareTo(profit.taxes) == 0;
 		}
 		return false;
 	}

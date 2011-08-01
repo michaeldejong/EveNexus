@@ -26,7 +26,7 @@ public class BugReporter {
 	
 	private static final String REPORTER_USER = "bugreporter";
 	private static final String REPORTER_TOKEN = "426b0b26a84a4e8b6f62211488102e8a";
-	private static final String REPO_NAME = "TestRepo";
+	private static final String REPO_NAME = "EveNexus";
 	private static final String REPO_OWNER = "michaeldejong";
 
 	private final Database database;

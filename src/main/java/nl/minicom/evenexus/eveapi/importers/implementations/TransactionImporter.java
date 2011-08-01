@@ -55,7 +55,7 @@ public class TransactionImporter extends ImporterTask {
 		final int brokerRelation = getSkillLevel(apiKey.getCharacterID(), 3446);
 		final int accounting = getSkillLevel(apiKey.getCharacterID(), 16622);
 		final Node root = node.get("result").get("rowset");
-		for (int i = root.size() - 1; i >= 0 ; i--) {
+		for (int i = root.size() - 1; i >= 0; i--) {
 			processRow(root, i, apiKey, brokerRelation, accounting);
 		}
 	}
@@ -113,6 +113,11 @@ public class TransactionImporter extends ImporterTask {
 			
 			WalletTransaction transaction = (WalletTransaction) session.get(WalletTransaction.class, transactionID);
 			if (transaction == null) {
+				BigDecimal actualPrice = price;
+				if (isBuy) {
+					actualPrice = price.negate();
+				}
+				
 				transaction = new WalletTransaction();
 				transaction.setTransactionId(transactionID);
 				transaction.setTransactionDateTime(currentTime);
@@ -121,7 +126,7 @@ public class TransactionImporter extends ImporterTask {
 				transaction.setRemaining(quantity);
 				transaction.setTypeName(typeName);
 				transaction.setTypeId(typeId);
-				transaction.setPrice(isBuy ? price.negate() : price);
+				transaction.setPrice(actualPrice);
 				transaction.setTaxes(taxes.multiply(price.abs()).negate());
 				transaction.setClientId(clientId);
 				transaction.setClientName(clientName);

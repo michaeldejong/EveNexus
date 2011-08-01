@@ -30,7 +30,7 @@ public class JsonContentRevision implements IRevision {
 			session.save(station);
 			count++;
 			
-			if (count%100 == 0) {
+			if (count % 100 == 0) {
 				session.flush();
 				session.clear();
 			}
@@ -42,7 +42,7 @@ public class JsonContentRevision implements IRevision {
 			session.save(item);
 			count++;
 			
-			if (count%100 == 0) {
+			if (count % 100 == 0) {
 				session.flush();
 				session.clear();
 			}

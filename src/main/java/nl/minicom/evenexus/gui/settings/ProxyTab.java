@@ -110,8 +110,8 @@ public class ProxyTab extends JPanel {
 		final ValidationRule proxyPortRule = new ValidationRule() {			
 			@Override
 			public boolean isValid() {
-				return 	ValidationRule.isNotEmpty(proxyPortField.getText()) && 
-						ValidationRule.isBoundDigit(proxyPortField.getText(), 1, 65535);
+				return ValidationRule.isNotEmpty(proxyPortField.getText()) 
+					&& ValidationRule.isBoundDigit(proxyPortField.getText(), 1, 65535);
 			}
 		};
 		

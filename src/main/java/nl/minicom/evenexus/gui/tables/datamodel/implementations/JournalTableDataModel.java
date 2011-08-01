@@ -89,7 +89,7 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	}
 
 	@Override
-	public void setPeriod(int days) {
+	public final void setPeriod(int days) {
 		period = days;
 	}
 

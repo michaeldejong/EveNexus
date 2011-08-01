@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class DatabaseConnectionDialog extends CustomDialog {
+public final class DatabaseConnectionDialog extends CustomDialog {
 
 	private static final long serialVersionUID = 8860569373371189189L;
 	

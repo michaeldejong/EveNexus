@@ -49,8 +49,8 @@ public class InventoryTestCasePreparer {
 		}
 		
 		if (testCase.getGeneratedProfitEntries().size() != profits.size()) {
-			Assert.fail("Unequal amount of profits in db (" + profits.size() + 
-					") and calculated (" + testCase.getGeneratedProfitEntries().size() + ")!");
+			Assert.fail("Unequal amount of profits in db (" + profits.size() 
+					+ ") and calculated (" + testCase.getGeneratedProfitEntries().size() + ")!");
 		}
 		
 		for (WalletTransaction fileTransaction : testCase.getFinalTransactions()) {
@@ -66,8 +66,8 @@ public class InventoryTestCasePreparer {
 				transactions.remove(fileTransaction);
 			}
 			else {
-				Assert.fail("Failed to match transaction: " + 
-						fileTransaction.getTransactionId() + "!");
+				Assert.fail("Failed to match transaction: " 
+						+ fileTransaction.getTransactionId() + "!");
 			}
 		}
 		
@@ -83,9 +83,9 @@ public class InventoryTestCasePreparer {
 				profits.remove(fileProfit);
 			}
 			else {
-				Assert.fail("Failed to match profit: (" + 
-						fileProfit.getId().getBuyTransactionId() + "," + 
-						fileProfit.getId().getSellTransactionId() + ")!");
+				Assert.fail("Failed to match profit: (" 
+						+ fileProfit.getId().getBuyTransactionId() + "," 
+						+ fileProfit.getId().getSellTransactionId() + ")!");
 			}
 		}
 	}

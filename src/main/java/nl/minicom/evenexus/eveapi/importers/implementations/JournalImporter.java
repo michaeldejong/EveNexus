@@ -47,7 +47,7 @@ public class JournalImporter extends ImporterTask {
 	public void parseApi(Node root, ApiKey apiKey) {
 		Session session = getDatabase().getCurrentSession();
 		final Node node = root.get("result").get("rowset");
-		for (int i = node.size() - 1; i >= 0 ; i--) {
+		for (int i = node.size() - 1; i >= 0; i--) {
 			processRow(node, i, session);
 		}
 	}

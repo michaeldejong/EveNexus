@@ -75,8 +75,7 @@ public class Gui extends JFrame {
 			Provider<ImportDatabaseDialog> importDatabaseDialogProvider,
 			Provider<ExportDatabaseDialog> exportDatabaseDialogProvider,
 			Provider<SettingsDialog> settingsDialogProvider,
-			Provider<AboutDialog> aboutDialogProvider,
-			Provider<BugReportDialog> brd) {
+			Provider<AboutDialog> aboutDialogProvider) {
 		
 		this.settingsManager = settingsManager;
 		this.dashboardPanel = dashboardPanel;

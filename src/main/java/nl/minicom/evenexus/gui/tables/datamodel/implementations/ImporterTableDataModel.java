@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public class ImporterTableDataModel implements ITableDataModel {
 
-	private final static Logger LOG = LoggerFactory.getLogger(ImporterTableDataModel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ImporterTableDataModel.class);
 	
 	private final Database database;
 	private final BugReportDialog dialog;

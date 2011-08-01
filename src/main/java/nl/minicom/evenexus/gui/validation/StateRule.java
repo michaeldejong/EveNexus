@@ -14,7 +14,7 @@ public abstract class StateRule {
 		}
 	}
 	
-	public void addValidationRule(ValidationRule rule) {
+	public final void addValidationRule(ValidationRule rule) {
 		if (!rules.contains(rule)) {
 			rules.add(rule);
 			rule.addStateRule(this);
@@ -35,6 +35,6 @@ public abstract class StateRule {
 		return Collections.unmodifiableList(rules);
 	}
 	
-	public void onValid(boolean isValid) {};
+	public abstract void onValid(boolean isValid);
 	
 }

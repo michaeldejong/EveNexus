@@ -51,7 +51,7 @@ public class StandingImporter extends ImporterTask {
 			if (root.get(j) instanceof Node) {
 				Node subNode = (Node) root.get(j);
 				if (subNode.getTag().equals("rowset")) {
-					for (int i = subNode.size() - 1; i >= 0 ; i--) {
+					for (int i = subNode.size() - 1; i >= 0; i--) {
 						processRow(subNode, i, characterId, session);
 					}
 				}

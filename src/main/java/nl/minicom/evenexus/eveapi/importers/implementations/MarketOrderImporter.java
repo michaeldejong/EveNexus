@@ -48,7 +48,7 @@ public class MarketOrderImporter extends ImporterTask {
 		Session session = getDatabase().getCurrentSession();
 		final Node root = node.get("result").get("rowset");
 		MarketOrder.markAllActiveAsExpired(session, apiKey.getCharacterID());
-		for (int i = root.size() - 1; i >= 0 ; i--) {
+		for (int i = root.size() - 1; i >= 0; i--) {
 			processRow(root, i, session);
 		}
 	}

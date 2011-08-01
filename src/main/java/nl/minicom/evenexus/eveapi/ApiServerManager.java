@@ -28,13 +28,14 @@ public class ApiServerManager {
 		settingsManager.saveObject(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false);
 	}
 	
-	public void setApiServer(String hostname) {
+	public void setApiServer(String serverPath) {
 		settingsManager.saveObject(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, true);
 		
-		if (hostname != null && (hostname.endsWith("\\") || hostname.endsWith("/"))) {
-			hostname = hostname.substring(0, hostname.length() - 1);
+		String hostName = serverPath;
+		if (serverPath != null && (serverPath.endsWith("\\") || serverPath.endsWith("/"))) {
+			hostName = serverPath.substring(0, serverPath.length() - 1);
 		}		
-		settingsManager.saveObject(SettingsManager.USER_DEFINED_API_SERVER_HOST, hostname);
+		settingsManager.saveObject(SettingsManager.USER_DEFINED_API_SERVER_HOST, hostName);
 	}
 	
 }

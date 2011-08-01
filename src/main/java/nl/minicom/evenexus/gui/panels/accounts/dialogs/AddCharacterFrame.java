@@ -241,11 +241,12 @@ public class AddCharacterFrame extends CustomDialog {
 	}
 
 	protected List<EveCharacter> processParser(Node root, Map<String, String> request) throws Exception {
+		
 		List<EveCharacter> characters = new ArrayList<EveCharacter>();
 		if (ApiParser.isAvailable(root)) {
 			Node node = root.get("result").get("rowset");
 			if (node != null) {
-				for (int i = 0; i < node.size() ; i++) {
+				for (int i = 0; i < node.size(); i++) {
 					EveCharacter character = processRow(node, i, request);
 					if (character != null) {
 						characters.add(character);
@@ -256,10 +257,11 @@ public class AddCharacterFrame extends CustomDialog {
 		return characters;
 	}		
 
-	private EveCharacter processRow(Node root, int i, Map<String, String> request) throws SQLException {
+	private EveCharacter processRow(Node root, int index, Map<String, String> request) throws SQLException {
+		
 		EveCharacter character = null;
-		if (root.get(i) instanceof Node) {
-			Node row = (Node) root.get(i);
+		if (root.get(index) instanceof Node) {
+			Node row = (Node) root.get(index);
 			if (row != null && row.getTag().equals("row")) {
 				String name = row.getAttribute("name");
 				int userID = Integer.parseInt(request.get("userID"));
@@ -272,19 +274,20 @@ public class AddCharacterFrame extends CustomDialog {
 	}
 
 	private void setValidation(final JTextField userIDField, final JTextField apiKeyField, final JButton check) {
+		
 		ValidationRule userIdRule = new ValidationRule() {			
 			@Override
 			public boolean isValid() {
-				return 	ValidationRule.isNotEmpty(userIDField.getText()) && 
-						ValidationRule.isDigit(userIDField.getText());
+				return ValidationRule.isNotEmpty(userIDField.getText()) 
+					&& ValidationRule.isDigit(userIDField.getText());
 			}
 		};
 		
 		ValidationRule apiKeyRule = new ValidationRule() {			
 			@Override
 			public boolean isValid() {
-				return	ValidationRule.hasLength(apiKeyField.getText(), 64) && 
-						ValidationRule.isLetterOrDigit(apiKeyField.getText());
+				return ValidationRule.hasLength(apiKeyField.getText(), 64) 
+					&& ValidationRule.isLetterOrDigit(apiKeyField.getText());
 			}
 		};
 		

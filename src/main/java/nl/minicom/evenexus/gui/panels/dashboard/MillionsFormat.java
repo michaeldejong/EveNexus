@@ -16,7 +16,7 @@ public class MillionsFormat extends NumberFormat {
 	@Override
 	public StringBuffer format(double arg0, StringBuffer arg1, FieldPosition arg2) {
 		BigDecimal value = BigDecimal.valueOf(arg0).divide(BigDecimal.valueOf(1000000));
-		value.setScale(2, RoundingMode.HALF_UP);
+		value = value.setScale(2, RoundingMode.HALF_UP);
 		DecimalFormat format = new DecimalFormat();
 		format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 		StringBuffer buffer = new StringBuffer();
