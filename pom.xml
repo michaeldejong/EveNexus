@@ -5,6 +5,14 @@
 	<artifactId>evenexus</artifactId>
 	<version>0.1.14</version>
 	<name>EveNexus</name>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/michaeldejong/EveNexus/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://141.138.193.49:8080/jenkins/job/EveNexus%20CI/</url>
+	</ciManagement>
 	<inceptionYear>2010</inceptionYear>
 
 	<scm>
