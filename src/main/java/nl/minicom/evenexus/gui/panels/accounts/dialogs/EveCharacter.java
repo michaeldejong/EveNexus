@@ -2,10 +2,10 @@ package nl.minicom.evenexus.gui.panels.accounts.dialogs;
 
 public class EveCharacter implements Comparable<EveCharacter> {
 
-	private String name;
-	private int userID;
-	private String apiKey;
-	private long characterID;
+	private final String name;
+	private final int userID;
+	private final String apiKey;
+	private final long characterID;
 	
 	public EveCharacter(String name, int userID, String apiKey, long characterID) {
 		this.name = name;

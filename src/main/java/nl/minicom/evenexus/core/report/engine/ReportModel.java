@@ -19,16 +19,16 @@ import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 public class ReportModel {
 
 	// Report items
-	private Map<String, ReportItem> reportItems;
+	private final Map<String, ReportItem> reportItems;
 	
 	// Report groupings
-	private List<Model<ReportGroup>> reportGroups;
+	private final List<Model<ReportGroup>> reportGroups;
 	
 	// Display type
-	private Model<DisplayType> displayType;
+	private final Model<DisplayType> displayType;
 	
 	// Listeners
-	private List<ReportModelListener> listeners;
+	private final List<ReportModelListener> listeners;
 	
 	/**
 	 * This constructor creates a new {@link ReportModel} object.

@@ -31,7 +31,7 @@ public class ReportItemsPanel extends ReportBuilderPage {
 		buildGui();
 	}
 
-	private final void buildGui() {		
+	private void buildGui() {		
 		JPanel itemPanel = new JPanel();
 		itemPanel.setLayout(null);
 		itemPanel.setBackground(Color.WHITE);

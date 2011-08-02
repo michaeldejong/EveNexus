@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 public abstract class ValidationRule {
 
-	private List<StateRule> rules = new ArrayList<StateRule>();
-	
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationRule.class);
+	
+	private final List<StateRule> rules = new ArrayList<StateRule>();
 	
 	public ValidationRule(StateRule... stateRules) {
 		for (StateRule rule : stateRules) {

@@ -6,16 +6,16 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 public interface GraphElement {
 	
-	public void reload() throws SQLException;
+	void reload() throws SQLException;
 	
-	public boolean isVisible();
+	boolean isVisible();
 	
-	public void setRenderer(XYItemRenderer renderer, int index);
+	void setRenderer(XYItemRenderer renderer, int index);
 	
-	public double getValue(int daysAgo);
+	double getValue(int daysAgo);
 
-	public String getName();
+	String getName();
 
-	public void setVisible(Boolean value);
+	void setVisible(Boolean value);
 	
 }

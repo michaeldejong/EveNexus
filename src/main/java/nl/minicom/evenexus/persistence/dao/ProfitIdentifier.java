@@ -59,11 +59,17 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	@Override
 	public int compareTo(ProfitIdentifier o) {
 		long diff = buyTransactionId - o.buyTransactionId;
-		if (diff != 0) {
-			return diff < 0 ? -1 : 1;
+		if (diff < 0) {
+			return -1;
+		}
+		else if (diff > 0) {
+			return 1;
 		}
 		
-		return (sellTransactionId - o.sellTransactionId) < 0 ? -1 : 1;
+		if ((sellTransactionId - o.sellTransactionId) < 0) {
+			return -1;
+		}
+		return 1;
 	}
 	
 }

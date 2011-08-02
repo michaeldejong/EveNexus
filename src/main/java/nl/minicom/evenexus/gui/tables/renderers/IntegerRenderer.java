@@ -25,7 +25,7 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = -4703532359023302661L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(IntegerRenderer.class);
-	private static final AbstractFormatter formatter = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0", DecimalFormatSymbols.getInstance(Locale.US)));
+	private static final AbstractFormatter FORMATTER = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0", DecimalFormatSymbols.getInstance(Locale.US)));
 
 	private final BugReportDialog dialog;
 	
@@ -62,7 +62,7 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 		}
 		
 		try {
-			setValue(formatter.valueToString(longValue));
+			setValue(FORMATTER.valueToString(longValue));
 		}
 		catch (ParseException e) {
 			LOG.error(e.getLocalizedMessage(), e);

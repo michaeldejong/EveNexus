@@ -23,7 +23,7 @@ public abstract class CustomDialog extends JDialog {
 	private static final long serialVersionUID = 3922331594697041683L;
 	
 	private final JPanel guiPanel;
-	private GradientPanel dialogPanel;
+	private final GradientPanel dialogPanel;
 	
 	public CustomDialog(DialogTitle dialogTitle, int width, int height) {
 		super();
@@ -81,7 +81,7 @@ public abstract class CustomDialog extends JDialog {
 		createTitle(title, dialogPanel);
 	}
 
-	private final void createTitle(DialogTitle title, GradientPanel panel) {	
+	private void createTitle(DialogTitle title, GradientPanel panel) {	
 		panel.removeAll();
 		panel.setBorder(new CompoundBorder(new MatteBorder(0, 0, 1, 0, Color.WHITE), new MatteBorder(0, 0, 1, 0, Color.GRAY)));
 		panel.setMinimumSize(new Dimension(0, 70));

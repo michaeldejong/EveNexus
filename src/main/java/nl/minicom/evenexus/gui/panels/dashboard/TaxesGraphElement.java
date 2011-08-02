@@ -19,7 +19,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 public class TaxesGraphElement implements GraphElement {
 	
-	private static final String visibleSetting = SettingsManager.DASHBOARD_GRAPH_TAXES_VISIBLE;
+	private static final String VISIBLE_SETTING = SettingsManager.DASHBOARD_GRAPH_TAXES_VISIBLE;
 
 	private final SettingsManager settingsManager;
 	private final Database database;
@@ -31,7 +31,7 @@ public class TaxesGraphElement implements GraphElement {
 		this.data = new TreeMap<Integer, Double>();
 		this.settingsManager = settingsManager;
 		this.database = database;
-		this.isVisible = settingsManager.loadBoolean(visibleSetting, true);
+		this.isVisible = settingsManager.loadBoolean(VISIBLE_SETTING, true);
 	}
 	
 	@Override
@@ -42,7 +42,7 @@ public class TaxesGraphElement implements GraphElement {
 	@Override
 	public void setVisible(Boolean value) {
 		isVisible = value;
-		settingsManager.saveObject(visibleSetting, value);
+		settingsManager.saveObject(VISIBLE_SETTING, value);
 	}
 
 	@Override

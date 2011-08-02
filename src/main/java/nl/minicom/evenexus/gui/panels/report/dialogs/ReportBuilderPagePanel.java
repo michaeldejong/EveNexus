@@ -57,7 +57,7 @@ public class ReportBuilderPagePanel extends JPanel {
 		}
 	}
 
-	private final void showCurrentPage() {
+	private void showCurrentPage() {
 		ReportBuilderPage currentPage = pages[currentIndex];
 		dialog.createTitle(currentPage.getTitle());
 		
@@ -73,7 +73,7 @@ public class ReportBuilderPagePanel extends JPanel {
     	);
 	}
 
-	private final void removeCurrentPage() {
+	private void removeCurrentPage() {
 		removeAll();
 	}
 	

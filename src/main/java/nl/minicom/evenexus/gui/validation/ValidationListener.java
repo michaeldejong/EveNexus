@@ -15,7 +15,7 @@ import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 
 public class ValidationListener implements KeyListener, ActionListener, ChangeListener, ReportModelListener {
 
-	private List<ValidationRule> rules = new ArrayList<ValidationRule>();
+	private final List<ValidationRule> rules = new ArrayList<ValidationRule>();
 	
 	public ValidationListener(ValidationRule... rules) {
 		for (ValidationRule rule : rules) {

@@ -47,7 +47,7 @@ public class ToolBarButton extends JButton {
 		});
 	}
 	
-	private final void hoverOver(boolean hoverOver) {
+	private void hoverOver(boolean hoverOver) {
 		setContentAreaFilled(hoverOver);
 		setRolloverEnabled(hoverOver);
 	}

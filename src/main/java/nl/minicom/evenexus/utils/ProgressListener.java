@@ -2,12 +2,12 @@ package nl.minicom.evenexus.utils;
 
 public interface ProgressListener {
 
-	public void update(int total, int value, String userMessage);
+	void update(int total, int value, String userMessage);
 	
-	public void update(double increment, String userMessage);
+	void update(double increment, String userMessage);
 	
-	public int getCurrent();
+	int getCurrent();
 	
-	public int getTotal();
+	int getTotal();
 	
 }

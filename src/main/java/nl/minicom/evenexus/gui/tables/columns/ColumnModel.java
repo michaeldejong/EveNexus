@@ -19,8 +19,8 @@ public class ColumnModel {
 	@Inject public static DateTimeRenderer DATE_TIME;
 	@Inject public static IntegerRenderer INTEGER;
 	
-	private List<Column> columns;
-	private List<Column> visibleColumns;
+	private final List<Column> columns;
+	private final List<Column> visibleColumns;
 	
 	public ColumnModel() {
 		this.columns = new ArrayList<Column>();

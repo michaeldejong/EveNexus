@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class ProfitPanel extends TabPanel {
 
 	private static final long serialVersionUID = -4187071888216622511L;
-	private static final Logger logger = LoggerFactory.getLogger(ProfitPanel.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProfitPanel.class);
 
 	private final Table table;
 	private final ColumnModel columnModel;
@@ -75,7 +75,7 @@ public class ProfitPanel extends TabPanel {
 	@Override
 	public void reloadTab() {
 		table.reload();
-		logger.debug("Profit panel reloaded!");
+		LOG.debug("Profit panel reloaded!");
 	}
 	
 	private ToolBar createTopMenu() {

@@ -27,7 +27,7 @@ public class RevisionTest {
 	 * @param number the revision number
 	 * @return a {@link Revision} which, when executed sets 'hasRun' to true.
 	 */
-	private final Revision createRevision(int number) {
+	private Revision createRevision(int number) {
 		return new Revision(number) {
 			public void execute(Session session) {
 				hasRun = true;

@@ -6,7 +6,7 @@ import java.util.List;
 
 public abstract class StateRule {
 
-	private List<ValidationRule> rules = new ArrayList<ValidationRule>();
+	private final List<ValidationRule> rules = new ArrayList<ValidationRule>();
 	
 	public StateRule(ValidationRule... validationRules) {
 		for (ValidationRule rule : validationRules) {

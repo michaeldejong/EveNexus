@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 public class ImageLoader {
 	
-	private static final String url = "http://image.eveonline.com";
+	private static final String URL = "http://image.eveonline.com";
 
 	public static BufferedImage loadCharacterImage(long characterId, int size) throws MalformedURLException, IOException {
 		return loadImage("character", characterId, size, "jpg");
@@ -27,7 +27,7 @@ public class ImageLoader {
 	}
 	
 	private static BufferedImage loadImage(String path, long id, int size, String extension) throws MalformedURLException, IOException {
-		String fullPath = url + "/" + path + "/" + 	id + "_256." + extension;
+		String fullPath = URL + "/" + path + "/" + 	id + "_256." + extension;
 		
 		BufferedImage image = ImageIO.read(new URL(fullPath));
 		BufferedImage scaledImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);

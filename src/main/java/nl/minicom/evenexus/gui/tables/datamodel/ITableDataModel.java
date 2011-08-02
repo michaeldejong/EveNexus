@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface ITableDataModel {
 	
-	public List<Object[]> reload();
+	List<Object[]> reload();
 
-	public String[] getFields();
+	String[] getFields();
 
 }

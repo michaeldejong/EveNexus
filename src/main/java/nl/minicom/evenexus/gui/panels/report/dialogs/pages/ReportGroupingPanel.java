@@ -24,7 +24,7 @@ public class ReportGroupingPanel extends ReportBuilderPage {
 		buildGui();
 	}
 
-	private final void buildGui() {
+	private void buildGui() {
 		JLabel group1Label = createBoldLabel("Grouping 1");
 		JLabel group2Label = createBoldLabel("Grouping 2");
 		JLabel group3Label = createBoldLabel("Grouping 3");

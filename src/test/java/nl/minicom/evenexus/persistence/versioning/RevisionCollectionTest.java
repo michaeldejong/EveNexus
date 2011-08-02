@@ -25,7 +25,7 @@ public class RevisionCollectionTest {
 		instance = new RevisionCollection(revisionType);
 	}
 	
-	private final Revision createRevision(int revisionNumber) {
+	private Revision createRevision(int revisionNumber) {
 		return new Revision(revisionNumber) {
 			public void execute(Session session) {
 				LOG.debug("Executing revision: " + getRevisionNumber());

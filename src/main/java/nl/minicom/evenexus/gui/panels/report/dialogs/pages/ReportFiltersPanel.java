@@ -42,7 +42,7 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		buildGui();
 	}
 
-	private final void buildGui() {
+	private void buildGui() {
 		JLabel timeLabel = createBoldLabel("Time filters");
 		JLabel locationLabel = createBoldLabel("Location filters");
 		JLabel characterLabel = createBoldLabel("Character filters");

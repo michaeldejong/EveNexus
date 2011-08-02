@@ -21,7 +21,7 @@ public class ReportPanel extends TabPanel {
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
 	
-	private ToolBarButton createReport;
+	private final ToolBarButton createReport;
 	
 	public ReportPanel(SettingsManager settingsManager, final Database database) {
 		super();	

@@ -19,8 +19,8 @@ public abstract class ProgressManager extends JDialog implements ProgressListene
 	
 	private static final long serialVersionUID = 4236172383272120320L;
 
-	private JLabel progressLabel;
-	private JProgressBar progressBar;
+	private final JLabel progressLabel;
+	private final JProgressBar progressBar;
 	
 	private int totalSteps;
 	private int currentSteps;

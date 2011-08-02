@@ -57,7 +57,7 @@ public class ReportGroupPanel extends JPanel {
 		return model;
 	}
 
-	private final void doLayouting() {			
+	private void doLayouting() {			
 		GroupLayout layout = new GroupLayout(this);
 		setLayout(layout);        
 		layout.setHorizontalGroup(
@@ -75,7 +75,7 @@ public class ReportGroupPanel extends JPanel {
     	);
 	}
 
-	private final JCheckBox createGroupingCheckBox(final JComboBox child) {
+	private JCheckBox createGroupingCheckBox(final JComboBox child) {
 		
 		StateRule childRule = new StateRule() {
 			@Override
@@ -105,7 +105,7 @@ public class ReportGroupPanel extends JPanel {
 		return checkBox;
 	}
 	
-	private final JComboBox createGroupingComboBox() {
+	private JComboBox createGroupingComboBox() {
 		DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
 		for (final ReportGroup group : definition.getGroups()) {
 			comboBoxModel.addElement(group);

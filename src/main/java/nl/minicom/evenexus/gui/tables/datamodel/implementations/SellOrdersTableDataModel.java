@@ -3,6 +3,7 @@ package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -103,7 +104,7 @@ public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilte
 			typeName = "%";
 			return;
 		}
-		typeName = "%" + name.toLowerCase() + "%";
+		typeName = "%" + name.toLowerCase(Locale.US) + "%";
 	}
 
 }

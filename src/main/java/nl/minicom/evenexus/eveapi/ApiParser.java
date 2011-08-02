@@ -177,7 +177,7 @@ public class ApiParser {
 		Set<String> keys = arguments.keySet();
 		int count = 0;
 		
-		if (arguments.size() > 0) {
+		if (!arguments.isEmpty()) {
 			url += "?";
 			for (String key : keys) {
 				if (count > 0) {

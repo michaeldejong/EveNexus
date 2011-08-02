@@ -51,7 +51,7 @@ public class RevisionExecutor {
 		boolean tableExists = false;
 		for (Object[] table : tables) {
 			String tableName = table[0].toString().toLowerCase();
-			if (tableName.equals("versioning")) {
+			if ("versioning".equals(tableName)) {
 				tableExists = true;
 			}
 		}

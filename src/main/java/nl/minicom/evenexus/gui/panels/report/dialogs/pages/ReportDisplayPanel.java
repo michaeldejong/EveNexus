@@ -30,15 +30,13 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 	private final ReportModel model;
 
 	public ReportDisplayPanel(ReportDefinition definition, ReportModel model) {
-		super();
-		
 //		this.definition = definition;
 		this.model = model;
 		
 		buildGui();
 	}
 
-	private final void buildGui() {
+	private void buildGui() {
 		GroupLayout layout = new GroupLayout(this);
 		Group horizontalGroup = layout.createParallelGroup();
 		Group verticalGroup = layout.createSequentialGroup();
@@ -84,7 +82,7 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 		return label;
 	}
 
-	private final JPanel createImageButton(final DisplayType type) {
+	private JPanel createImageButton(final DisplayType type) {
 		final JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setMaximumSize(new Dimension(64, 64));

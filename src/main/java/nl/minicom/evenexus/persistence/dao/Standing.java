@@ -15,7 +15,7 @@ public class Standing implements Serializable {
 	private static final long serialVersionUID = 787285101503903188L;
 
 	@Id
-	private StandingIdentifier key = new StandingIdentifier(0, 0);
+	private final StandingIdentifier key = new StandingIdentifier(0, 0);
 
 	@Column(name = "fromname")
 	private String fromName;

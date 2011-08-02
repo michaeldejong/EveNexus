@@ -4,8 +4,8 @@ import org.hibernate.Session;
 
 public interface IRevision {
 
-	public void execute(Session session);
+	void execute(Session session);
 	
-	public int getRevisionNumber();
+	int getRevisionNumber();
 	
 }

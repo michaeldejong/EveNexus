@@ -176,7 +176,7 @@ public class Table extends JTable {
 		}
 	}
 	
-	private final TableModel createTableModel() {
+	private TableModel createTableModel() {
 		
 		return new TableModel() {
 			
