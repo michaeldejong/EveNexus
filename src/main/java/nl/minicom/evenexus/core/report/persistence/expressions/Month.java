@@ -1,7 +1,5 @@
 package nl.minicom.evenexus.core.report.persistence.expressions;
 
-import java.util.Date;
-
 /**
  * <p>This class constructs and MONTH expression from an
  * {@link Expression} object provided via the constructor.</p>
@@ -15,7 +13,8 @@ public class Month extends SingleArgumentExpression {
 	/**
 	 * This constructor creates a {@link Month} object.
 	 * 
-	 * @param argument		An {@link Expression} containing a {@link Date}.
+	 * @param argument
+	 * 		An {@link Expression} containing a Date.
 	 */
 	public Month(Expression argument) {
 		super("MONTH", argument);

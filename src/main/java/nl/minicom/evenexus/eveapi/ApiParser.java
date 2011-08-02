@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.Set;
@@ -35,22 +34,12 @@ import org.mortbay.xml.XmlParser;
 import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 
 public class ApiParser {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ApiParser.class);
 
-	/**
-	 * Tell us if we can access the root Node safely.
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws SQLException
-	 * @throws ApiFailureException 
-	 */
 	public static boolean isAvailable(Node node) throws Exception {
 		boolean hasErrors = false;
 		boolean hasRoot = node != null;

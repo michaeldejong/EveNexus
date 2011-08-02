@@ -12,51 +12,67 @@ import javax.persistence.Table;
 public class Item implements Serializable {
 	
 	private static final long serialVersionUID = 6386960971498786733L;
+	
+	public static final String TYPE_ID = "typeid";
+	public static final String GROUP_ID = "groupid";
+	public static final String TYPE_NAME = "typename";
+	public static final String DESCRIPTION = "description";
+	public static final String GRAPHIC_ID = "graphicid";
+	public static final String RADIUS = "radius";
+	public static final String MASS = "mass";
+	public static final String VOLUME = "volume";
+	public static final String CAPACITY = "capacity";
+	public static final String PORTION_SIZE = "portionsize";
+	public static final String RACE_ID = "raceid";
+	public static final String BASE_PRICE = "baseprice";
+	public static final String PUBLISHED = "published";
+	public static final String MARKET_GROUP_ID = "marketgroupid";
+	public static final String CHANCE_OF_DUPLICATING = "chanceofduplicating";
 
 	@Id
-	@Column(name = "typeid", nullable = false)
+	@Column(name = TYPE_ID, nullable = false)
 	private long typeId;
 
-	@Column(name = "groupid")
+	@Column(name = GROUP_ID)
 	private Long groupId;
 
-	@Column(name = "typename")
+	@Column(name = TYPE_NAME)
 	private String typeName;
 
-	@Column(name = "description")
+	@Column(name = DESCRIPTION)
 	private String description;
 
-	@Column(name = "graphicid")
+	@Column(name = GRAPHIC_ID)
 	private Long graphicId;
 
-	@Column(name = "radius")
+	@Column(name = RADIUS)
 	private Double radius;
 
-	@Column(name = "mass")
+	@Column(name = MASS)
 	private Double mass;
 
-	@Column(name = "volume")
+	@Column(name = VOLUME)
 	private Double volume;
 
-	@Column(name = "capacity")
+	@Column(name = CAPACITY)
 	private Double capacity;
 
-	@Column(name = "portionsize")
+	@Column(name = PORTION_SIZE)
 	private Long portionSize;
 
-	@Column(name = "raceid")
+	@Column(name = RACE_ID)
 	private Integer raceId;
 
-	@Column(name = "baseprice")
+	@Column(name = BASE_PRICE)
 	private Double basePrice;
 
-	@Column(name = "published")
+	@Column(name = PUBLISHED)
 	private Boolean published;
 
-	@Column(name = "marketgroupid")
+	@Column(name = MARKET_GROUP_ID)
 	private Long marketGroupId;
 
-	@Column(name = "chanceofduplicating")
+	@Column(name = CHANCE_OF_DUPLICATING)
 	private Double chanceOfDuplicating;
 	
 	public long getTypeId() {

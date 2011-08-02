@@ -5,13 +5,11 @@ import java.awt.Component;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import javax.inject.Inject;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import nl.minicom.evenexus.gui.tables.formatters.DateTimeFormatter;
-import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +22,7 @@ public class DateTimeRenderer extends DefaultTableCellRenderer {
 	private static final Logger LOG = LoggerFactory.getLogger(DateTimeRenderer.class);
 	private static final AbstractFormatter FORMATTER = new DateTimeFormatter();
 
-	private final BugReportDialog dialog;
-	
-	@Inject
-	public DateTimeRenderer(BugReportDialog dialog) {
-		this.dialog = dialog;
+	public DateTimeRenderer() {
 		setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
 	}
 
@@ -53,7 +47,6 @@ public class DateTimeRenderer extends DefaultTableCellRenderer {
 		}
 		catch (ParseException e) {
 			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
 		}
 		
 		return c;

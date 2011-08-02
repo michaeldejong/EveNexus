@@ -10,11 +10,29 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 @Entity
 @Table(name = "transactions")
 public class WalletTransaction implements Serializable {
 	
 	private static final long serialVersionUID = -767602436142772543L;
+	
+	public static final String TRANSACTION_ID = "transactionid";
+	public static final String TRANSACTION_DATE_TIME = "transactiondatetime";
+	public static final String CHARACTER_ID = "characterid";
+	public static final String QUANTITY = "quantity";
+	public static final String REMAINING = "remaining";
+	public static final String TYPE_NAME = "typename";
+	public static final String TYPE_ID = "typeid";
+	public static final String PRICE = "price";
+	public static final String TAXES = "taxes";
+	public static final String CLIENT_ID = "clientid";
+	public static final String CLIENT_NAME = "clientname";
+	public static final String STATION_ID = "stationid";
+	public static final String STATION_NAME = "stationname";
+	public static final String IS_PERSONAL = "ispersonal";
 	
 	public enum Type {
 		BUY,
@@ -22,46 +40,46 @@ public class WalletTransaction implements Serializable {
 	}
 
 	@Id
-	@Column(name = "transactionid")
+	@Column(name = TRANSACTION_ID)
 	private long transactionId;
 
-	@Column(name = "transactiondatetime")
+	@Column(name = TRANSACTION_DATE_TIME)
 	private Timestamp transactionDateTime;
 
-	@Column(name = "characterid")
+	@Column(name = CHARACTER_ID)
 	private long characterId;
 
-	@Column(name = "quantity")
+	@Column(name = QUANTITY)
 	private long quantity;
 	
-	@Column(name = "remaining")
+	@Column(name = REMAINING)
 	private long remaining;
 
-	@Column(name = "typename")
+	@Column(name = TYPE_NAME)
 	private String typeName;
 
-	@Column(name = "typeid")
+	@Column(name = TYPE_ID)
 	private long typeId;
 
-	@Column(name = "price")
+	@Column(name = PRICE)
 	private BigDecimal price;
 
-	@Column(name = "taxes")
+	@Column(name = TAXES)
 	private BigDecimal taxes;
 
-	@Column(name = "clientid")
+	@Column(name = CLIENT_ID)
 	private long clientId;
 
-	@Column(name = "clientname")
+	@Column(name = CLIENT_NAME)
 	private String clientName;
 
-	@Column(name = "stationid")
+	@Column(name = STATION_ID)
 	private long stationId;
 
-	@Column(name = "stationname")
+	@Column(name = STATION_NAME)
 	private String stationName;
 
-	@Column(name = "ispersonal")
+	@Column(name = IS_PERSONAL)
 	private boolean isPersonal;
 	
 	public Timestamp getTransactionDateTime() {
@@ -198,22 +216,43 @@ public class WalletTransaction implements Serializable {
 		if (other instanceof WalletTransaction) {
 			WalletTransaction transaction = (WalletTransaction) other;
 			
-			return transactionId == transaction.transactionId 
-				&& transactionDateTime.equals(transaction.transactionDateTime) 
-				&& characterId == transaction.characterId 
-				&& quantity == transaction.quantity 
-				&& remaining == transaction.remaining 
-				&& typeName.equals(transaction.typeName) 
-				&& typeId == transaction.typeId 
-				&& price.compareTo(transaction.price) == 0 
-				&& taxes.compareTo(transaction.taxes) == 0 
-				&& clientId == transaction.clientId 
-				&& clientName.equals(transaction.clientName) 
-				&& stationId == transaction.stationId 
-				&& stationName.equals(transaction.stationName) 
-				&& isPersonal == transaction.isPersonal;
+			return new EqualsBuilder()
+				.append(transactionId, transaction.transactionId)
+				.append(transactionDateTime, transaction.transactionDateTime)
+				.append(characterId, transaction.characterId)
+				.append(quantity, transaction.quantity)
+				.append(remaining, transaction.remaining)
+				.append(typeName, transaction.typeName)
+				.append(typeId, transaction.typeId)
+				.append(price, transaction.price)
+				.append(taxes, transaction.taxes)
+				.append(clientId, transaction.clientId)
+				.append(clientName, transaction.clientName)
+				.append(stationId, transaction.stationId)
+				.append(stationName, transaction.stationName)
+				.append(isPersonal, transaction.isPersonal)
+				.isEquals();
 		}
 		return false;
+	}
+	
+	public int hashCode() {
+		return new HashCodeBuilder()
+			.append(transactionId)
+			.append(transactionDateTime)
+			.append(characterId)
+			.append(quantity)
+			.append(remaining)
+			.append(typeName)
+			.append(typeId)
+			.append(price)
+			.append(taxes)
+			.append(clientId)
+			.append(clientName)
+			.append(stationId)
+			.append(stationName)
+			.append(isPersonal)
+			.toHashCode();
 	}
 	
 }

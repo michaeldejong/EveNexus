@@ -13,8 +13,10 @@ public class BugReport implements Serializable {
 
 	private static final long serialVersionUID = 8621446725055992893L;
 
+	public static final String ISSUE_NUMBER = "issueNumber";
+
 	@Id
-	@Column(name = "issueNumber", nullable = false)
+	@Column(name = ISSUE_NUMBER, nullable = false)
 	private long issueNumber;
 
 	public long getIssueNumber() {

@@ -1,6 +1,5 @@
 package nl.minicom.evenexus.core.report.persistence.expressions;
 
-import java.util.Date;
 
 /**
  * <p>This class constructs and WEEK expression from an
@@ -15,7 +14,8 @@ public class Week extends SingleArgumentExpression {
 	/**
 	 * This constructor creates a {@link Week} object.
 	 * 
-	 * @param argument		An {@link Expression} containing a {@link Date}.
+	 * @param argument
+	 * 		An {@link Expression} containing a Date.
 	 */
 	public Week(Expression argument) {
 		super("WEEK", argument);

@@ -13,10 +13,13 @@ public class Skill implements Serializable {
 	
 	private static final long serialVersionUID = -1243953752872224201L;
 
+	public static final String KEY = "key";
+	public static final String LEVEL = "level";
+	
 	@Id
 	private final SkillIdentifier key = new SkillIdentifier(0, 0);
 
-	@Column(name = "level")
+	@Column(name = LEVEL)
 	private int level;
 	
 	public long getCharacterId() {

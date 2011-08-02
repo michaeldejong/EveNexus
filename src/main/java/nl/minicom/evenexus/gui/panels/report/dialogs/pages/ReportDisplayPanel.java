@@ -16,8 +16,8 @@ import javax.swing.border.LineBorder;
 
 import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.DisplayType;
-import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
+import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
@@ -26,11 +26,11 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
-//	private final ReportDefinition definition;
+	private final ReportDefinition definition;
 	private final ReportModel model;
 
 	public ReportDisplayPanel(ReportDefinition definition, ReportModel model) {
-//		this.definition = definition;
+		this.definition = definition;
 		this.model = model;
 		
 		buildGui();
@@ -126,7 +126,9 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 			}
 			
 			@Override
-			public void mouseClicked(MouseEvent arg0) { }
+			public void mouseClicked(MouseEvent arg0) {
+				// Do nothing.
+			}
 		});
 		
 		return panel;

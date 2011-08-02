@@ -16,17 +16,14 @@ public class ReportBuilderDialog extends CustomDialog {
 	private final ReportBuilderPagePanel pageDisplay;
 	private final ReportBuilderPageNavigationPanel navigationPanel;
 
-	private final ReportDefinition definition;
-		
 	public ReportBuilderDialog(Database database) {
 		this(new ReportModel(), database);
 	}
 	
 	public ReportBuilderDialog(ReportModel model, Database database) {
 		super(DialogTitle.REPORT_ITEM_TITLE, 360, 420);
-		this.definition = new ReportDefinition();
-		
-		pageDisplay = new ReportBuilderPagePanel(this, definition, model, database);
+
+		pageDisplay = new ReportBuilderPagePanel(this, new ReportDefinition(), model, database);
 		navigationPanel = new ReportBuilderPageNavigationPanel(pageDisplay, model);
 		
 		setTitle("Report creation wizard");

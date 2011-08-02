@@ -21,12 +21,10 @@ public class ReportPanel extends TabPanel {
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
 	
-	private final ToolBarButton createReport;
-	
 	public ReportPanel(SettingsManager settingsManager, final Database database) {
 		super();	
 		
-        createReport = new ToolBarButton("img/32/pie_chart.png", "Create a new report");
+		ToolBarButton createReport = new ToolBarButton("img/32/pie_chart.png", "Create a new report");
         createReport.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {

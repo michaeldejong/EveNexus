@@ -15,47 +15,62 @@ public class WalletJournal implements Serializable {
 	
 	private static final long serialVersionUID = -5992502737944420079L;
 
+	public static final String REF_ID = "refId";
+	public static final String JOURNAL_TYPE_ID = "journaltypeid";
+	public static final String DATE = "date";
+	public static final String OWNER_NAME_1 = "ownername1";
+	public static final String OWNER_ID_1 = "ownerid1";
+	public static final String OWNER_NAME_2 = "ownername2";
+	public static final String OWNER_ID_2 = "ownerid2";
+	public static final String ARG_NAME_1 = "argname1";
+	public static final String ARG_ID_1 = "argid1";
+	public static final String AMOUNT = "amount";
+	public static final String BALANCE = "balance";
+	public static final String REASON = "reason";
+	public static final String TAX_RECEIVER_ID = "taxreceiverid";
+	public static final String TAX_AMOUNT = "taxamount";
+	
 	@Id
-	@Column(name = "refId", nullable = false)
+	@Column(name = REF_ID, nullable = false)
 	private long refId;
 
-	@Column(name = "journaltypeid", nullable = false)
+	@Column(name = JOURNAL_TYPE_ID, nullable = false)
 	private int journalTypeId;
 
-	@Column(name = "date", nullable = false)
+	@Column(name = DATE, nullable = false)
 	private Timestamp date;
 
-	@Column(name = "ownername1")
+	@Column(name = OWNER_NAME_1)
 	private String ownerName1;
 
-	@Column(name = "ownerid1")
+	@Column(name = OWNER_ID_1)
 	private Long ownerId1;
 
-	@Column(name = "ownername2")
+	@Column(name = OWNER_NAME_2)
 	private String ownerName2;
 
-	@Column(name = "ownerid2")
+	@Column(name = OWNER_ID_2)
 	private Long ownerId2;
 
-	@Column(name = "argname1")
+	@Column(name = ARG_NAME_1)
 	private String argName1;
 
-	@Column(name = "argid1")
+	@Column(name = ARG_ID_1)
 	private long argId1;
 
-	@Column(name = "amount")
+	@Column(name = AMOUNT)
 	private BigDecimal amount;
 
-	@Column(name = "balance")
+	@Column(name = BALANCE)
 	private BigDecimal balance;
 
-	@Column(name = "reason")
+	@Column(name = REASON)
 	private String reason;
 
-	@Column(name = "taxreceiverid")
+	@Column(name = TAX_RECEIVER_ID)
 	private Long taxReceiverId;
 
-	@Column(name = "taxamount")
+	@Column(name = TAX_AMOUNT)
 	private BigDecimal taxAmount;
 	
 	public long getRefId() {

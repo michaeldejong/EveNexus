@@ -9,31 +9,42 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 @Entity
 @Table(name = "profit")
 public class Profit implements Serializable {
 
 	private static final long serialVersionUID = 6583278267993803229L;
 
+	public static final String ID = "id";
+	public static final String TYPE_ID = "typeid";
+	public static final String TYPE_NAME = "typename";
+	public static final String DATE = "date";
+	public static final String QUANTITY = "quantity";
+	public static final String VALUE = "value";
+	public static final String TAXES = "taxes";
+	
 	@Id
 	private ProfitIdentifier id;
 
-	@Column(name = "typeid")
+	@Column(name = TYPE_ID)
 	private long typeID;
 
-	@Column(name = "typename")
+	@Column(name = TYPE_NAME)
 	private String typeName;
 
-	@Column(name = "date")
+	@Column(name = DATE)
 	private Timestamp date;
 
-	@Column(name = "quantity")
+	@Column(name = QUANTITY)
 	private long quantity;
 
-	@Column(name = "value")
+	@Column(name = VALUE)
 	private BigDecimal value;
 
-	@Column(name = "taxes")
+	@Column(name = TAXES)
 	private BigDecimal taxes;
 	
 	public ProfitIdentifier getId() {
@@ -96,15 +107,29 @@ public class Profit implements Serializable {
 		if (other instanceof Profit) {
 			Profit profit = (Profit) other;
 			
-			return id.equals(profit.id) 
-				&& typeID == profit.typeID 
-				&& typeName.equals(profit.typeName) 
-				&& date.equals(profit.date) 
-				&& quantity == profit.quantity 
-				&& value.compareTo(profit.value) == 0 
-				&& taxes.compareTo(profit.taxes) == 0;
+			return new EqualsBuilder()
+			.append(id, profit.id)
+			.append(typeID, profit.typeID)
+			.append(typeName, profit.typeName)
+			.append(date, profit.date)
+			.append(quantity, profit.quantity)
+			.append(value, profit.value)
+			.append(taxes, profit.taxes)
+			.isEquals();
 		}
 		return false;
+	}
+	
+	public int hashCode() {
+		return new HashCodeBuilder()
+			.append(id)
+			.append(typeID)
+			.append(typeName)
+			.append(date)
+			.append(quantity)
+			.append(value)
+			.append(taxes)
+			.toHashCode();
 	}
 	
 }

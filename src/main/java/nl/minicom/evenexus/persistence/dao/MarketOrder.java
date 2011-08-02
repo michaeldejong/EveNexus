@@ -17,50 +17,66 @@ public class MarketOrder implements Serializable {
 	
 	private static final long serialVersionUID = 7476899993373397147L;
 	
+	public static final String ORDER_ID = "orderid";
+	public static final String CHAR_ID = "charid";
+	public static final String STATION_ID = "stationid";
+	public static final String VOL_ENTERED = "volentered";
+	public static final String VOL_REMAINING = "volremaining";
+	public static final String MIN_VOLUME = "minvolume";
+	public static final String ORDER_STATE = "orderstate";
+	public static final String TYPE_ID = "typeid";
+	public static final String RANGE = "range";
+	public static final String ACCOUNT_KEY = "accountkey";
+	public static final String DURATION = "duration";
+	public static final String ESCROW = "escrow";
+	public static final String PRICE = "price";
+	public static final String BID = "bid";
+	public static final String ISSUED = "issued";
+	
 	@Id
-	@Column(name = "orderid")
+	@Column(name = ORDER_ID)
 	private long orderId;
 
-	@Column(name = "charid")
+	@Column(name = CHAR_ID)
 	private long charId;
 
-	@Column(name = "stationid")
+	@Column(name = STATION_ID)
 	private long stationId;
 
-	@Column(name = "volentered")
+	@Column(name = VOL_ENTERED)
 	private long volEntered;
 
-	@Column(name = "volremaining")
+	@Column(name = VOL_REMAINING)
 	private long volRemaining;
 
-	@Column(name = "minvolume")
+	@Column(name = MIN_VOLUME)
 	private long minVolume;
 
-	@Column(name = "orderstate")
+	@Column(name = ORDER_STATE)
 	private int orderState;
 
-	@Column(name = "typeid")
+	@Column(name = TYPE_ID)
 	private long typeId;
 
-	@Column(name = "range")
+	@Column(name = RANGE)
 	private int range;
 
-	@Column(name = "accountkey")
+	@Column(name = ACCOUNT_KEY)
 	private int accountKey;
 
-	@Column(name = "duration")
+	@Column(name = DURATION)
 	private int duration;
 
-	@Column(name = "escrow")
+	@Column(name = ESCROW)
 	private BigDecimal escrow;
 
-	@Column(name = "price")
+	@Column(name = PRICE)
 	private BigDecimal price;
 
-	@Column(name = "bid")
+	@Column(name = BID)
 	private boolean bid;
 
-	@Column(name = "issued")
+	@Column(name = ISSUED)
 	private Timestamp issued;
 
 	public long getOrderId() {

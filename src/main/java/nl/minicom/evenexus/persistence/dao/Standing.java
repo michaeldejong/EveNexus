@@ -14,13 +14,17 @@ public class Standing implements Serializable {
 	
 	private static final long serialVersionUID = 787285101503903188L;
 
+	public static final String KEY = "key";
+	public static final String FROM_NAME = "fromname";
+	public static final String STANDING = "standing";
+	
 	@Id
 	private final StandingIdentifier key = new StandingIdentifier(0, 0);
 
-	@Column(name = "fromname")
+	@Column(name = FROM_NAME)
 	private String fromName;
 
-	@Column(name = "standing")
+	@Column(name = STANDING)
 	private BigDecimal standing;
 	
 	public String getFromName() {

@@ -1,6 +1,5 @@
 package nl.minicom.evenexus.core.report.persistence.expressions;
 
-import java.util.Date;
 
 /**
  * <p>This class constructs and DAY_OF_YEAT-expression built 
@@ -15,7 +14,8 @@ public class DayOfYear extends SingleArgumentExpression {
 	/**
 	 * This constructor will create a DayOfYear {@link Expression}.
 	 * 
-	 * @param argument		The {@link Expression} containing a {@link Date}.
+	 * @param argument
+	 * 		The {@link Expression} containing a Date.
 	 */
 	public DayOfYear(Expression argument) {
 		super("DAY_OF_YEAR", argument);

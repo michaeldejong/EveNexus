@@ -25,6 +25,9 @@ import nl.minicom.evenexus.core.report.persistence.expressions.Table;
 import nl.minicom.evenexus.core.report.persistence.expressions.Value;
 import nl.minicom.evenexus.core.report.persistence.expressions.Week;
 import nl.minicom.evenexus.core.report.persistence.expressions.Year;
+import nl.minicom.evenexus.persistence.dao.Profit;
+import nl.minicom.evenexus.persistence.dao.WalletJournal;
+import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 
 /**
  * This class contains the following definitions.
@@ -71,29 +74,32 @@ public class ReportDefinition {
 
 		addFilter(
 				new ReportFilter(FILTER_CHARACTER)
-					.defineExpression(Table.TRANSACTIONS, new Column("characterId"))
-					.defineExpression(Table.JOURNAL, new Or(new Column("ownerId1"), new Column("ownerId2")))
+					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.CHARACTER_ID))
+					.defineExpression(Table.JOURNAL, new Or(
+							new Column(WalletJournal.OWNER_ID_1), 
+							new Column(WalletJournal.OWNER_ID_2)
+					))
 					// TODO: Add definition for profit table.
 		);
 
 		addFilter(
 				new ReportFilter(FILTER_START_DATE)
-					.defineExpression(Table.TRANSACTIONS, new Column("transactionDateTime"))
-					.defineExpression(Table.JOURNAL, new Column("date"))
-					.defineExpression(Table.PROFIT, new Column("date"))
+					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.TRANSACTION_DATE_TIME))
+					.defineExpression(Table.JOURNAL, new Column(WalletJournal.DATE))
+					.defineExpression(Table.PROFIT, new Column(Profit.DATE))
 		);
 		
 		addFilter(
 				new ReportFilter(FILTER_END_DATE)
-					.defineExpression(Table.TRANSACTIONS, new Column("transactionDateTime"))
-					.defineExpression(Table.JOURNAL, new Column("date"))
-					.defineExpression(Table.PROFIT, new Column("date"))
+					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.TRANSACTION_DATE_TIME))
+					.defineExpression(Table.JOURNAL, new Column(WalletJournal.DATE))
+					.defineExpression(Table.PROFIT, new Column(Profit.DATE))
 		);
 
 		addFilter(
 				new ReportFilter(FILTER_ITEM)
-					.defineExpression(Table.TRANSACTIONS, new Column("typeId"))
-					.defineExpression(Table.PROFIT, new Column("typeId"))
+					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.TYPE_ID))
+					.defineExpression(Table.PROFIT, new Column(Profit.TYPE_ID))
 		);
 		
 		addItem(
@@ -101,9 +107,9 @@ public class ReportDefinition {
 						ITEM_ITEMS_BOUGHT,
 						Table.TRANSACTIONS, 
 						Aggregate.SUM, 
-						new Column("quantity"), 
+						new Column(WalletTransaction.QUANTITY), 
 						new SmallerThan(
-								new Column("price"), 
+								new Column(WalletTransaction.PRICE), 
 								new Value(0)
 						)
 				)
@@ -114,9 +120,9 @@ public class ReportDefinition {
 						ITEM_ITEMS_SOLD,
 						Table.TRANSACTIONS, 
 						Aggregate.SUM, 
-						new Column("quantity"), 
+						new Column(WalletTransaction.QUANTITY), 
 						new GreaterThan(
-								new Column("price"), 
+								new Column(WalletTransaction.PRICE), 
 								new Value(0)
 						)
 				)
@@ -139,9 +145,9 @@ public class ReportDefinition {
 				.defineExpression(
 						Table.TRANSACTIONS, 
 						new Concat(
-								new Year(new Column("transactionDateTime")),
+								new Year(new Column(WalletTransaction.TRANSACTION_DATE_TIME)),
 								new Value("-"),
-								new DayOfYear(new Column("transactionDateTime"))
+								new DayOfYear(new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 						)
 				)
 		);
@@ -152,7 +158,7 @@ public class ReportDefinition {
 				)
 				.defineExpression(
 						Table.TRANSACTIONS, 
-						new Column("typeName")
+						new Column(WalletTransaction.TYPE_ID)
 				)
 		);
 		
@@ -173,9 +179,9 @@ public class ReportDefinition {
 				.defineExpression(
 						Table.TRANSACTIONS, 
 						new Concat(
-								new Year(new Column("transactionDateTime")),
+								new Year(new Column(WalletTransaction.TRANSACTION_DATE_TIME)),
 								new Value("-"),
-								new Week(new Column("transactionDateTime"))
+								new Week(new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 						)
 				)
 		);
@@ -197,9 +203,9 @@ public class ReportDefinition {
 				.defineExpression(
 						Table.TRANSACTIONS, 
 						new Concat(
-								new Year(new Column("transactionDateTime")),
+								new Year(new Column(WalletTransaction.TRANSACTION_DATE_TIME)),
 								new Value("-"),
-								new Month(new Column("transactionDateTime"))
+								new Month(new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 						)
 				)
 		);
@@ -218,21 +224,24 @@ public class ReportDefinition {
 	}
 
 	/**
-	 * @return A {@link Collection} of {@link ReportFilter} objects which are defined.
+	 * @return 
+	 * 		A {@link Collection} of {@link ReportFilter} objects which are defined.
 	 */
 	public Collection<ReportFilter> getFilters() {
 		return Collections.unmodifiableCollection(reportFilters.values());
 	}
 
 	/**
-	 * @return A {@link Collection} of {@link ReportItem} objects which are defined.
+	 * @return 
+	 * 		A {@link Collection} of {@link ReportItem} objects which are defined.
 	 */
 	public Collection<ReportItem> getItems() {
 		return Collections.unmodifiableCollection(reportItems.values());
 	}
 
 	/**
-	 * @return A {@link Collection} of {@link ReportGroup} objects which are defined.
+	 * @return 
+	 * 		A {@link Collection} of {@link ReportGroup} objects which are defined.
 	 */
 	public Collection<ReportGroup> getGroups() {
 		return Collections.unmodifiableCollection(reportGroups.values());
@@ -241,8 +250,11 @@ public class ReportDefinition {
 	/**
 	 * Returns a {@link ReportFilter} with the provided filterAlias.
 	 * 
-	 * @param filterAlias	The alias of the {@link ReportFilter} to return.
-	 * @return				The {@link ReportFilter} with the provided filterAlias.
+	 * @param filterAlias
+	 * 		The alias of the {@link ReportFilter} to return.
+	 * 
+	 * @return
+	 * 		The {@link ReportFilter} with the provided filterAlias.
 	 */
 	public ReportFilter getFilter(String filterAlias) {
 		return reportFilters.get(filterAlias);
@@ -251,8 +263,11 @@ public class ReportDefinition {
 	/**
 	 * Returns a {@link ReportItem} with the provided itemAlias.
 	 * 
-	 * @param itemAlias		The alias of the {@link ReportItem} to return.
-	 * @return				The {@link ReportItem} with the provided itemAlias.
+	 * @param itemAlias
+	 * 		The alias of the {@link ReportItem} to return.
+	 * 
+	 * @return
+	 * 		The {@link ReportItem} with the provided itemAlias.
 	 */
 	public ReportItem getItem(String itemAlias) {
 		return reportItems.get(itemAlias);
@@ -261,8 +276,11 @@ public class ReportDefinition {
 	/**
 	 * Returns a {@link ReportGroup} with the provided groupAlias.
 	 * 
-	 * @param groupAlias	The alias of the {@link ReportGroup} to return.
-	 * @return				The {@link ReportGroup} with the provided groupAlias.
+	 * @param groupAlias	
+	 * 		The alias of the {@link ReportGroup} to return.
+	 * 
+	 * @return				
+	 * 		The {@link ReportGroup} with the provided groupAlias.
 	 */
 	public ReportGroup getGroup(String groupAlias) {
 		return reportGroups.get(groupAlias);

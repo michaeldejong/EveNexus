@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Icon {
+public final class Icon {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Icon.class);
 	
@@ -24,6 +24,10 @@ public class Icon {
 
 	public static Image getImage(String iconFileName) {
 		return getIcon(iconFileName).getImage();
+	}
+	
+	private Icon() {
+		// Prevent instantiation.
 	}
 	
 }

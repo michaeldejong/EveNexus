@@ -18,6 +18,11 @@ import com.beimin.eveapi.core.ApiAuth;
 public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 
 	private static final long serialVersionUID = -5243514709906664430L;
+	
+	public static final String CHAR_ID = "charid";
+	public static final String API_KEY = "apikey";
+	public static final String NAME = "name";
+	public static final String USER_ID = "userid";
 
 	@SuppressWarnings("unchecked")
 	public static List<ApiKey> getAll(Session session) {
@@ -25,16 +30,16 @@ public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 	}
 
 	@Id
-	@Column(name = "charid", nullable = false)
+	@Column(name = CHAR_ID, nullable = false)
 	private long charId;
 
-	@Column(name = "apikey", nullable = false)
+	@Column(name = API_KEY, nullable = false)
 	private String apiKey;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = NAME, nullable = false)
 	private String name;
 
-	@Column(name = "userid", nullable = false)
+	@Column(name = USER_ID, nullable = false)
 	private int userId;
 	
 	public Long getCharacterID() {
@@ -110,7 +115,7 @@ public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 
 	@Override
 	public int compareTo(ApiKey o) {
-		return 0;
+		return name.compareTo(o.name);
 	}
 
 }

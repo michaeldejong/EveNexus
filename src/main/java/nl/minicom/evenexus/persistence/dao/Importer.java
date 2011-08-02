@@ -14,18 +14,21 @@ public class Importer implements Serializable {
 	private static final long serialVersionUID = 1380783496560770755L;
 	
 	public static final String ID = "id";
+	public static final String NAME = "name";
+	public static final String COOLDOWN = "cooldown";
+	public static final String PATH = "path";
 	
 	@Id
 	@Column(name = ID, nullable = false)
 	private long id;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = NAME, nullable = false)
 	private String name;
 
-	@Column(name = "cooldown", nullable = false)
+	@Column(name = COOLDOWN, nullable = false)
 	private long cooldown;
 
-	@Column(name = "path", nullable = false)
+	@Column(name = PATH, nullable = false)
 	private String path;
 	
 	public long getId() {

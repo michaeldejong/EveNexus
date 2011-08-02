@@ -8,13 +8,10 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Locale;
 
-import javax.inject.Inject;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.NumberFormatter;
-
-import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +24,7 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 	private static final Logger LOG = LoggerFactory.getLogger(IntegerRenderer.class);
 	private static final AbstractFormatter FORMATTER = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0", DecimalFormatSymbols.getInstance(Locale.US)));
 
-	private final BugReportDialog dialog;
-	
-	@Inject
-	public IntegerRenderer(BugReportDialog dialog) {
-		this.dialog = dialog;
+	public IntegerRenderer() {
 		setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
 	}
 	
@@ -66,7 +59,6 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 		}
 		catch (ParseException e) {
 			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
 		}
 		
 		return c;

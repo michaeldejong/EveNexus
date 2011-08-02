@@ -3,8 +3,6 @@ package nl.minicom.evenexus.gui.tables.columns;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import nl.minicom.evenexus.gui.tables.renderers.AlignLeftRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.AlignRightRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
@@ -13,12 +11,12 @@ import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
 
 public class ColumnModel {
 	
-	@Inject public static AlignLeftRenderer ALIGN_LEFT;
-	@Inject public static AlignRightRenderer ALIGN_RIGHT;
-	@Inject public static CurrencyRenderer CURRENCY;
-	@Inject public static DateTimeRenderer DATE_TIME;
-	@Inject public static IntegerRenderer INTEGER;
-	
+	public static final AlignLeftRenderer ALIGN_LEFT = new AlignLeftRenderer();
+	public static final AlignRightRenderer ALIGN_RIGHT = new AlignRightRenderer();
+	public static final CurrencyRenderer CURRENCY = new CurrencyRenderer();
+	public static final DateTimeRenderer DATE_TIME = new DateTimeRenderer();
+	public static final IntegerRenderer INTEGER = new IntegerRenderer();
+		
 	private final List<Column> columns;
 	private final List<Column> visibleColumns;
 	
@@ -70,7 +68,7 @@ public class ColumnModel {
 		synchronize();
 		for (int i = 0; i < visibleColumns.size(); i++) {
 			Column c = visibleColumns.get(i);
-			if (c == column) {
+			if (c.equals(column)) {
 				return i;
 			}
 		}

@@ -10,10 +10,13 @@ public class SkillIdentifier implements Serializable {
 
 	private static final long serialVersionUID = -6237540725758955743L;
 
-	@Column(name = "characterid")
+	public static final String CHARACTER_ID = "characterid";
+	public static final String TYPE_ID = "typeid";
+	
+	@Column(name = CHARACTER_ID)
 	private long characterId;
 
-	@Column(name = "typeid")
+	@Column(name = TYPE_ID)
 	private long typeId;
 	
 	protected SkillIdentifier() {

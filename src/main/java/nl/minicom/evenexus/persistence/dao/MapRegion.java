@@ -12,15 +12,19 @@ import javax.persistence.Table;
 public class MapRegion implements Serializable {
 	
 	private static final long serialVersionUID = 9214480288622380091L;
-
+	
+	public static final String REGION_ID = "regionid";
+	public static final String REGION_NAME = "regionname";
+	public static final String FACTION_ID = "factionid";
+	
 	@Id
-	@Column(name = "regionid")
+	@Column(name = REGION_ID)
 	private long regionId;
 
-	@Column(name = "regionname")
+	@Column(name = REGION_NAME)
 	private String regionName;
 
-	@Column(name = "factionid")
+	@Column(name = FACTION_ID)
 	private long factionId;
 
 	public long getRegionId() {

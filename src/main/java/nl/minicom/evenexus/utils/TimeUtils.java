@@ -6,12 +6,16 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-public class TimeUtils {
+public final class TimeUtils {
+	
+	private TimeUtils() {
+		// Prevent instantiation.
+	}
 		
 	/**
-	 * Returns a time stamp in seconds resembling Reykjavic time ie. GMT+0:00 
-	 * and no Day Light Savings time, no matter what time zone you are in.
-	 * @return
+	 * @return 
+	 * 		a time stamp in seconds resembling Reykjavic time ie. GMT+0:00 
+	 * 		and no Day Light Savings time, no matter what time zone you are in.
 	 */
 	public static long getServerTime() {
 		Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("Europe/London"));

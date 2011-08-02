@@ -20,7 +20,9 @@ public class ReportBuilderPagePanel extends JPanel {
 	private final ReportBuilderPage[] pages;
 	private int currentIndex;
 	
-	public ReportBuilderPagePanel(ReportBuilderDialog dialog, ReportDefinition definition, ReportModel model, Database database) {
+	public ReportBuilderPagePanel(ReportBuilderDialog dialog, ReportDefinition definition, 
+			ReportModel model, Database database) {
+		
 		this.dialog = dialog;
 		this.currentIndex = 0;
 		this.pages = new ReportBuilderPage[] {

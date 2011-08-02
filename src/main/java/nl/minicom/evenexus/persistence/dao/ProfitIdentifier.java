@@ -10,10 +10,13 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 
 	private static final long serialVersionUID = -6237540725758955743L;
 
-	@Column(name = "buytransactionid", nullable = false)
+	public static final String BUY_TRANSACTION_ID = "buytransactionid";
+	public static final String SELL_TRANSACTION_ID = "selltransactionid";
+	
+	@Column(name = BUY_TRANSACTION_ID, nullable = false)
 	private long buyTransactionId;
 	
-	@Column(name = "selltransactionid", nullable = false)
+	@Column(name = SELL_TRANSACTION_ID, nullable = false)
 	private long sellTransactionId;
 	
 	public ProfitIdentifier() {

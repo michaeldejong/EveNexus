@@ -13,14 +13,18 @@ public class Version implements Serializable {
 	
 	private static final long serialVersionUID = -2962367693722376311L;
 
+	public static final String TYPE = "type";
+	public static final String VERSION = "version";
+	public static final String REVISION = "revision";
+	
 	@Id
-	@Column(name = "type")
+	@Column(name = TYPE)
 	private String type;
 	
-	@Column(name = "version")
+	@Column(name = VERSION)
 	private int version;
 	
-	@Column(name = "revision")
+	@Column(name = REVISION)
 	private int revision;
 
 	public String getType() {

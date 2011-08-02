@@ -10,10 +10,13 @@ public class ImportLogIdentifier implements Serializable {
 
 	private static final long serialVersionUID = -6237540725758955743L;
 
-	@Column(name = "importer", nullable = false)
+	public static final String IMPORTER = "importer";
+	public static final String CHARACTER_ID = "characterid";
+	
+	@Column(name = IMPORTER, nullable = false)
 	private long importerId = 0;
 	
-	@Column(name = "characterid", nullable = false)
+	@Column(name = CHARACTER_ID, nullable = false)
 	private long characterId = 0;
 	
 	public ImportLogIdentifier() {

@@ -1,6 +1,5 @@
 package nl.minicom.evenexus.core.report.persistence.expressions;
 
-import java.util.Date;
 
 /**
  * <p>This class constructs and QUARTER expression from an
@@ -15,7 +14,8 @@ public class Quarter extends SingleArgumentExpression {
 	/**
 	 * This constructor creates a {@link Quarter} object.
 	 * 
-	 * @param argument		An {@link Expression} containing a {@link Date}.
+	 * @param argument
+	 * 		An {@link Expression} containing a Date.
 	 */
 	public Quarter(Expression argument) {
 		super("QUARTER", argument);
