@@ -55,7 +55,7 @@ public class TransactionalInterceptor implements MethodInterceptor {
 			throw e;
 		}
 		finally {
-			if (tx.wasCommitted()) {
+			if (tx.wasCommitted() && !alreadyInTransaction) {
 				database.closeCurrentSession();
 			}
 		}

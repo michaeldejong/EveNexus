@@ -28,16 +28,13 @@ public class InventoryWorkerTest {
 	private static Provider<InventoryWorker> workerProvider;
 	private static InventoryTestCasePreparer preparer;
 	
-	@BeforeClass
-	public static void beforeClass() {
+	@Before
+	public void setup() {
 		Injector injector = Guice.createInjector(new TestModule());
 		executor = injector.getInstance(RevisionExecutor.class);
 		workerProvider = injector.getProvider(InventoryWorker.class);
 		preparer = injector.getInstance(InventoryTestCasePreparer.class);
-	}
-	
-	@Before
-	public void setup() {
+
 		preparer.dropDatabase();
 		executor.execute(new StructureUpgrader());
 	}

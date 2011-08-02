@@ -27,7 +27,7 @@ public class Database {
 		}
 	}
 	
-	public Session getCurrentSession() {
+	public synchronized Session getCurrentSession() {
 		ensureInitialized();
 		Session session = sessionMapping.get(Thread.currentThread());
 		if (session == null || !session.isOpen()) {
@@ -38,7 +38,7 @@ public class Database {
 		return session;
 	}
 	
-	public void closeCurrentSession() {
+	public synchronized void closeCurrentSession() {
 		Session session = sessionMapping.get(Thread.currentThread());
 		if (session != null) {
 			if (session.isOpen()) {

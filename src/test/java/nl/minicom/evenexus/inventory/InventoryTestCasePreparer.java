@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.Profit;
+import nl.minicom.evenexus.persistence.dao.Version;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
@@ -27,6 +28,8 @@ public class InventoryTestCasePreparer {
 		Session session = database.getCurrentSession();
 		for (WalletTransaction walletTransaction : testCase.getInitialTransactions()) {
 			session.save(walletTransaction);
+			session.flush();
+			session.evict(walletTransaction);
 		}
 	}
 	

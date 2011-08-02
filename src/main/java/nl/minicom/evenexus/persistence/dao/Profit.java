@@ -113,8 +113,8 @@ public class Profit implements Serializable {
 			.append(typeName, profit.typeName)
 			.append(date, profit.date)
 			.append(quantity, profit.quantity)
-			.append(value, profit.value)
-			.append(taxes, profit.taxes)
+			.appendSuper(value.doubleValue() == profit.value.doubleValue())
+			.appendSuper(taxes.doubleValue() == profit.taxes.doubleValue())
 			.isEquals();
 		}
 		return false;
