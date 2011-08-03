@@ -48,3 +48,4 @@ session.properties
 .pmd
 .checkstyle
 .ruleset
+/target
