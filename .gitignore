@@ -49,3 +49,4 @@ session.properties
 .checkstyle
 .ruleset
 /target
+/.settings
