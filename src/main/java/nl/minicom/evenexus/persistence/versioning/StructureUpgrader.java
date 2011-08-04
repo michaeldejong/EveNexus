@@ -725,6 +725,30 @@ public class StructureUpgrader extends RevisionCollection {
 			}
 		});
 		
+		/*
+		 *  Revisions 190 to 191 - added buy and sell price to profit table
+		 */
+		
+		super.registerRevision(new Revision(190) {
+			@Override
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("ALTER TABLE profit ADD COLUMN ");
+				builder.append("buyprice DECIMAL(20,2) ");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+
+		super.registerRevision(new Revision(190) {
+			@Override
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("ALTER TABLE profit ADD COLUMN ");
+				builder.append("sellprice DECIMAL(20,2) ");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+		
 	}
 	
 	@Override
