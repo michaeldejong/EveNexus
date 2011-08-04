@@ -50,3 +50,4 @@ session.properties
 .ruleset
 /target
 /.settings
+/.externalToolBuilders
