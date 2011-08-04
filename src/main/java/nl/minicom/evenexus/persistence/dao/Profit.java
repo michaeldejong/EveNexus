@@ -64,6 +64,13 @@ public class Profit implements Serializable {
 	@Column(name = SELL_PRICE)
 	private BigDecimal sellPrice;
 
+	/*
+	 * The following fields can be calculated from the ones above. I chose to do this at database
+	 * level (not in the object itself), so those fields could be used in hql queries (at least I
+	 * hope so). On the negative side those values aren't available when creating new profit
+	 * instances.  
+	 */
+	
 	@Formula(BUY_PRICE + " + " + SELL_PRICE)
 	private BigDecimal grossProfit;
 
