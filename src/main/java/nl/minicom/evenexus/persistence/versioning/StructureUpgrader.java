@@ -739,7 +739,7 @@ public class StructureUpgrader extends RevisionCollection {
 			}
 		});
 
-		super.registerRevision(new Revision(190) {
+		super.registerRevision(new Revision(191) {
 			@Override
 			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
