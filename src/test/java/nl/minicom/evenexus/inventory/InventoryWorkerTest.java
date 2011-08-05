@@ -14,7 +14,6 @@ import nl.minicom.evenexus.persistence.versioning.StructureUpgrader;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gson.Gson;

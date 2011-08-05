@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.Profit;
-import nl.minicom.evenexus.persistence.dao.Version;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
