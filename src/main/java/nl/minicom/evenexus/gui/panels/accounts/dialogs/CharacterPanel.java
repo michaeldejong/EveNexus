@@ -28,16 +28,19 @@ public class CharacterPanel extends JPanel {
 	
 	private final Map<EveCharacter, JCheckBox> characterMap;
 	private final Database database;
-	private final StateRule addRule;
+	
+	private StateRule addRule;
 	
 	@Inject
-	public CharacterPanel(final JButton add, Database database) {
+	public CharacterPanel(Database database) {
 		super();
 		this.database = database;
 		this.characterMap = new TreeMap<EveCharacter, JCheckBox>();
 		setBorder(new LineBorder(Color.GRAY, 1));
 		setLayout(null);
-		
+	}
+	
+	public void initialize(final JButton add) {
 		addRule = new StateRule() {
 			@Override
 			public void onValid(boolean isValid) {

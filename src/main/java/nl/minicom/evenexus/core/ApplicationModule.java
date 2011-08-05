@@ -3,6 +3,7 @@ package nl.minicom.evenexus.core;
 import javax.inject.Singleton;
 
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
@@ -40,6 +41,8 @@ public class ApplicationModule extends AbstractModule {
 		bind(CurrencyRenderer.class).in(Singleton.class);
 		bind(IntegerRenderer.class).in(Singleton.class);
 		bind(DateTimeRenderer.class).in(Singleton.class);
+		
+		bind(AccountsPanel.class).in(Singleton.class);
 		
 		requestStaticInjection(ColumnModel.class);
 	}

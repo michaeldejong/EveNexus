@@ -81,6 +81,9 @@ public class AddCharacterFrame extends CustomDialog {
 		final JTextField apiKeyField = new JTextField();
 		final JButton check = new JButton("Check API credentials");
 		final JButton add = new JButton("Add character(s)");
+		
+		characterPanel.initialize(add);
+		
 		check.setEnabled(false);
 		add.setEnabled(false);
 		
