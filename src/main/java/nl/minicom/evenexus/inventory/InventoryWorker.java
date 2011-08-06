@@ -7,8 +7,8 @@ import java.util.Queue;
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.persistence.Database;
-import nl.minicom.evenexus.persistence.dao.Profit;
-import nl.minicom.evenexus.persistence.dao.ProfitIdentifier;
+import nl.minicom.evenexus.persistence.dao.TransactionMatch;
+import nl.minicom.evenexus.persistence.dao.TransactionMatchIdentifier;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
@@ -73,18 +73,18 @@ public class InventoryWorker implements Runnable {
 				buyTransaction.setRemaining(0);
 				long diff = sellRemaining - buyRemaining;
 				sellTransaction.setRemaining(diff);
-				persistProfit(buyTransaction, sellTransaction, buyRemaining);
+				persistTransactionMatch(buyTransaction, sellTransaction, buyRemaining);
 			}
 			else if (sellRemaining < buyRemaining) {
 				long diff = buyRemaining - sellRemaining;
 				buyTransaction.setRemaining(diff);
 				sellTransaction.setRemaining(0);
-				persistProfit(buyTransaction, sellTransaction, sellRemaining);
+				persistTransactionMatch(buyTransaction, sellTransaction, sellRemaining);
 			}
 			else if (sellRemaining == buyRemaining) {
 				buyTransaction.setRemaining(0);
 				sellTransaction.setRemaining(0);
-				persistProfit(buyTransaction, sellTransaction, sellRemaining);
+				persistTransactionMatch(buyTransaction, sellTransaction, sellRemaining);
 			}
 		}
 		else {
@@ -107,18 +107,13 @@ public class InventoryWorker implements Runnable {
 	}
 
 	@Transactional
-	protected void persistProfit(WalletTransaction buyTransaction, WalletTransaction sellTransaction, long amount) {
-		Profit profit = new Profit();
-		profit.setId(new ProfitIdentifier(buyTransaction.getTransactionId(), sellTransaction.getTransactionId()));
-		profit.setDate(sellTransaction.getTransactionDateTime());
-		profit.setQuantity(amount);
-		profit.setTaxes(buyTransaction.getTaxes().add(sellTransaction.getTaxes()));
-		profit.setTypeID(sellTransaction.getTypeId());
-		profit.setTypeName(sellTransaction.getTypeName());
-		profit.setValue(sellTransaction.getPrice().add(buyTransaction.getPrice()));
+	protected void persistTransactionMatch(WalletTransaction buyTransaction, WalletTransaction sellTransaction, long amount) {
+		TransactionMatch match = new TransactionMatch();
+		match.setId(new TransactionMatchIdentifier(buyTransaction.getTransactionId(), sellTransaction.getTransactionId()));
+		match.setQuantity(amount);
 
 		Session session = database.getCurrentSession();
-		session.save(profit);
+		session.save(match);
 	}
 
 	@Transactional

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Immutable;
 
 /**
  * Entity representing matching fulfilled buy and sell orders.
@@ -20,21 +20,26 @@ import org.hibernate.annotations.Formula;
  * @author Lars
  */
 @Entity
-@Table(name = "profit")
+@Immutable
+@Table(name = "profits")
 public class Profit implements Serializable {
 
-	private static final long serialVersionUID = 6583278267993803229L;
+	private static final long serialVersionUID = 1L;
 
-	public static final String ID = "id";
-	public static final String TYPE_ID = "typeid";
-	public static final String TYPE_NAME = "typename";
+	public static final String TYPE_ID = "type_id";
+	public static final String TYPE_NAME = "type_name";
 	public static final String DATE = "date";
 	public static final String QUANTITY = "quantity";
-	// TODO this could be removed - leaving it due to ignorance of compatibility issues
-	public static final String VALUE = "value";
+	public static final String BUY_PRICE = "buy_price";
+	public static final String SELL_PRICE = "sell_price";
 	public static final String TAXES = "taxes";
-	public static final String BUY_PRICE = "buyprice";
-	public static final String SELL_PRICE = "sellprice";
+	public static final String GROSS_PROFIT = "gross_profit";
+	public static final String NET_PROFIT = "net_profit";
+	public static final String TOTAL_TAXES = "total_taxes";
+	public static final String TOTAL_GROSS_PROFIT = "total_gross_profit";
+	public static final String TOTAL_NET_PROFIT = "total_net_profit";
+	public static final String PERCENTAL_GROSS_PROFIT = "percental_gross_profit";
+	public static final String PERCENTAL_NET_PROFIT = "percental_net_profit";
 	
 	@Id
 	private ProfitIdentifier id;
@@ -51,42 +56,34 @@ public class Profit implements Serializable {
 	@Column(name = QUANTITY)
 	private long quantity;
 
-	// TODO this could be removed - leaving it due to ignorance of compatibility issues
-	@Column(name = VALUE)
-	private BigDecimal value;
-
-	@Column(name = TAXES)
-	private BigDecimal taxes;
-	
 	@Column(name = BUY_PRICE)
 	private BigDecimal buyPrice;
 	
 	@Column(name = SELL_PRICE)
 	private BigDecimal sellPrice;
 
-	/*
-	 * The following fields can be calculated from the ones above. I chose to do this at database
-	 * level (not in the object itself), so those fields could be used in hql queries (at least I
-	 * hope so). On the negative side those values aren't available when creating new profit
-	 * instances.  
-	 */
+	@Column(name = TAXES)
+	private BigDecimal taxes;
 	
-	@Formula(BUY_PRICE + " + " + SELL_PRICE)
+	@Column(name = GROSS_PROFIT)
 	private BigDecimal grossProfit;
 
-	@Formula(BUY_PRICE + " + " + SELL_PRICE + " + " + TAXES)
+	@Column(name = NET_PROFIT)
 	private BigDecimal netProfit;
 
-	@Formula("(" + BUY_PRICE + " + " + SELL_PRICE + ") * " + QUANTITY)
+	@Column(name = TOTAL_TAXES)
+	private BigDecimal totalTaxes;
+	
+	@Column(name = TOTAL_GROSS_PROFIT)
 	private BigDecimal totalGrossProfit;
 
-	@Formula("(" + BUY_PRICE + " + " + SELL_PRICE + " + " + TAXES + ") * " + QUANTITY)
+	@Column(name = TOTAL_NET_PROFIT)
 	private BigDecimal totalNetProfit;
 
-	@Formula("(" + BUY_PRICE + " + " + SELL_PRICE + " + " + TAXES + ") / " + BUY_PRICE  + " * 100")
+	@Column(name = PERCENTAL_GROSS_PROFIT)
 	private double percentalGrossProfit;
 
-	@Formula("(" + BUY_PRICE + " + " + SELL_PRICE + ") / " + BUY_PRICE + " * 100")
+	@Column(name = PERCENTAL_NET_PROFIT)
 	private double percentalNetProfit;
 
 	public ProfitIdentifier getId() {
@@ -139,16 +136,6 @@ public class Profit implements Serializable {
 
 	public void setQuantity(long quantity) {
 		this.quantity = quantity;
-	}
-
-	// TODO this could be removed - leaving it due to ignorance of compatibility issues
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	// TODO this could be removed - leaving it due to ignorance of compatibility issues
-	public void setValue(BigDecimal value) {
-		this.value = value;
 	}
 
 	/**
@@ -207,6 +194,17 @@ public class Profit implements Serializable {
 	}
 
 	/**
+	 * Answer the amount of total taxes paid.
+	 */
+	public BigDecimal getTotalTaxes() {
+		return totalTaxes;
+	}
+
+	public void setTotalTaxes(BigDecimal totalTaxes) {
+		this.totalTaxes = totalTaxes;
+	}
+
+	/**
 	 * Answer the total profit without taxes.
 	 */
 	public BigDecimal getTotalGrossProfit()
@@ -252,33 +250,22 @@ public class Profit implements Serializable {
 		this.percentalNetProfit = percentalNetProfit;
 	}
 
-
+	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Profit) {
 			Profit profit = (Profit) other;
 			
 			return new EqualsBuilder()
 			.append(id, profit.id)
-			.append(typeID, profit.typeID)
-			.append(typeName, profit.typeName)
-			.append(date, profit.date)
-			.append(quantity, profit.quantity)
-			.appendSuper(value.doubleValue() == profit.value.doubleValue())
-			.appendSuper(taxes.doubleValue() == profit.taxes.doubleValue())
 			.isEquals();
 		}
 		return false;
 	}
 	
+	@Override
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(id)
-			.append(typeID)
-			.append(typeName)
-			.append(date)
-			.append(quantity)
-			.append(value)
-			.append(taxes)
 			.toHashCode();
 	}
 }

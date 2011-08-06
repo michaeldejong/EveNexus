@@ -52,7 +52,8 @@ public class ProfitGraphElement implements GraphElement {
 	@Transactional
 	public void reload() {
 		Session session = database.getCurrentSession();
-		SQLQuery query = session.createSQLQuery("SELECT SUM(quantity * (value + taxes)) AS totalProfit, day FROM (SELECT quantity, value, taxes, date, DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(date) AS day FROM profit WHERE date > DATEADD('DAY', ?, CURRENT_TIMESTAMP())) AS a GROUP BY day ORDER BY day ASC");
+		// TODO refactor using objects and criteria api?
+		SQLQuery query = session.createSQLQuery("SELECT SUM(total_net_profit) AS totalProfit, day FROM (SELECT total_net_profit, date, DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(date) AS day FROM profits WHERE date > DATEADD('DAY', ?, CURRENT_TIMESTAMP())) AS a GROUP BY day ORDER BY day ASC");
 		query.setLong(0, -28);
 
 		ScrollableResults result = query.scroll();

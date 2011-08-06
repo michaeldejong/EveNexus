@@ -150,7 +150,9 @@ public class TransactionImporter extends ImporterTask {
 			long characterId = apiKey.getCharacterID();
 			StandingIdentifier id = new StandingIdentifier(characterId, station.getCorporationId());
 			Standing standing = (Standing) session.get(Standing.class, id);
-			return standing.getStanding();
+			if (standing != null) {
+				return standing.getStanding();
+			}
 		}
 		return BigDecimal.ZERO;
 	}
