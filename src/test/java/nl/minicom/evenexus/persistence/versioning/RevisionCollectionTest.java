@@ -75,7 +75,7 @@ public class RevisionCollectionTest {
 	/**
 	 * Make sure that registering a null results in an {@link AssertionError}.
 	 */
-	@Test(expected = java.lang.AssertionError.class)
+	@Test(expected = java.lang.IllegalArgumentException.class)
 	public void testRegisterNullValue() {
 		instance.registerRevision(null);
 	}

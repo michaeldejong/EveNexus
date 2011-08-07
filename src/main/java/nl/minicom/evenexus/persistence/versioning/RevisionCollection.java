@@ -19,7 +19,7 @@ public class RevisionCollection {
 	}
 	
 	public void registerRevision(IRevision revision) {
-		assert revision != null : "Cannot add a NULL as a revision to the collection";
+		Preconditions.checkArgument(revision != null, "Cannot add a NULL as a revision to the collection");
 
 		if (!revisions.isEmpty()) {
 			int lastRevisionNumber = getLastRevisionNumber();
