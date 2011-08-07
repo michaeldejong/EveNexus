@@ -73,6 +73,7 @@ public class AccountsPanel extends JPanel {
 	}
 
 	public void initialize() {
+		accountModel.initialize();
 		table.initialize(accountData, accountModel);
 		
 		setBackground(Color.WHITE);	

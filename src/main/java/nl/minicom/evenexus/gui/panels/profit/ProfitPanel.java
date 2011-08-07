@@ -45,6 +45,7 @@ public class ProfitPanel extends TabPanel {
 	}	
 
 	public void initialize() {
+		columnModel.initialize();
 		profitData.initialize();
 		table.initialize(profitData, columnModel);
 		

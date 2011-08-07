@@ -50,6 +50,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	}
 
 	public void initialize() {
+		columnModel.initialize();
 		table.initialize(journalData, columnModel);
 		journalData.initialize();
 		
