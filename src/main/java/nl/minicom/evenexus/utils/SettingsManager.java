@@ -2,6 +2,7 @@ package nl.minicom.evenexus.utils;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,8 +47,6 @@ public class SettingsManager {
 		FileReader reader = new FileReader(file);
 		settings.load(reader);
 		reader.close();
-		
-		LOG.debug(toString());
 		
 		initialized = true;
 	}
@@ -134,21 +133,20 @@ public class SettingsManager {
 	}
 	
 	public void save() {
-		System.err.println();
-//		try {
-//			int newVersion = 1;
-//			if (loadInt(SETTINGS_VERSION, 1) < newVersion) {
-//				saveObject(SETTINGS_VERSION, newVersion);
-//			}
-//			FileOutputStream out = new FileOutputStream(file);
-//			settings.store(out, null);
-//			out.flush();
-//			out.close();
-//		}
-//		catch (Exception e) {
-//			LOG.error(e.getLocalizedMessage(), e);
-//			dialog.setVisible(true);
-//		}
+		try {
+			int newVersion = 1;
+			if (loadInt(SETTINGS_VERSION, 1) < newVersion) {
+				saveObject(SETTINGS_VERSION, newVersion);
+			}
+			FileOutputStream out = new FileOutputStream(file);
+			settings.store(out, null);
+			out.flush();
+			out.close();
+		}
+		catch (Exception e) {
+			LOG.error(e.getLocalizedMessage(), e);
+			dialog.setVisible(true);
+		}
 	}
 	
 	public String toString() {
