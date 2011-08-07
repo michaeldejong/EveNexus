@@ -26,14 +26,15 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 
 	private final Database database;
 	private final BugReportDialog dialog;
+	private final SettingsManager settingsManager;
 	
 	private int period;
 	
 	@Inject
 	public JournalTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
+		this.settingsManager = settingsManager;
 		this.dialog = dialog;
-		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK));
 	}
 	
 	@Override
@@ -86,6 +87,10 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 				"date", "ownername1", "ownername2", "argname1", "amount", 
 				"balance", "reason", "taxamount", "description"
 		};
+	}
+
+	public void initialize() {
+		settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK);
 	}
 
 	@Override

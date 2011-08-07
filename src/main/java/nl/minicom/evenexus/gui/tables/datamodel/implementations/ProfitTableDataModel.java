@@ -28,6 +28,7 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 
 	private final Database database;
 	private final BugReportDialog dialog;
+	private final SettingsManager settingsManager;
 	
 	private int period;
 	private String typeName;
@@ -36,7 +37,10 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	public ProfitTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
 		this.dialog = dialog;
-		
+		this.settingsManager = settingsManager;
+	}
+	
+	public void initialize() {
 		setTypeName(null);
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_PROFIT_PERIOD, IPeriodFilter.WEEK));
 	}

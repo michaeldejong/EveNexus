@@ -10,8 +10,13 @@ public class AccountColumnModel extends ColumnModel {
 
 	@Inject
 	public AccountColumnModel(SettingsManager settingsManager) {
+		super(settingsManager);
+	}
+
+	@Override
+	public void initialize() {
 		add(new Column(
-				settingsManager, 
+				getSettingsManager(), 
 				"Character", 
 				"name", 
 				SettingsManager.TABLE_ACCOUNT_CHARACTER_VISIBLE,
@@ -22,7 +27,7 @@ public class AccountColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager, 
+				getSettingsManager(), 
 				"User ID", 
 				"userid", 
 				SettingsManager.TABLE_ACCOUNT_USERID_VISIBLE,
@@ -34,7 +39,7 @@ public class AccountColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager, 
+				getSettingsManager(), 
 				"API Key", 
 				"apikey", 
 				SettingsManager.TABLE_ACCOUNT_APIKEY_VISIBLE,
@@ -45,7 +50,7 @@ public class AccountColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager, 
+				getSettingsManager(), 
 				"Character ID", 
 				"charid", 
 				SettingsManager.TABLE_ACCOUNT_CHARID_VISIBLE,

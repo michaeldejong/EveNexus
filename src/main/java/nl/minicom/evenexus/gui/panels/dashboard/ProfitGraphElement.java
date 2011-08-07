@@ -26,25 +26,21 @@ public class ProfitGraphElement implements GraphElement {
 	private final Database database;
 	
 	private final Map<Integer, Double> data;
-	private boolean isVisible;
 	
 	@Inject
 	public ProfitGraphElement(SettingsManager settingsManager, Database database) {
+		this.data = new TreeMap<Integer, Double>();
 		this.settingsManager = settingsManager;
 		this.database = database;
-		
-		this.data = new TreeMap<Integer, Double>();
-		this.isVisible = settingsManager.loadBoolean(VISIBLE_SETTING, true);
 	}
 
 	@Override
 	public boolean isVisible() {
-		return isVisible;
+		return settingsManager.loadBoolean(VISIBLE_SETTING, true);
 	}
 
 	@Override
 	public void setVisible(Boolean value) {
-		isVisible = value;
 		settingsManager.saveObject(VISIBLE_SETTING, value);
 	}
 

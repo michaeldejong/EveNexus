@@ -14,8 +14,13 @@ public class MarketOrdersColumnModel extends ColumnModel {
 
 	@Inject
 	public MarketOrdersColumnModel(SettingsManager settingsManager) {
+		super(settingsManager);
+	}
+	
+	@Override
+	public void initialize() {
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Item",
 				"typeName",
 				SettingsManager.TABLE_MARKETORDER_ITEM_VISIBLE,
@@ -26,7 +31,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Volume entered",
 				"volEntered",
 				SettingsManager.TABLE_MARKETORDER_VOLENTERED_VISIBLE,
@@ -38,7 +43,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Volume remaining",
 				"volRemaining",
 				SettingsManager.TABLE_MARKETORDER_VOLREMAINING_VISIBLE,
@@ -50,7 +55,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Minimum volume",
 				"minVolume",
 				SettingsManager.TABLE_MARKETORDER_MINVOLUME_VISIBLE,
@@ -62,7 +67,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Station",
 				"stationName",
 				SettingsManager.TABLE_MARKETORDER_STATION_VISIBLE,
@@ -73,7 +78,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Price",
 				"price",
 				SettingsManager.TABLE_MARKETORDER_PRICE_VISIBLE,
@@ -85,7 +90,7 @@ public class MarketOrdersColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Issued", 
 				"issued",
 				SettingsManager.TABLE_MARKETORDER_ISSUED_VISIBLE,

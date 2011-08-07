@@ -50,6 +50,7 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	}
 	
 	public void initialize() {
+		tableDataModel.initialize();
 		table.initialize(tableDataModel, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);

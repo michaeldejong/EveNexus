@@ -40,19 +40,20 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 			ProfitGraphElement profitGraphElement,
 			TaxesGraphElement taxesGraphElement,
 			SalesGraphElement salesGraphElement,
-			PurchasesGraphElement purchasesGraphElement) {
+			PurchasesGraphElement purchasesGraphElement,
+			LineGraphEngine graphingEngine) {
 
-		int period = settingsManager.loadInt(SettingsManager.FILTER_DASHBOARD_PERIOD, 14);
 		this.settingsManager = settingsManager;
 		this.importManager = importManager;
 		this.profitGraphElement = profitGraphElement;
 		this.taxesGraphElement = taxesGraphElement;
 		this.salesGraphElement = salesGraphElement;
 		this.purchasesGraphElement = purchasesGraphElement;
-		this.chartPanel = new LineGraphEngine(period);
+		this.chartPanel = graphingEngine;
 	}
 	
 	public void initialize() {
+		chartPanel.setPeriod(settingsManager.loadInt(SettingsManager.FILTER_DASHBOARD_PERIOD, 14));
 		chartPanel.addGraphElement(profitGraphElement);
 		chartPanel.addGraphElement(taxesGraphElement);
 		chartPanel.addGraphElement(salesGraphElement);

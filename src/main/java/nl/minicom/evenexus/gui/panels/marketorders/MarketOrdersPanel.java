@@ -43,11 +43,12 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 			ImportManager importManager,
 			SellOrdersTableDataModel sellOrderData,
 			BuyOrdersTableDataModel buyOrderDate,
-			Provider<Table> tableProvider) {	
+			Provider<Table> tableProvider,
+			MarketOrdersColumnModel columnModel) {	
 		
 		this.table1 = tableProvider.get();
 		this.table2 = tableProvider.get();
-		this.columnModel = new MarketOrdersColumnModel(settingsManager);
+		this.columnModel = columnModel;
 		this.sellOrderData = sellOrderData;
 		this.buyOrderData = buyOrderDate;
 		this.settingsManager = settingsManager;
@@ -56,6 +57,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	}
 
 	public void initialize() {
+		columnModel.initialize();
 		table1.initialize(sellOrderData, columnModel);
 		table2.initialize(buyOrderData, columnModel);
 		

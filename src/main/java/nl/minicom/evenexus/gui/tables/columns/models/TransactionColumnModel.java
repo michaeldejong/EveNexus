@@ -14,8 +14,13 @@ public class TransactionColumnModel extends ColumnModel {
 
 	@Inject
 	public TransactionColumnModel(SettingsManager settingsManager) {
+		super(settingsManager);
+	}
+	
+	@Override
+	public void initialize() {
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Date", 
 				"transactionDateTime",
 				SettingsManager.TABLE_TRANSACTION_DATE_VISIBLE,
@@ -27,7 +32,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Item", 
 				"typename", 
 				SettingsManager.TABLE_TRANSACTION_ITEM_VISIBLE,
@@ -38,7 +43,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Station", 
 				"stationname", 
 				SettingsManager.TABLE_TRANSACTION_STATION_VISIBLE,
@@ -49,7 +54,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Client", 
 				"clientName", 
 				SettingsManager.TABLE_TRANSACTION_CLIENT_VISIBLE,
@@ -60,7 +65,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Quantity", 
 				"quantity", 
 				SettingsManager.TABLE_TRANSACTION_QUANTITY_VISIBLE,
@@ -72,7 +77,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Price", 
 				"price", 
 				SettingsManager.TABLE_TRANSACTION_PRICE_VISIBLE,
@@ -84,7 +89,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Taxes", 
 				"totaltax", 
 				SettingsManager.TABLE_TRANSACTION_TAXES_VISIBLE,
@@ -96,7 +101,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Total (exc. taxes)", 
 				"totalnotax", 
 				SettingsManager.TABLE_TRANSACTION_TOTAL_WITHOUT_TAXES_VISIBLE,
@@ -108,7 +113,7 @@ public class TransactionColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Total (inc. taxes)", 
 				"totalwithtax", 
 				SettingsManager.TABLE_TRANSACTION_TOTAL_WITH_TAXES_VISIBLE,

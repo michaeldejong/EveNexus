@@ -2,11 +2,13 @@ package nl.minicom.evenexus.utils;
 
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -27,6 +29,8 @@ public class SettingsManager {
 	private final SortedProperties settings;
 	private final File file;
 	
+	private volatile boolean initialized = false;
+	
 	@Inject
 	public SettingsManager(BugReportDialog dialog) {
 		this.dialog = dialog;
@@ -42,6 +46,10 @@ public class SettingsManager {
 		FileReader reader = new FileReader(file);
 		settings.load(reader);
 		reader.close();
+		
+		LOG.debug(toString());
+		
+		initialized = true;
 	}
 	
 	public int loadInt(String name, int defaultValue) {
@@ -111,6 +119,10 @@ public class SettingsManager {
 	}
 	
 	public void saveObject(String name, String value) {
+		if (!initialized) {
+			throw new IllegalStateException("SettingsManager has not yet finished initialization!");
+		}
+		
 		try {
 			settings.put(name, value);
 			save();
@@ -122,20 +134,68 @@ public class SettingsManager {
 	}
 	
 	public void save() {
-		try {
-			int newVersion = 1;
-			if (loadInt(SETTINGS_VERSION, 1) < newVersion) {
-				saveObject(SETTINGS_VERSION, newVersion);
+		System.err.println();
+//		try {
+//			int newVersion = 1;
+//			if (loadInt(SETTINGS_VERSION, 1) < newVersion) {
+//				saveObject(SETTINGS_VERSION, newVersion);
+//			}
+//			FileOutputStream out = new FileOutputStream(file);
+//			settings.store(out, null);
+//			out.flush();
+//			out.close();
+//		}
+//		catch (Exception e) {
+//			LOG.error(e.getLocalizedMessage(), e);
+//			dialog.setVisible(true);
+//		}
+	}
+	
+	public String toString() {
+		List<Object> keys = new ArrayList<Object>(settings.keySet());
+		Collections.sort(keys, new Comparator<Object>() {
+			@Override
+			public int compare(Object arg0, Object arg1) {
+				String left = arg0.toString();
+				String right = arg1.toString();
+				
+				if (left == null && right == null) {
+					return 0;
+				}
+				else if (left == null) {
+					return -1;
+				}
+				else if (right == null) {
+					return 1;
+				}
+				else {
+					return left.compareTo(right);
+				}
 			}
-			FileOutputStream out = new FileOutputStream(file);
-			settings.store(out, null);
-			out.flush();
-			out.close();
+		});
+		
+		StringBuilder builder = new StringBuilder();
+		for (Object keyObject : keys) {
+			String key = keyObject.toString();
+			String value = settings.get(keyObject).toString();
+			
+			if (key == null) {
+				key = "";
+			}
+			if (value == null) {
+				value = "";
+			}
+			
+			builder.append(key);
+			for (int i = 32 - key.length(); i >= 0; i--) {
+				builder.append(" ");
+			}
+			
+			builder.append("= ");
+			builder.append(value);
+			builder.append("\n");
 		}
-		catch (Exception e) {
-			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
-		}
+		return builder.toString();
 	}
 	
 	public class SortedProperties extends Properties {

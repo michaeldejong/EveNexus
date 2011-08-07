@@ -3,13 +3,16 @@ package nl.minicom.evenexus.gui.tables.columns;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nl.minicom.evenexus.gui.tables.renderers.AlignLeftRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.AlignRightRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
+import nl.minicom.evenexus.utils.SettingsManager;
 
-public class ColumnModel {
+public abstract class ColumnModel {
 	
 	public static final AlignLeftRenderer ALIGN_LEFT = new AlignLeftRenderer();
 	public static final AlignRightRenderer ALIGN_RIGHT = new AlignRightRenderer();
@@ -19,10 +22,19 @@ public class ColumnModel {
 		
 	private final List<Column> columns;
 	private final List<Column> visibleColumns;
+	private final SettingsManager settingsManager;
 	
-	public ColumnModel() {
+	@Inject
+	public ColumnModel(SettingsManager settingsManager) {
 		this.columns = new ArrayList<Column>();
 		this.visibleColumns = new ArrayList<Column>();
+		this.settingsManager = settingsManager;
+	}
+	
+	public abstract void initialize();
+	
+	protected SettingsManager getSettingsManager() {
+		return settingsManager;
 	}
 	
 	public void add(Column column) {

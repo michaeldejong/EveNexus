@@ -14,8 +14,13 @@ public class JournalColumnModel extends ColumnModel {
 
 	@Inject
 	public JournalColumnModel(SettingsManager settingsManager) {
+		super(settingsManager);
+	}
+	
+	@Override
+	public void initialize() {
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Date", 
 				"date", 
 				SettingsManager.TABLE_JOURNAL_DATE_VISIBLE, 
@@ -27,7 +32,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Type", 
 				"description", 
 				SettingsManager.TABLE_JOURNAL_TYPE_VISIBLE, 
@@ -38,7 +43,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Sender", 
 				"ownerName1", 
 				SettingsManager.TABLE_JOURNAL_SENDER_VISIBLE, 
@@ -49,7 +54,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Recipient", 
 				"ownerName2", 
 				SettingsManager.TABLE_JOURNAL_RECIPIENT_VISIBLE, 
@@ -60,7 +65,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Amount", 
 				"amount", 
 				SettingsManager.TABLE_JOURNAL_AMOUNT_VISIBLE, 
@@ -72,7 +77,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Balance", 
 				"balance", 
 				SettingsManager.TABLE_JOURNAL_BALANCE_VISIBLE, 
@@ -84,7 +89,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Reason", 
 				"reason", 
 				SettingsManager.TABLE_JOURNAL_REASON_VISIBLE, 
@@ -95,7 +100,7 @@ public class JournalColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Taxed", 
 				"taxAmount", 
 				SettingsManager.TABLE_JOURNAL_TAXED_VISIBLE, 

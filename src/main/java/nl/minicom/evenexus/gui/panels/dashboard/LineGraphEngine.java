@@ -8,6 +8,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import nl.minicom.evenexus.utils.SettingsManager;
 import nl.minicom.evenexus.utils.TimeUtils;
 
 import org.jfree.chart.ChartPanel;
@@ -33,15 +36,16 @@ public class LineGraphEngine extends ChartPanel {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LineGraphEngine.class);
 
+	private final SettingsManager settingsManager;
 	private final List<GraphElement> elements;
+	
 	private int period;
 
-//	private Marker marker = null;
-	
-	public LineGraphEngine(int period) {
+	@Inject
+	public LineGraphEngine(SettingsManager settingsManager) {
 		super(null, true);		
+		this.settingsManager = settingsManager;
 		this.elements = new ArrayList<GraphElement>();
-		this.period = period;
 	}
 	
 	public void addGraphElement(GraphElement element) {
@@ -137,6 +141,7 @@ public class LineGraphEngine extends ChartPanel {
 
 	public void setPeriod(Integer value) {
 		period = value;
+		settingsManager.saveObject(SettingsManager.FILTER_DASHBOARD_PERIOD, value);
 	}
 	
 }

@@ -1,6 +1,5 @@
 package nl.minicom.evenexus.inventory;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -55,8 +54,8 @@ public class InventoryManager {
 	
 	public void processUnprocessedTransactions() {
 		LOG.info("Calculating inventory and profits for unprocessed transactions");
-		List<BigInteger> typeIds = queryUnprocessedTypeIds();
-		for (BigInteger typeId : typeIds) {
+		List<Long> typeIds = queryUnprocessedTypeIds();
+		for (Long typeId : typeIds) {
 			InventoryWorker worker = workerProvider.get();
 			worker.initialize(typeId.longValue());
 			executor.submit(worker);
@@ -65,10 +64,10 @@ public class InventoryManager {
 	
 	@Transactional
 	@SuppressWarnings("unchecked")
-	private List<BigInteger> queryUnprocessedTypeIds() {
+	private List<Long> queryUnprocessedTypeIds() {
 		Session session = database.getCurrentSession();
 		String query = "select distinct(t.typeId) from WalletTransaction t where t.price > 0 and t.remaining > 0";
-		return (List<BigInteger>) session.createQuery(query).list();
+		return (List<Long>) session.createQuery(query).list();
 	}
 
 }

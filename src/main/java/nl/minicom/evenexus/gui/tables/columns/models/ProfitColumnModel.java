@@ -14,8 +14,13 @@ public class ProfitColumnModel extends ColumnModel {
 
 	@Inject
 	public ProfitColumnModel(SettingsManager settingsManager) {
+		super(settingsManager);
+	}
+	
+	@Override
+	public void initialize() {
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Date", 
 				"date", 
 				SettingsManager.TABLE_PROFIT_DATE_VISIBLE,
@@ -27,7 +32,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Item", 
 				"typename", 
 				SettingsManager.TABLE_PROFIT_ITEM_VISIBLE,
@@ -38,7 +43,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Quantity", 
 				"quantity", 
 				SettingsManager.TABLE_PROFIT_QUANTITY_VISIBLE,
@@ -50,7 +55,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Profit per unit (exc. taxes)", 
 				"value", 
 				SettingsManager.TABLE_PROFIT_UNIT_PROFIT_WITHOUT_TAXES_VISIBLE,
@@ -62,7 +67,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Total profit (exc. taxes)", 
 				"totalValue", 
 				SettingsManager.TABLE_PROFIT_TOTAL_PROFIT_WITHOUT_TAXES_VISIBLE,
@@ -74,7 +79,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Taxes per unit", 
 				"taxes", 
 				SettingsManager.TABLE_PROFIT_UNIT_TAXES_VISIBLE,
@@ -86,7 +91,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Total taxes", 
 				"totalTaxes", 
 				SettingsManager.TABLE_PROFIT_TOTAL_TAXES_VISIBLE,
@@ -98,7 +103,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Profit per unit (inc. taxes)", 
 				"profit", 
 				SettingsManager.TABLE_PROFIT_UNIT_PROFIT_WITH_TAXES_VISIBLE,
@@ -110,7 +115,7 @@ public class ProfitColumnModel extends ColumnModel {
 		));
 		
 		add(new Column(
-				settingsManager,
+				getSettingsManager(),
 				"Total profit (inc. taxes)", 
 				"totalProfit", 
 				SettingsManager.TABLE_PROFIT_TOTAL_PROFIT_WITH_TAXES_VISIBLE,
