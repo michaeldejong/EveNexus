@@ -5,17 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.hibernate.annotations.Immutable;
-
 /**
- * Functionally a {@link Profit} is identified by its {@link TransactionMatch}. This class decouples the
- * direct dependency to a {@link TransactionMatch} by defining an own identifier for {@link Profit}s.   
+ * A {@link TransactionMatch} is identified by the ids of the buy transaction and sell transaction.   
  * 
- * @author Michael
+ * @author Lars
  */
 @Embeddable
-@Immutable
-public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifier> {
+public class TransactionMatchIdentifier implements Serializable, Comparable<TransactionMatchIdentifier> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,11 +24,11 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	@Column(name = SELL_TRANSACTION_ID, nullable = false)
 	private long sellTransactionId;
 	
-	public ProfitIdentifier() {
+	public TransactionMatchIdentifier() {
 		// Do nothing.
 	}
 	
-	public ProfitIdentifier(long buyTransactionId, long sellTransactionId) {
+	public TransactionMatchIdentifier(long buyTransactionId, long sellTransactionId) {
 		this.buyTransactionId = buyTransactionId;
 		this.sellTransactionId = sellTransactionId;
 	}
@@ -55,8 +51,8 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	
 	@Override
 	public final boolean equals(Object other) {
-		if (other instanceof ProfitIdentifier) {
-			ProfitIdentifier otherId = (ProfitIdentifier) other;
+		if (other instanceof TransactionMatchIdentifier) {
+			TransactionMatchIdentifier otherId = (TransactionMatchIdentifier) other;
 			return buyTransactionId == otherId.buyTransactionId 
 				&& sellTransactionId == otherId.sellTransactionId;
 		}
@@ -69,7 +65,7 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	}
 
 	@Override
-	public int compareTo(ProfitIdentifier o) {
+	public int compareTo(TransactionMatchIdentifier o) {
 		long diff = buyTransactionId - o.buyTransactionId;
 		if (diff < 0) {
 			return -1;

@@ -58,21 +58,22 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	}
 
 	private List<Object[]> loadTable() throws HibernateException {
+		// TODO refactor to work with objects?
 		final String sql = new StringBuilder()
 		.append("SELECT ")
-		.append("typeName, ")
+		.append("type_name as typeName, ")
 		.append("date, ")
 		.append("quantity, ")
-		.append("value, ")
+		.append("gross_profit AS value, ")
 		.append("taxes, ")
-		.append("value + taxes AS profit, ")
-		.append("value * quantity AS totalValue, ")
-		.append("taxes * quantity AS totalTaxes, ")
-		.append("(value + taxes) * quantity AS totalProfit ")
-		.append("FROM profit ")
-		.append("WHERE LCASE(typeName) LIKE ? ")
+		.append("net_profit AS profit, ")
+		.append("total_gross_profit AS totalValue, ")
+		.append("total_taxes AS totalTaxes, ")
+		.append("total_net_profit AS totalProfit ")
+		.append("FROM profits ")
+		.append("WHERE LCASE(type_name) LIKE ? ")
 		.append("AND date > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
-		.append("ORDER BY date DESC, sellTransactionId DESC")
+		.append("ORDER BY date DESC, sell_Transaction_Id DESC")
 		.toString();
 		
 		List<Object[]> result = new ArrayList<Object[]>();
