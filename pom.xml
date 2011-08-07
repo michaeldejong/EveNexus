@@ -66,8 +66,8 @@
 				</executions>
 				<configuration>
 					<revisionOnScmFailure>0</revisionOnScmFailure>
-					<doCheck>true</doCheck>
-					<doUpdate>true</doUpdate>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
 				</configuration>
 			</plugin>
 			<!--plugin>
