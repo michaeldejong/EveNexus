@@ -35,6 +35,10 @@
 			<email>webschaap@gmail.com</email>
 			<url>http://www.minicom.nl</url>
 		</developer>
+		<developer>
+			<name>Lars Heller</name>
+			<email>l.heller@web.de</email>
+		</developer>
 	</developers>
 
 	<properties>

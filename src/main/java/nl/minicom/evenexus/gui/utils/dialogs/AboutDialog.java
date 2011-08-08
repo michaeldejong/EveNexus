@@ -35,7 +35,7 @@ public class AboutDialog extends CustomDialog {
 	
 	@Inject
 	public AboutDialog(Application application, BugReportDialog dialog) {
-		super(DialogTitle.ABOUT_TITLE, 370, 368);
+		super(DialogTitle.ABOUT_TITLE, 370, 384);
 		this.application = application;
 		this.dialog = dialog;
 	}
@@ -76,8 +76,8 @@ public class AboutDialog extends CustomDialog {
 	private JPanel createVersionPanel() {
 		JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(createTitledBorder("Version"));
-		versionPanel.setMinimumSize(new Dimension(0, 78));
-		versionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
+		versionPanel.setMinimumSize(new Dimension(0, 80));
+		versionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 		
 		JLabel versions = new JLabel(createVersionString());
 		versions.setAlignmentX(JComponent.LEFT_ALIGNMENT);
@@ -106,11 +106,26 @@ public class AboutDialog extends CustomDialog {
 		if (buildNumber == null || buildNumber.trim().isEmpty()) {
 			buildNumber = "unknown";
 		}
+
+		Font font = UIManager.getFont("Label.font");
+        font = font.deriveFont(12.0f);
 		
-		return "<html>Application version: " + applicationVersion + " (" 
-			+ "build: " + buildNumber + ")<br>" 
-			+ "Database version: " + databaseVersion + "<br>" 
-			+ "Content version: " + contentVersion + "</html>";
+        StringBuilder builder = new StringBuilder();
+		builder.append("<html>");
+		builder.append("<head>");
+		builder.append("<style>");
+		builder.append("BODY { font-family: " + font.getFamily() + "; font-size: " + font.getSize() + "pt; }");
+		builder.append("</style>");
+		builder.append("</head>");
+		builder.append("<body>");
+		builder.append("Application version: " + applicationVersion);
+		builder.append(" (build: " + buildNumber + ")<br>");
+		builder.append("Database version: " + databaseVersion + "<br>");
+		builder.append("Content version: " + contentVersion);
+		builder.append("</body>");
+		builder.append("</html>");
+		
+		return builder.toString();
 	}
 	
 	private JPanel createContributionPanel() {
@@ -159,7 +174,8 @@ public class AboutDialog extends CustomDialog {
 
 	private String createContributionString() {
 		Font font = UIManager.getFont("Label.font");
-       
+        font = font.deriveFont(12.0f);
+		
 		StringBuilder builder = new StringBuilder();
 		builder.append("<html>");
 		builder.append("<head>");
@@ -183,23 +199,44 @@ public class AboutDialog extends CustomDialog {
 	}
 
 	private JPanel createDevPanel() {
-		JPanel devPanel = new JPanel();
-		devPanel.setBorder(createTitledBorder("Developer"));
-		devPanel.setMinimumSize(new Dimension(0, 50));
-		devPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+		Font font = getFont().deriveFont(12.0f);
 		
-		JLabel developer = new JLabel("Michael de Jong");
-		developer.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+		JPanel devPanel = new JPanel();
+		devPanel.setBorder(createTitledBorder("Developers"));
+		devPanel.setMinimumSize(new Dimension(0, 64));
+		devPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 64));
+		
+		JPanel developers = new JPanel();
+		developers.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+
+		JLabel developer1 = new JLabel("Michael de Jong");
+		JLabel developer2 = new JLabel("Lars Heller");
+		
+		developer1.setFont(font);
+		developer2.setFont(font);
+		
+		GroupLayout innerLayout = new GroupLayout(developers);
+		developers.setLayout(innerLayout);        
+		innerLayout.setHorizontalGroup(
+      	innerLayout.createParallelGroup()
+        		.addComponent(developer1)
+        		.addComponent(developer2)
+    	);
+    	innerLayout.setVerticalGroup(
+    		innerLayout.createSequentialGroup()
+	    		.addComponent(developer1)
+	    		.addComponent(developer2)
+    	);
 		
 		GroupLayout layout = new GroupLayout(devPanel);
 		devPanel.setLayout(layout);        
 		layout.setHorizontalGroup(
       	layout.createSequentialGroup()
-        		.addComponent(developer)
+        		.addComponent(developers)
     	);
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
-	    		.addComponent(developer)
+	    		.addComponent(developers)
     	);
 		
 		return devPanel;
