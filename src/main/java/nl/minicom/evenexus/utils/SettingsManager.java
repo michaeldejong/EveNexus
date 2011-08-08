@@ -294,6 +294,10 @@ public class SettingsManager {
 	public static final String TABLE_PROFIT_UNIT_PROFIT_WITHOUT_TAXES_WIDTH = "table.profit.unit.profit.without.taxes.width";
 	public static final String TABLE_PROFIT_UNIT_TAXES_VISIBLE = "table.profit.unit.taxes.visible";
 	public static final String TABLE_PROFIT_UNIT_TAXES_WIDTH = "table.profit.unit.taxes.width";
+	public static final String TABLE_PROFIT_PERCENTAL_PROFIT_WITHOUT_TAXES_VISIBLE = "table.profit.percental.profit.without.taxes.visible";
+	public static final String TABLE_PROFIT_PERCENTAL_PROFIT_WITHOUT_TAXES_WIDTH = "table.profit.percental.profit.without.taxes.width";
+	public static final String TABLE_PROFIT_PERCENTAL_PROFIT_WITH_TAXES_VISIBLE = "table.profit.percental.profit.with.taxes.visible";
+	public static final String TABLE_PROFIT_PERCENTAL_PROFIT_WITH_TAXES_WIDTH = "table.profit.percental.profit.with.taxes.width";
 	
 	public static final String TABLE_TRANSACTION_CLIENT_VISIBLE = "table.transaction.client.visible";
 	public static final String TABLE_TRANSACTION_CLIENT_WIDTH = "table.transaction.client.width";

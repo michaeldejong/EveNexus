@@ -69,7 +69,9 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 		.append("net_profit AS profit, ")
 		.append("total_gross_profit AS totalValue, ")
 		.append("total_taxes AS totalTaxes, ")
-		.append("total_net_profit AS totalProfit ")
+		.append("total_net_profit AS totalProfit, ")
+		.append("percental_gross_profit AS percentalValue, ")
+		.append("percental_net_profit AS percentalProfit ")
 		.append("FROM profits ")
 		.append("WHERE LCASE(type_name) LIKE ? ")
 		.append("AND date > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
@@ -93,7 +95,8 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 
 	@Override
 	public String[] getFields() {
-		return new String[] {"typeName", "date", "quantity", "value", "taxes", "profit", "totalValue", "totalTaxes", "totalProfit"};
+		return new String[] {"typeName", "date", "quantity", "value", "taxes", "profit",
+				"totalValue", "totalTaxes", "totalProfit", "percentalValue", "percentalProfit" };
 	}
 
 	@Override
