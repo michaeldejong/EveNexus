@@ -10,6 +10,7 @@ import nl.minicom.evenexus.gui.tables.renderers.AlignRightRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
+import nl.minicom.evenexus.gui.tables.renderers.PercentageRenderer;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 public abstract class ColumnModel {
@@ -19,6 +20,7 @@ public abstract class ColumnModel {
 	public static final CurrencyRenderer CURRENCY = new CurrencyRenderer();
 	public static final DateTimeRenderer DATE_TIME = new DateTimeRenderer();
 	public static final IntegerRenderer INTEGER = new IntegerRenderer();
+	public static final PercentageRenderer PERCENTAGE = new PercentageRenderer();
 		
 	private final List<Column> columns;
 	private final List<Column> visibleColumns;
