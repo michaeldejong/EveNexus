@@ -1,38 +1,57 @@
 package nl.minicom.evenexus.gui.panels.report.dialogs;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
-import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportBuilderPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportDisplayPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportFiltersPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportGroupingPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportItemsPanel;
-import nl.minicom.evenexus.persistence.Database;
 
 public class ReportBuilderPagePanel extends JPanel {
 
 	private static final long serialVersionUID = 5860745283553056308L;
 
-	private final ReportBuilderDialog dialog;
-	private final ReportBuilderPage[] pages;
+	private final Provider<ReportItemsPanel> reportItemsPanelProvider;
+	private final Provider<ReportGroupingPanel> reportGroupingPanelProvider;
+	private final Provider<ReportFiltersPanel> reportFiltersPanelProvider;
+	private final Provider<ReportDisplayPanel> reportDisplayPanelProvider;
+	
+	private ReportBuilderDialog dialog;
+	private ReportBuilderPage[] pages;
 	private int currentIndex;
 	
-	public ReportBuilderPagePanel(ReportBuilderDialog dialog, ReportDefinition definition, 
-			ReportModel model, Database database) {
+	@Inject
+	public ReportBuilderPagePanel(
+			Provider<ReportItemsPanel> reportItemsPanelProvider,
+			Provider<ReportGroupingPanel> reportGroupingPanelProvider,
+			Provider<ReportFiltersPanel> reportFiltersPanelProvider,
+			Provider<ReportDisplayPanel> reportDisplayPanelProvider) {
 		
-		this.dialog = dialog;
+		this.reportItemsPanelProvider = reportItemsPanelProvider;
+		this.reportGroupingPanelProvider = reportGroupingPanelProvider;
+		this.reportFiltersPanelProvider = reportFiltersPanelProvider;
+		this.reportDisplayPanelProvider = reportDisplayPanelProvider;
+		
 		this.currentIndex = 0;
+	}
+	
+	public ReportBuilderPagePanel initialize(ReportBuilderDialog dialog, ReportModel model) {
+		this.dialog = dialog;
 		this.pages = new ReportBuilderPage[] {
-				new ReportItemsPanel(definition, model),
-				new ReportGroupingPanel(definition, model),
-				new ReportFiltersPanel(definition, model, database),
-				new ReportDisplayPanel(definition, model)
+				reportItemsPanelProvider.get().initialize(model),
+				reportGroupingPanelProvider.get().initialize(model),
+				reportFiltersPanelProvider.get().initialize(model),
+				reportDisplayPanelProvider.get().initialize(model)
 		};
 		
 		showCurrentPage();
+		
+		return this;
 	}
 	
 	public final boolean hasNextPage() {
@@ -61,6 +80,7 @@ public class ReportBuilderPagePanel extends JPanel {
 
 	private void showCurrentPage() {
 		ReportBuilderPage currentPage = pages[currentIndex];
+		
 		dialog.createTitle(currentPage.getTitle());
 		
 		GroupLayout layout = new GroupLayout(this);

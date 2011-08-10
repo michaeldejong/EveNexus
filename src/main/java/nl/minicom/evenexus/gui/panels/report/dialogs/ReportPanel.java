@@ -4,12 +4,13 @@ package nl.minicom.evenexus.gui.panels.report.dialogs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.GroupLayout;
 
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
-import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
@@ -21,14 +22,23 @@ public class ReportPanel extends TabPanel {
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
 	
-	public ReportPanel(SettingsManager settingsManager, final Database database) {
-		super();	
+	private final SettingsManager settingsManager;
+	private final Provider<ReportBuilderDialog> dialogProvider;
+	
+	@Inject
+	public ReportPanel(SettingsManager settingsManager, 
+			Provider<ReportBuilderDialog> dialogProvider) {
 		
+		this.settingsManager = settingsManager;
+		this.dialogProvider = dialogProvider;
+	}
+	
+	public void initialize() {
 		ToolBarButton createReport = new ToolBarButton("img/32/pie_chart.png", "Create a new report");
         createReport.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		new ReportBuilderDialog(database);
+        		dialogProvider.get().initialize();
         	}
         });
         
@@ -67,4 +77,5 @@ public class ReportPanel extends TabPanel {
 	public void reloadTab() {
 		LOG.debug("Report panel reloaded!");
 	}
+	
 }

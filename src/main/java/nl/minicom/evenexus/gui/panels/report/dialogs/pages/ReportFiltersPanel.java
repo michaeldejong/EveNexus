@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 
-import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
@@ -26,6 +25,7 @@ import nl.minicom.evenexus.gui.validation.ValidationRule;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -35,11 +35,19 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final Database database;
+	
+	private ReportModel model; 
 
 	@Inject
-	public ReportFiltersPanel(ReportDefinition definition, ReportModel model, Database database) {
+	public ReportFiltersPanel(Database database) {
 		this.database = database;
+	}
+
+	public ReportBuilderPage initialize(ReportModel model) {
+		this.model = model;
 		buildGui();
+
+		return this;
 	}
 
 	private void buildGui() {
@@ -140,16 +148,22 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		return comboBox;
 	}
 
+	@Transactional
 	@SuppressWarnings("unchecked")
-	private List<MapRegion> listMapRegions() {
+	protected List<MapRegion> listMapRegions() {
 		Session session = database.getCurrentSession();
-		return session.createCriteria(MapRegion.class).addOrder(Order.asc("regionName")).list();
+		return session.createCriteria(MapRegion.class)
+				.addOrder(Order.asc("regionName"))
+				.list();
 	}
 
+	@Transactional
 	@SuppressWarnings("unchecked")
-	private List<ApiKey> listCharacters() {
+	protected List<ApiKey> listCharacters() {
 		Session session = database.getCurrentSession();
-		return session.createCriteria(ApiKey.class).addOrder(Order.asc("name")).list();
+		return session.createCriteria(ApiKey.class)
+				.addOrder(Order.asc("name"))
+				.list();
 	}
 
 	private JComboBox createSystemComboBox() {

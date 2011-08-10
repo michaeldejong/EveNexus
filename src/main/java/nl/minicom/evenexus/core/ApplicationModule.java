@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import nl.minicom.evenexus.eveapi.ApiServerManager;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.GuiModule;
+import nl.minicom.evenexus.i18n.Translator;
 import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
@@ -32,6 +33,8 @@ public class ApplicationModule extends AbstractModule {
 		bind(RevisionExecutor.class).in(Singleton.class);
 		bind(ProxyManager.class).in(Singleton.class);
 		bind(ImportManager.class).in(Singleton.class);
+		
+		bind(Translator.class).in(Singleton.class);
 		
 		install(new GuiModule());
 	}

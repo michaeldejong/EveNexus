@@ -1,27 +1,38 @@
 package nl.minicom.evenexus.gui.panels.report.dialogs.pages;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 
 import nl.minicom.evenexus.core.report.definition.ReportDefinition;
-import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
+import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+
+import com.google.inject.Provider;
 
 public class ReportGroupingPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final ReportDefinition definition;
-	private final ReportModel model;
+	private final Provider<ReportGroupPanel> reportGroupPanelProvider;
+	
+	private ReportModel model;
 
-	public ReportGroupingPanel(ReportDefinition definition, ReportModel model) {
-		super();
+	@Inject
+	public ReportGroupingPanel(ReportDefinition definition, 
+			Provider<ReportGroupPanel> reportGroupPanelProvider) {
 		
 		this.definition = definition;
+		this.reportGroupPanelProvider = reportGroupPanelProvider;
+	}
+	
+	public ReportGroupingPanel initialize(ReportModel model) {
 		this.model = model;
-		
 		buildGui();
+		
+		return this;
 	}
 
 	private void buildGui() {
@@ -29,9 +40,9 @@ public class ReportGroupingPanel extends ReportBuilderPage {
 		JLabel group2Label = createBoldLabel("Grouping 2");
 		JLabel group3Label = createBoldLabel("Grouping 3");
 		
-		final ReportGroupPanel group1Panel = new ReportGroupPanel(definition, model.getGrouping1());
-		final ReportGroupPanel group2Panel = new ReportGroupPanel(definition, model.getGrouping2());
-		final ReportGroupPanel group3Panel = new ReportGroupPanel(definition, model.getGrouping3());
+		final ReportGroupPanel group1Panel = reportGroupPanelProvider.get().initialize(model.getGrouping1());
+		final ReportGroupPanel group2Panel = reportGroupPanelProvider.get().initialize(model.getGrouping2());
+		final ReportGroupPanel group3Panel = reportGroupPanelProvider.get().initialize(model.getGrouping3());
 
 		addReportGroupPanelLogic(group1Panel, group2Panel);
 		addReportGroupPanelLogic(group2Panel, group3Panel);

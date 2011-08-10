@@ -1,13 +1,12 @@
 package nl.minicom.evenexus.gui.panels.report.dialogs;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
-import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
-import nl.minicom.evenexus.persistence.Database;
 
 public class ReportBuilderDialog extends CustomDialog {
 
@@ -16,18 +15,18 @@ public class ReportBuilderDialog extends CustomDialog {
 	private final ReportBuilderPagePanel pageDisplay;
 	private final ReportBuilderPageNavigationPanel navigationPanel;
 
-	public ReportBuilderDialog(Database database) {
-		this(new ReportModel(), database);
-	}
-	
-	public ReportBuilderDialog(ReportModel model, Database database) {
+	@Inject
+	public ReportBuilderDialog(ReportBuilderPagePanel reportBuilderPagePanel) {
 		super(DialogTitle.REPORT_ITEM_TITLE, 360, 420);
 
-		pageDisplay = new ReportBuilderPagePanel(this, new ReportDefinition(), model, database);
+		ReportModel model = new ReportModel();
+		
+		pageDisplay = reportBuilderPagePanel.initialize(this, model);
 		navigationPanel = new ReportBuilderPageNavigationPanel(pageDisplay, model);
-		
+	}
+	
+	public void initialize() {
 		setTitle("Report creation wizard");
-		
 		buildGui();
 		setVisible(true);
 	}

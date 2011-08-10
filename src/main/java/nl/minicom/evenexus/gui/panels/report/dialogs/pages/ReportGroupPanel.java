@@ -3,7 +3,10 @@ package nl.minicom.evenexus.gui.panels.report.dialogs.pages;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import javax.inject.Inject;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
@@ -17,24 +20,34 @@ import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
+import nl.minicom.evenexus.i18n.Translator;
 
 public class ReportGroupPanel extends JPanel {
 
 	private static final long serialVersionUID = 4204408757202631909L;
 	
 	private final ReportDefinition definition;
-	private final Model<ReportGroup> model;
-	private final JComboBox comboBox;
-	private final JCheckBox checkBox;
+	private final Translator translator;
 	
-	public ReportGroupPanel(ReportDefinition definition, Model<ReportGroup> model) {
+	private Model<ReportGroup> model;
+	private Map<String, ReportGroup> groupMapping;
+	private JComboBox comboBox;
+	private JCheckBox checkBox;
+	
+	@Inject
+	public ReportGroupPanel(ReportDefinition definition, Translator translator) {
 		this.definition = definition;
+		this.translator = translator;
+	}
+	
+	public ReportGroupPanel initialize(Model<ReportGroup> model) {
 		this.model = model;
-
+		this.groupMapping = createGroupMapping();
 		this.comboBox = createGroupingComboBox();
 		this.checkBox = createGroupingCheckBox(comboBox);
-		
 		doLayouting();
+		
+		return this;
 	}
 	
 	public void setEnabled(boolean enabled) {
@@ -82,7 +95,9 @@ public class ReportGroupPanel extends JPanel {
 			public void onValid(boolean isValid) {
 				child.setEnabled(isValid);
 				if (isValid) {
-					model.setValue((ReportGroup) child.getSelectedItem());
+					String selectedName = child.getSelectedItem().toString();
+					ReportGroup selectedGroup = groupMapping.get(selectedName);
+					model.setValue(selectedGroup);
 				}
 				else {
 					model.setValue(null);
@@ -105,10 +120,19 @@ public class ReportGroupPanel extends JPanel {
 		return checkBox;
 	}
 	
+	private Map<String, ReportGroup> createGroupMapping() {
+		final Map<String, ReportGroup> choices = new LinkedHashMap<String, ReportGroup>();
+		for (ReportGroup group : definition.getGroups()) {
+			String groupingName = translator.translate(group.getKey());
+			choices.put(groupingName, group);
+		}
+		return choices;
+	}
+	
 	private JComboBox createGroupingComboBox() {
 		DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-		for (final ReportGroup group : definition.getGroups()) {
-			comboBoxModel.addElement(group);
+		for (String name : groupMapping.keySet()) {
+			comboBoxModel.addElement(name);
 		}
 
 		final JComboBox comboBox = new JComboBox();
@@ -119,7 +143,10 @@ public class ReportGroupPanel extends JPanel {
 		comboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				model.setValue((ReportGroup) comboBox.getSelectedItem());
+				String name = comboBox.getSelectedItem().toString();
+				ReportGroup reportGroup = groupMapping.get(name);
+				
+				model.setValue(reportGroup);
 			}
 		});
 		

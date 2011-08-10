@@ -7,6 +7,7 @@ import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
 import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
+import nl.minicom.evenexus.gui.panels.report.dialogs.ReportModule;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.ApiServerTab;
 import nl.minicom.evenexus.gui.settings.ProxyTab;
@@ -16,6 +17,7 @@ import nl.minicom.evenexus.gui.tables.renderers.CurrencyRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.DateTimeRenderer;
 import nl.minicom.evenexus.gui.tables.renderers.IntegerRenderer;
 import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
+import nl.minicom.evenexus.i18n.Translator;
 
 import com.google.inject.AbstractModule;
 
@@ -42,8 +44,12 @@ public class GuiModule extends AbstractModule {
 		bind(ProfitPanel.class).in(Singleton.class);
 		bind(TransactionsPanel.class).in(Singleton.class);
 		
+		bind(Translator.class).in(Singleton.class);
+		
 		// Utils
 		requestStaticInjection(ColumnModel.class);
+		
+		install(new ReportModule());
 	}
 
 }

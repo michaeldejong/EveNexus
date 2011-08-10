@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Group;
 import javax.swing.ImageIcon;
@@ -27,13 +28,19 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final ReportDefinition definition;
-	private final ReportModel model;
+	
+	private ReportModel model;
 
-	public ReportDisplayPanel(ReportDefinition definition, ReportModel model) {
+	@Inject
+	public ReportDisplayPanel(ReportDefinition definition) {
 		this.definition = definition;
+	}
+
+	public ReportBuilderPage initialize(ReportModel model) {
 		this.model = model;
-		
 		buildGui();
+
+		return this;
 	}
 
 	private void buildGui() {

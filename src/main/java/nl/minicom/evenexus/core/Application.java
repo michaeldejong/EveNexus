@@ -1,5 +1,7 @@
 package nl.minicom.evenexus.core;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -7,6 +9,7 @@ import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.utils.progresswindows.ProgressManager;
 import nl.minicom.evenexus.gui.utils.progresswindows.SplashFrame;
+import nl.minicom.evenexus.i18n.Translator;
 import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.Version;
@@ -33,6 +36,7 @@ public final class Application {
 	@Inject private SettingsManager settingsManager;
 	@Inject private InventoryManager inventoryManager;
 	@Inject private RevisionExecutor revisionExecutor;
+	@Inject private Translator translator;
 	@Inject private ProxyManager proxyManager;
 	@Inject private ImportManager importManager;
 	@Inject private Gui gui;
@@ -81,6 +85,9 @@ public final class Application {
 			progressManager.update(9, 4, "Checking database structure consistency");
 			revisionExecutor.execute(new StructureUpgrader());
 			revisionExecutor.execute(new ContentUpgrader());
+			
+			progressManager.update(9, 4, "Initializing ResourceBundles");
+			translator.initialize(Locale.ENGLISH);
 			
 			// 4. Create inventory manager.
 			LOG.info("Initializing inventory manager...");

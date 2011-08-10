@@ -16,7 +16,7 @@ public class DialogTitle {
 	public static final DialogTitle SETTINGS = new DialogTitle("EveNexus settings", "All user settings for EveNexus.", "img/48/process.png");
 	public static final DialogTitle DATABASE_CONNECTION_TITLE = new DialogTitle("Cannot connect to database", "EveNexus has problems connecting to the database", "img/48/database_error.png");
 
-	public static final DialogTitle REPORT_ITEM_TITLE = new DialogTitle("Select what data you would like to report on", "Report on data collected by EveNexus.", "img/48/pie_chart.png", "img/32/plus.png");
+	public static final DialogTitle REPORT_ITEM_TITLE = new DialogTitle("What data you would like to report on?", "Report on data collected by EveNexus.", "img/48/pie_chart.png", "img/32/plus.png");
 	public static final DialogTitle REPORT_GROUP_TITLE = new DialogTitle("How should the data be grouped?", "Report on data collected by EveNexus.", "img/48/pie_chart.png", "img/32/box.png");
 	public static final DialogTitle REPORT_FILTER_TITLE = new DialogTitle("How should the data be filtered?", "Report on data collected by EveNexus.", "img/48/pie_chart.png", "img/32/search.png");
 	public static final DialogTitle REPORT_DISPLAY_TITLE = new DialogTitle("How should the data be displayed?", "Report on data collected by EveNexus.", "img/48/pie_chart.png", "img/32/display.png");

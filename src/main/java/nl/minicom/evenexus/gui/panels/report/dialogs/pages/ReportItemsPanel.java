@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -14,21 +15,28 @@ import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.i18n.Translator;
 
 public class ReportItemsPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final ReportDefinition definition;
-	private final ReportModel model;
+	private final Translator translator;
+	
+	private ReportModel model;
 
-	public ReportItemsPanel(ReportDefinition definition, ReportModel model) {
-		super();
-		
+	@Inject
+	public ReportItemsPanel(ReportDefinition definition, Translator translator) {
 		this.definition = definition;
+		this.translator = translator;
+	}
+
+	public ReportBuilderPage initialize(ReportModel model) {
 		this.model = model;
-		
 		buildGui();
+
+		return this;
 	}
 
 	private void buildGui() {		
@@ -47,8 +55,10 @@ public class ReportItemsPanel extends ReportBuilderPage {
 		
 		int y = 6;
 		for (final ReportItem item : definition.getItems()) {
+			String keyTranslation = translator.translate(item.getKey());
+			
 			final JCheckBox checkBox = new JCheckBox();
-			checkBox.setText(" " + item.getKey() + " ");
+			checkBox.setText(" " + keyTranslation + " ");
 			checkBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
