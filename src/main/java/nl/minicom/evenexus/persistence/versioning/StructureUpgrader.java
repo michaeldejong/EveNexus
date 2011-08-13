@@ -763,8 +763,8 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("		(b.taxes + s.taxes) * tm.quantity AS totalTaxes, ");
 				builder.append("		tm.quantity * (b.price + s.price) AS totalGrossProfit, ");
 				builder.append("		(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS totalNetProfit, ");
-				builder.append("		(b.price + s.price) / b.price * (-100) AS percentalGrossProfit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) / b.price * (-100) AS percentalNetProfit ");
+				builder.append("		(b.price + s.price) / ABS(b.price) * 100 AS percentalGrossProfit, ");
+				builder.append("		(b.price + s.price + b.taxes + s.taxes) / ABS(b.price) * 100 AS percentalNetProfit ");
 				builder.append("		FROM transactionMatches tm ");
 				builder.append("		INNER JOIN transactions b ON tm.buyTransactionId = b.transactionId ");
 				builder.append("		INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ");
