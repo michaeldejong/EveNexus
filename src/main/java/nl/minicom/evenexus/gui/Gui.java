@@ -240,6 +240,7 @@ public class Gui extends JFrame {
 	}
 
 	public void reload() {
+		reportsPanel.reloadTab();
 		dashboardPanel.reloadTab();
 		journalsPanel.reloadTab();
 		transactionPanel.reloadTab();

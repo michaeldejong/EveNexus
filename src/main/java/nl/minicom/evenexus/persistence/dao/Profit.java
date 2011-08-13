@@ -26,20 +26,20 @@ public class Profit implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String TYPE_ID = "type_id";
-	public static final String TYPE_NAME = "type_name";
+	public static final String TYPE_ID = "typeId";
+	public static final String TYPE_NAME = "typeName";
 	public static final String DATE = "date";
 	public static final String QUANTITY = "quantity";
-	public static final String BUY_PRICE = "buy_price";
-	public static final String SELL_PRICE = "sell_price";
+	public static final String BUY_PRICE = "buyPrice";
+	public static final String SELL_PRICE = "sellPrice";
 	public static final String TAXES = "taxes";
-	public static final String GROSS_PROFIT = "gross_profit";
-	public static final String NET_PROFIT = "net_profit";
-	public static final String TOTAL_TAXES = "total_taxes";
-	public static final String TOTAL_GROSS_PROFIT = "total_gross_profit";
-	public static final String TOTAL_NET_PROFIT = "total_net_profit";
-	public static final String PERCENTAL_GROSS_PROFIT = "percental_gross_profit";
-	public static final String PERCENTAL_NET_PROFIT = "percental_net_profit";
+	public static final String GROSS_PROFIT = "grossProfit";
+	public static final String NET_PROFIT = "netProfit";
+	public static final String TOTAL_TAXES = "totalTaxes";
+	public static final String TOTAL_GROSS_PROFIT = "totalGrossProfit";
+	public static final String TOTAL_NET_PROFIT = "totalNetProfit";
+	public static final String PERCENTAL_GROSS_PROFIT = "percentalGrossProfit";
+	public static final String PERCENTAL_NET_PROFIT = "percentalNetProfit";
 	
 	@Id
 	private ProfitIdentifier id;

@@ -32,7 +32,7 @@ public abstract class ColumnSelectionFrame extends JDialog {
 		setTitle("Show / hide columns");
 		setIconImage(Icon.getImage("img/other/logo.png"));
 		Gui.setLookAndFeel();
-		setBounds(300, 200, 250, 350);
+		setBounds(300, 200, 300, 380);
 		setResizable(false);
 	}
 

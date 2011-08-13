@@ -49,7 +49,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
     	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
 	}
 
-	public void initialize() {
+	public synchronized void initialize() {
 		columnModel.initialize();
 		table.initialize(journalData, columnModel);
 		journalData.initialize();
@@ -80,12 +80,12 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	}
 	
 	@Override
-	public void onImportComplete() {
+	public synchronized void onImportComplete() {
 		reloadTab();
 	}
 
 	@Override
-	public void reloadTab() {
+	public synchronized void reloadTab() {
 		table.reload();
 		LOG.debug("Journal panel reloaded!");
 	}

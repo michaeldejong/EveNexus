@@ -89,30 +89,6 @@ public class ProfitColumnModel extends ColumnModel {
 				BigDecimal.class, 
 				ColumnModel.PERCENTAGE
 		));
-
-		add(new Column(
-				getSettingsManager(),
-				"Taxes per unit", 
-				"taxes", 
-				SettingsManager.TABLE_PROFIT_UNIT_TAXES_VISIBLE,
-				false,
-				SettingsManager.TABLE_PROFIT_UNIT_TAXES_WIDTH,
-				100, 
-				BigDecimal.class, 
-				ColumnModel.CURRENCY
-		));
-		
-		add(new Column(
-				getSettingsManager(),
-				"Total taxes", 
-				"totalTaxes", 
-				SettingsManager.TABLE_PROFIT_TOTAL_TAXES_VISIBLE,
-				false,
-				SettingsManager.TABLE_PROFIT_TOTAL_TAXES_WIDTH,
-				100, 
-				BigDecimal.class, 
-				ColumnModel.CURRENCY
-		));
 		
 		add(new Column(
 				getSettingsManager(),
@@ -148,6 +124,30 @@ public class ProfitColumnModel extends ColumnModel {
 				128, 
 				BigDecimal.class, 
 				ColumnModel.PERCENTAGE
+		));
+		
+		add(new Column(
+				getSettingsManager(),
+				"Taxes per unit", 
+				"taxes", 
+				SettingsManager.TABLE_PROFIT_UNIT_TAXES_VISIBLE,
+				false,
+				SettingsManager.TABLE_PROFIT_UNIT_TAXES_WIDTH,
+				100, 
+				BigDecimal.class, 
+				ColumnModel.CURRENCY
+		));
+		
+		add(new Column(
+				getSettingsManager(),
+				"Total taxes", 
+				"totalTaxes", 
+				SettingsManager.TABLE_PROFIT_TOTAL_TAXES_VISIBLE,
+				false,
+				SettingsManager.TABLE_PROFIT_TOTAL_TAXES_WIDTH,
+				100, 
+				BigDecimal.class, 
+				ColumnModel.CURRENCY
 		));
 
 	}

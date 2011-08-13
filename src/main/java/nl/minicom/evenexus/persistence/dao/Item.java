@@ -13,21 +13,21 @@ public class Item implements Serializable {
 	
 	private static final long serialVersionUID = 6386960971498786733L;
 	
-	public static final String TYPE_ID = "typeid";
-	public static final String GROUP_ID = "groupid";
-	public static final String TYPE_NAME = "typename";
+	public static final String TYPE_ID = "typeId";
+	public static final String GROUP_ID = "groupId";
+	public static final String TYPE_NAME = "typeName";
 	public static final String DESCRIPTION = "description";
-	public static final String GRAPHIC_ID = "graphicid";
+	public static final String GRAPHIC_ID = "graphicId";
 	public static final String RADIUS = "radius";
 	public static final String MASS = "mass";
 	public static final String VOLUME = "volume";
 	public static final String CAPACITY = "capacity";
-	public static final String PORTION_SIZE = "portionsize";
-	public static final String RACE_ID = "raceid";
-	public static final String BASE_PRICE = "baseprice";
+	public static final String PORTION_SIZE = "portionSize";
+	public static final String RACE_ID = "raceId";
+	public static final String BASE_PRICE = "basePrice";
 	public static final String PUBLISHED = "published";
-	public static final String MARKET_GROUP_ID = "marketgroupid";
-	public static final String CHANCE_OF_DUPLICATING = "chanceofduplicating";
+	public static final String MARKET_GROUP_ID = "marketGroupId";
+	public static final String CHANCE_OF_DUPLICATING = "chanceOfDuplicating";
 
 	@Id
 	@Column(name = TYPE_ID, nullable = false)

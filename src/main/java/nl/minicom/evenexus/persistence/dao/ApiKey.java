@@ -19,10 +19,10 @@ public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
 
 	private static final long serialVersionUID = -5243514709906664430L;
 	
-	public static final String CHAR_ID = "charid";
-	public static final String API_KEY = "apikey";
+	public static final String CHAR_ID = "charId";
+	public static final String API_KEY = "apiKey";
 	public static final String NAME = "name";
-	public static final String USER_ID = "userid";
+	public static final String USER_ID = "userId";
 
 	@SuppressWarnings("unchecked")
 	public static List<ApiKey> getAll(Session session) {

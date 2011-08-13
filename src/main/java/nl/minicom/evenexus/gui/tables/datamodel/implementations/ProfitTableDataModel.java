@@ -12,6 +12,8 @@ import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.gui.tables.datamodel.ITypeNameFilter;
 import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.dao.Profit;
+import nl.minicom.evenexus.persistence.dao.ProfitIdentifier;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.hibernate.HibernateException;
@@ -61,21 +63,21 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 		// TODO refactor to work with objects?
 		final String sql = new StringBuilder()
 		.append("SELECT ")
-		.append("type_name as typeName, ")
-		.append("date, ")
-		.append("quantity, ")
-		.append("gross_profit AS value, ")
-		.append("taxes, ")
-		.append("net_profit AS profit, ")
-		.append("total_gross_profit AS totalValue, ")
-		.append("total_taxes AS totalTaxes, ")
-		.append("total_net_profit AS totalProfit, ")
-		.append("percental_gross_profit AS percentalValue, ")
-		.append("percental_net_profit AS percentalProfit ")
+		.append(Profit.TYPE_NAME + ", ")
+		.append(Profit.DATE + ", ")
+		.append(Profit.QUANTITY + ", ")
+		.append(Profit.GROSS_PROFIT + ", ")
+		.append(Profit.TAXES + ", ")
+		.append(Profit.NET_PROFIT + ", ")
+		.append(Profit.TOTAL_GROSS_PROFIT + ", ")
+		.append(Profit.TOTAL_TAXES + ", ")
+		.append(Profit.TOTAL_NET_PROFIT + ", ")
+		.append(Profit.PERCENTAL_GROSS_PROFIT + ", ")
+		.append(Profit.PERCENTAL_NET_PROFIT + " ")
 		.append("FROM profits ")
-		.append("WHERE LCASE(type_name) LIKE ? ")
-		.append("AND date > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
-		.append("ORDER BY date DESC, sell_Transaction_Id DESC")
+		.append("WHERE LCASE(" + Profit.TYPE_NAME + ") LIKE ? ")
+		.append("AND " + Profit.DATE + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
+		.append("ORDER BY " + Profit.DATE + " DESC, " + ProfitIdentifier.SELL_TRANSACTION_ID + " DESC")
 		.toString();
 		
 		List<Object[]> result = new ArrayList<Object[]>();
@@ -95,8 +97,19 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 
 	@Override
 	public String[] getFields() {
-		return new String[] {"typeName", "date", "quantity", "value", "taxes", "profit",
-				"totalValue", "totalTaxes", "totalProfit", "percentalValue", "percentalProfit" };
+		return new String[] {
+				Profit.TYPE_NAME,
+				Profit.DATE,
+				Profit.QUANTITY,
+				Profit.GROSS_PROFIT,
+				Profit.TAXES,
+				Profit.NET_PROFIT,
+				Profit.TOTAL_GROSS_PROFIT,
+				Profit.TOTAL_TAXES,
+				Profit.TOTAL_NET_PROFIT,
+				Profit.PERCENTAL_GROSS_PROFIT,
+				Profit.PERCENTAL_NET_PROFIT
+			};
 	}
 
 	@Override

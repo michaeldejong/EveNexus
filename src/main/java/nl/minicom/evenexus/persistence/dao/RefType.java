@@ -13,7 +13,7 @@ public class RefType implements Serializable {
 
 	private static final long serialVersionUID = -4912521169103523974L;
 
-	public static final String REF_TYPE_ID = "reftypeid";
+	public static final String REF_TYPE_ID = "refTypeId";
 	public static final String DESCRIPTION = "description";
 	
 	@Id

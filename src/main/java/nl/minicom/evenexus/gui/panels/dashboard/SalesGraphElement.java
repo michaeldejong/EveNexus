@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.dao.WalletTransaction;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.hibernate.SQLQuery;
@@ -47,7 +48,27 @@ public class SalesGraphElement implements GraphElement {
 	@Override
 	public void reload() throws SQLException {
 		Session session = database.getCurrentSession();
-		SQLQuery query = session.createSQLQuery("SELECT ABS(SUM(quantity * (price + taxes))) AS totalSales, day FROM (SELECT quantity, price, taxes, DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(transactionDateTime) AS day FROM transactions WHERE price > 0.00 AND transactionDateTime > DATEADD('DAY', ?, CURRENT_TIMESTAMP())) AS a GROUP BY day ORDER BY day ASC");
+		
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("SELECT ");
+		queryBuilder.append("	ABS(SUM(quantity * (price + taxes))), ");
+		queryBuilder.append("	dayValue ");
+		queryBuilder.append("FROM (");
+		queryBuilder.append("	SELECT ");
+		queryBuilder.append("		" + WalletTransaction.QUANTITY + " AS quantity, ");
+		queryBuilder.append("		" + WalletTransaction.PRICE + " AS price, ");
+		queryBuilder.append("		" + WalletTransaction.TAXES + " AS taxes, ");
+		queryBuilder.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + WalletTransaction.TRANSACTION_DATE_TIME + ") AS dayValue ");
+		queryBuilder.append("	FROM transactions ");
+		queryBuilder.append("	WHERE " + WalletTransaction.PRICE + " > 0.00 ");
+		queryBuilder.append("		AND " + WalletTransaction.TRANSACTION_DATE_TIME + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP())");
+		queryBuilder.append(") ");
+		queryBuilder.append("GROUP BY dayValue ");
+		queryBuilder.append("ORDER BY dayValue ASC");
+		
+		String queryString = queryBuilder.toString().replace("\t", "");
+		
+		SQLQuery query = session.createSQLQuery(queryString);
 		query.setLong(0, -28);
 
 		ScrollableResults result = query.scroll();

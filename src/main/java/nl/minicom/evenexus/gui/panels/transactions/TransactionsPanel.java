@@ -49,7 +49,7 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
 	}
 	
-	public void initialize() {
+	public synchronized void initialize() {
 		columnModel.initialize();
 		tableDataModel.initialize();
 		table.initialize(tableDataModel, columnModel);
@@ -80,12 +80,12 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	}
 	
 	@Override
-	public void onImportComplete() {
+	public synchronized void onImportComplete() {
 		reloadTab();
 	}
 
 	@Override
-	public void reloadTab() {
+	public synchronized void reloadTab() {
 		table.reload();
 		LOG.debug("Transaction panel reloaded!");
 	}

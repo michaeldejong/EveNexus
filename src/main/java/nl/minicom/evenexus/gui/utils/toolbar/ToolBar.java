@@ -102,8 +102,11 @@ public class ToolBar extends JPanel {
 		final JComboBox dateField = new JComboBox(dateList);
 		dateField.setBounds(0, 21, 125, GuiConstants.COMBO_BOX_HEIGHT);
 		
+		int days = settingsManager.loadInt(selectedPeriodSetting, 14);
+		((IPeriodFilter) table.getDataModel()).setPeriod(days);
+
 		for (int i = 0; i < dateValueList.size(); i++) {
-			if (dateValueList.get(i).equals(settingsManager.loadInt(selectedPeriodSetting, 2))) {
+			if (dateValueList.get(i).equals(days)) {
 				dateField.setSelectedIndex(i);
 				continue;
 			}
@@ -114,9 +117,9 @@ public class ToolBar extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				if (table.getDataModel() instanceof IPeriodFilter) {
-					Integer value = dateValueList.get(dateField.getSelectedIndex());
-					settingsManager.saveObject(selectedPeriodSetting, value);
-					((IPeriodFilter) table.getDataModel()).setPeriod(value);
+					Integer days = dateValueList.get(dateField.getSelectedIndex());
+					settingsManager.saveObject(selectedPeriodSetting, days);
+					((IPeriodFilter) table.getDataModel()).setPeriod(days);
 					table.reload();
 				}
 			}

@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.dao.Profit;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.SettingsManager;
 
@@ -48,8 +49,23 @@ public class ProfitGraphElement implements GraphElement {
 	@Transactional
 	public void reload() {
 		Session session = database.getCurrentSession();
-		// TODO refactor using objects and criteria api?
-		SQLQuery query = session.createSQLQuery("SELECT SUM(total_net_profit) AS totalProfit, day FROM (SELECT total_net_profit, date, DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(date) AS day FROM profits WHERE date > DATEADD('DAY', ?, CURRENT_TIMESTAMP())) AS a GROUP BY day ORDER BY day ASC");
+
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("SELECT ");
+		queryBuilder.append("	SUM(" + Profit.TOTAL_NET_PROFIT + "), ");
+		queryBuilder.append("	day ");
+		queryBuilder.append("FROM (");
+		queryBuilder.append("	SELECT ");
+		queryBuilder.append(		Profit.TOTAL_NET_PROFIT + ", ");
+		queryBuilder.append(		Profit.DATE + ", ");
+		queryBuilder.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + Profit.DATE + ") AS day ");
+		queryBuilder.append("	FROM profits ");
+		queryBuilder.append("	WHERE " + Profit.DATE + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP())");
+		queryBuilder.append(") ");
+		queryBuilder.append("GROUP BY day ");
+		queryBuilder.append("ORDER BY day ASC");
+		
+		SQLQuery query = session.createSQLQuery(queryBuilder.toString());
 		query.setLong(0, -28);
 
 		ScrollableResults result = query.scroll();

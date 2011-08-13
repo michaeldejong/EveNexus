@@ -16,19 +16,19 @@ public class WalletJournal implements Serializable {
 	private static final long serialVersionUID = -5992502737944420079L;
 
 	public static final String REF_ID = "refId";
-	public static final String JOURNAL_TYPE_ID = "journaltypeid";
+	public static final String JOURNAL_TYPE_ID = "journalTypeId";
 	public static final String DATE = "date";
-	public static final String OWNER_NAME_1 = "ownername1";
-	public static final String OWNER_ID_1 = "ownerid1";
-	public static final String OWNER_NAME_2 = "ownername2";
-	public static final String OWNER_ID_2 = "ownerid2";
-	public static final String ARG_NAME_1 = "argname1";
-	public static final String ARG_ID_1 = "argid1";
+	public static final String OWNER_NAME_1 = "ownerName1";
+	public static final String OWNER_ID_1 = "ownerId1";
+	public static final String OWNER_NAME_2 = "ownerName2";
+	public static final String OWNER_ID_2 = "ownerId2";
+	public static final String ARG_NAME_1 = "argName1";
+	public static final String ARG_ID_1 = "argId1";
 	public static final String AMOUNT = "amount";
 	public static final String BALANCE = "balance";
 	public static final String REASON = "reason";
-	public static final String TAX_RECEIVER_ID = "taxreceiverid";
-	public static final String TAX_AMOUNT = "taxamount";
+	public static final String TAX_RECEIVER_ID = "taxReceiverId";
+	public static final String TAX_AMOUNT = "taxAmount";
 	
 	@Id
 	@Column(name = REF_ID, nullable = false)

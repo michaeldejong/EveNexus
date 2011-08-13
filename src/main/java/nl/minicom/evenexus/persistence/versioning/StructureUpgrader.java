@@ -740,11 +740,11 @@ public class StructureUpgrader extends RevisionCollection {
 		super.registerRevision(new Revision(191) {
 			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
-				builder.append("CREATE TABLE IF NOT EXISTS transaction_matches (");
+				builder.append("CREATE TABLE IF NOT EXISTS transactionMatches (");
 				builder.append("   quantity BIGINT NOT NULL,");
-				builder.append("   buy_transaction_id BIGINT NOT NULL,");
-				builder.append("   sell_transaction_id BIGINT NOT NULL,");
-				builder.append("   PRIMARY KEY (buy_transaction_id, sell_transaction_id))");
+				builder.append("   buyTransactionId BIGINT NOT NULL,");
+				builder.append("   sellTransactionId BIGINT NOT NULL,");
+				builder.append("   PRIMARY KEY (buyTransactionId, sellTransactionId))");
 				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
@@ -753,21 +753,21 @@ public class StructureUpgrader extends RevisionCollection {
 		super.registerRevision(new Revision(192) {
 			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
-				builder.append("CREATE OR REPLACE VIEW profits (buy_transaction_id, sell_transaction_id, type_id, type_name, ");
-				builder.append("    date, quantity, buy_price, sell_price, taxes, gross_profit, net_profit, total_taxes, ");
-				builder.append("    total_gross_profit, total_net_profit, percental_gross_profit, percental_net_profit) ");
-				builder.append("AS SELECT b.transactionid, s.transactionid, s.typeid, s.typename, s.transactiondatetime, ");
+				builder.append("CREATE OR REPLACE VIEW profits (buyTransactionId, sellTransactionId, typeId, typeName, ");
+				builder.append("    date, quantity, buyPrice, sellPrice, taxes, grossProfit, netProfit, totalTaxes, ");
+				builder.append("    totalGrossProfit, totalNetProfit, percentalGrossProfit, percentalNetProfit) ");
+				builder.append("AS SELECT b.transactionId, s.transactionId, s.typeId, s.typeName, s.transactionDateTime, ");
 				builder.append("		tm.quantity, b.price, s.price, (b.taxes + s.taxes) AS taxes, ");
-				builder.append("		(b.price + s.price) AS gross_profit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) AS net_profit, ");
-				builder.append("		(b.taxes + s.taxes) * tm.quantity AS total_taxes, ");
-				builder.append("		tm.quantity * (b.price + s.price) AS total_gross_profit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS total_net_profit, ");
-				builder.append("		(b.price + s.price) / b.price * (-100) AS percental_gross_profit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) / b.price * (-100) AS percental_net_profit ");
-				builder.append("		FROM transaction_matches tm ");
-				builder.append("		INNER JOIN transactions b ON tm.buy_transaction_id = b.transactionid ");
-				builder.append("		INNER JOIN transactions s ON tm.sell_transaction_id = s.transactionid ");
+				builder.append("		(b.price + s.price) AS grossProfit, ");
+				builder.append("		(b.price + s.price + b.taxes + s.taxes) AS netProfit, ");
+				builder.append("		(b.taxes + s.taxes) * tm.quantity AS totalTaxes, ");
+				builder.append("		tm.quantity * (b.price + s.price) AS totalGrossProfit, ");
+				builder.append("		(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS totalNetProfit, ");
+				builder.append("		(b.price + s.price) / b.price * (-100) AS percentalGrossProfit, ");
+				builder.append("		(b.price + s.price + b.taxes + s.taxes) / b.price * (-100) AS percentalNetProfit ");
+				builder.append("		FROM transactionMatches tm ");
+				builder.append("		INNER JOIN transactions b ON tm.buyTransactionId = b.transactionId ");
+				builder.append("		INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ");
 				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});

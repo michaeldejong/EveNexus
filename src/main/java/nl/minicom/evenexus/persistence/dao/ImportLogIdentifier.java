@@ -11,7 +11,7 @@ public class ImportLogIdentifier implements Serializable {
 	private static final long serialVersionUID = -6237540725758955743L;
 
 	public static final String IMPORTER = "importer";
-	public static final String CHARACTER_ID = "characterid";
+	public static final String CHARACTER_ID = "characterId";
 	
 	@Column(name = IMPORTER, nullable = false)
 	private long importerId = 0;

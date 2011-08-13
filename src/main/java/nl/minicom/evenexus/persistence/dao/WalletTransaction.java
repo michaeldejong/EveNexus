@@ -19,20 +19,20 @@ public class WalletTransaction implements Serializable {
 	
 	private static final long serialVersionUID = -767602436142772543L;
 	
-	public static final String TRANSACTION_ID = "transactionid";
-	public static final String TRANSACTION_DATE_TIME = "transactiondatetime";
-	public static final String CHARACTER_ID = "characterid";
+	public static final String TRANSACTION_ID = "transactionId";
+	public static final String TRANSACTION_DATE_TIME = "transactionDateTime";
+	public static final String CHARACTER_ID = "characterId";
 	public static final String QUANTITY = "quantity";
 	public static final String REMAINING = "remaining";
-	public static final String TYPE_NAME = "typename";
-	public static final String TYPE_ID = "typeid";
+	public static final String TYPE_NAME = "typeName";
+	public static final String TYPE_ID = "typeId";
 	public static final String PRICE = "price";
 	public static final String TAXES = "taxes";
-	public static final String CLIENT_ID = "clientid";
-	public static final String CLIENT_NAME = "clientname";
-	public static final String STATION_ID = "stationid";
-	public static final String STATION_NAME = "stationname";
-	public static final String IS_PERSONAL = "ispersonal";
+	public static final String CLIENT_ID = "clientId";
+	public static final String CLIENT_NAME = "clientName";
+	public static final String STATION_ID = "stationId";
+	public static final String STATION_NAME = "stationName";
+	public static final String IS_PERSONAL = "isPersonal";
 	
 	public enum Type {
 		BUY,

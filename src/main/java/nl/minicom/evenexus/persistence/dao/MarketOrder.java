@@ -17,16 +17,16 @@ public class MarketOrder implements Serializable {
 	
 	private static final long serialVersionUID = 7476899993373397147L;
 	
-	public static final String ORDER_ID = "orderid";
-	public static final String CHAR_ID = "charid";
-	public static final String STATION_ID = "stationid";
-	public static final String VOL_ENTERED = "volentered";
-	public static final String VOL_REMAINING = "volremaining";
-	public static final String MIN_VOLUME = "minvolume";
-	public static final String ORDER_STATE = "orderstate";
-	public static final String TYPE_ID = "typeid";
+	public static final String ORDER_ID = "orderId";
+	public static final String CHAR_ID = "charId";
+	public static final String STATION_ID = "stationId";
+	public static final String VOL_ENTERED = "volEntered";
+	public static final String VOL_REMAINING = "volRemaining";
+	public static final String MIN_VOLUME = "minVolume";
+	public static final String ORDER_STATE = "orderState";
+	public static final String TYPE_ID = "typeId";
 	public static final String RANGE = "range";
-	public static final String ACCOUNT_KEY = "accountkey";
+	public static final String ACCOUNT_KEY = "accountKey";
 	public static final String DURATION = "duration";
 	public static final String ESCROW = "escrow";
 	public static final String PRICE = "price";

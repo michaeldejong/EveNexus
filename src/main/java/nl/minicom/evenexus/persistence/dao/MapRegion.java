@@ -13,9 +13,9 @@ public class MapRegion implements Serializable {
 	
 	private static final long serialVersionUID = 9214480288622380091L;
 	
-	public static final String REGION_ID = "regionid";
-	public static final String REGION_NAME = "regionname";
-	public static final String FACTION_ID = "factionid";
+	public static final String REGION_ID = "regionId";
+	public static final String REGION_NAME = "regionName";
+	public static final String FACTION_ID = "factionId";
 	
 	@Id
 	@Column(name = REGION_ID)

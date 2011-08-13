@@ -109,7 +109,7 @@ public class InventoryWorker implements Runnable {
 	@Transactional
 	protected void persistTransactionMatch(WalletTransaction buyTransaction, WalletTransaction sellTransaction, long amount) {
 		TransactionMatch match = new TransactionMatch();
-		match.setId(new TransactionMatchIdentifier(buyTransaction.getTransactionId(), sellTransaction.getTransactionId()));
+		match.setKey(new TransactionMatchIdentifier(buyTransaction.getTransactionId(), sellTransaction.getTransactionId()));
 		match.setQuantity(amount);
 
 		Session session = database.getCurrentSession();

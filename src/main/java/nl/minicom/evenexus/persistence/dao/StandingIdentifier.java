@@ -10,8 +10,8 @@ public class StandingIdentifier implements Serializable {
 
 	private static final long serialVersionUID = -6237540725758955743L;
 
-	public static final String CHARACTER_ID = "characterid";
-	public static final String FROM_ID = "fromid";
+	public static final String CHARACTER_ID = "characterId";
+	public static final String FROM_ID = "fromId";
 	
 	@Column(name = CHARACTER_ID)
 	private long characterId;

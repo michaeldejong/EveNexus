@@ -15,7 +15,7 @@ public class Standing implements Serializable {
 	private static final long serialVersionUID = 787285101503903188L;
 
 	public static final String KEY = "key";
-	public static final String FROM_NAME = "fromname";
+	public static final String FROM_NAME = "fromName";
 	public static final String STANDING = "standing";
 	
 	@Id

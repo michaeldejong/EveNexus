@@ -13,13 +13,13 @@ public class Station implements Serializable {
 	
 	private static final long serialVersionUID = 1187459166827013799L;
 
-	public static final String STATION_ID = "stationid";
-	public static final String STATION_TYPE_ID = "stationtypeid";
-	public static final String CORPORATION_ID = "corporationid";
-	public static final String SOLAR_SYSTEM_ID = "solarsystemid";
-	public static final String CONSTELLATION_ID = "constellationid";
-	public static final String REGION_ID = "regionid";
-	public static final String STATION_NAME = "stationname";
+	public static final String STATION_ID = "stationId";
+	public static final String STATION_TYPE_ID = "stationTypeId";
+	public static final String CORPORATION_ID = "corporationId";
+	public static final String SOLAR_SYSTEM_ID = "solarSystemId";
+	public static final String CONSTELLATION_ID = "constellationId";
+	public static final String REGION_ID = "regionId";
+	public static final String STATION_NAME = "stationName";
 	
 	@Id
 	@Column(name = STATION_ID)

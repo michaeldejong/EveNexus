@@ -17,26 +17,26 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author Lars
  */
 @Entity
-@Table(name = "transaction_matches")
+@Table(name = "transactionmatches")
 public class TransactionMatch implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String ID = "id";
+	public static final String KEY = "key";
 	public static final String QUANTITY = "quantity";
 	
 	@Id
-	private TransactionMatchIdentifier id;
+	private TransactionMatchIdentifier key;
 
 	@Column(name = QUANTITY)
 	private long quantity;
 
-	public TransactionMatchIdentifier getId() {
-		return id;
+	public TransactionMatchIdentifier getKey() {
+		return key;
 	}
 
-	public void setId(TransactionMatchIdentifier id) {
-		this.id = id;
+	public void setKey(TransactionMatchIdentifier key) {
+		this.key = key;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class TransactionMatch implements Serializable {
 			TransactionMatch profit = (TransactionMatch) other;
 			
 			return new EqualsBuilder()
-			.append(id, profit.id)
+			.append(key, profit.key)
 			.isEquals();
 		}
 		return false;
@@ -65,7 +65,7 @@ public class TransactionMatch implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder()
-			.append(id)
+			.append(key)
 			.toHashCode();
 	}
 }
