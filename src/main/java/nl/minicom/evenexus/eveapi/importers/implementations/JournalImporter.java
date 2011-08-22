@@ -43,25 +43,34 @@ public class JournalImporter extends ImporterTask {
 	}
 
 	@Override
-	@Transactional
 	public void parseApi(Node root, ApiKey apiKey) {
-		Session session = getDatabase().getCurrentSession();
+		int inserted = 0;
+		
 		final Node node = root.get("result").get("rowset");
 		for (int i = node.size() - 1; i >= 0; i--) {
-			processRow(node, i, session);
+			if (processRow(node, i)) {
+				inserted++;
+			}
 		}
+		
+		LOG.info("Inserted " + inserted + " new journal entries.");
 	}
 
-	private void processRow(Node root, int i, Session session) {
+	private boolean processRow(Node root, int i) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, session);
+				return persistChangeData(row);
 			}
 		}
+		
+		return false;
 	}
 
-	private void persistChangeData(Node row, Session session) {
+	@Transactional
+	protected boolean persistChangeData(Node row) {
+		Session session = getDatabase().getCurrentSession();
+		
 		try {			
 			long refId = Long.parseLong(row.getAttribute("refID"));
 			int journalTypeId = Integer.parseInt(row.getAttribute("refTypeID")); 
@@ -78,27 +87,35 @@ public class JournalImporter extends ImporterTask {
 			long taxReceiverId = getTaxReceiverId(row);
 			BigDecimal taxAmount = getTaxAmount(row);
 			
-			WalletJournal journal = new WalletJournal();
-			journal.setRefId(refId);
-			journal.setJournalTypeId(journalTypeId);
-			journal.setDate(currentTime);
-			journal.setOwnerName1(ownerName1);
-			journal.setOwnerId1(ownerId1);
-			journal.setOwnerName2(ownerName2);
-			journal.setOwnerId2(ownerId2);
-			journal.setArgName1(argName1);
-			journal.setArgId1(argId1);
-			journal.setAmount(amount);
-			journal.setBalance(balance);
-			journal.setReason(reason);
-			journal.setTaxReceiverId(taxReceiverId);
-			journal.setTaxAmount(taxAmount);
-			session.saveOrUpdate(journal);
+			WalletJournal journal = (WalletJournal) session.get(WalletJournal.class, refId);
+			if (journal == null) {
+				journal = new WalletJournal();
+				journal.setRefId(refId);
+				journal.setJournalTypeId(journalTypeId);
+				journal.setDate(currentTime);
+				journal.setOwnerName1(ownerName1);
+				journal.setOwnerId1(ownerId1);
+				journal.setOwnerName2(ownerName2);
+				journal.setOwnerId2(ownerId2);
+				journal.setArgName1(argName1);
+				journal.setArgId1(argId1);
+				journal.setAmount(amount);
+				journal.setBalance(balance);
+				journal.setReason(reason);
+				journal.setTaxReceiverId(taxReceiverId);
+				journal.setTaxAmount(taxAmount);
+				
+				getDatabase().getCurrentSession().save(journal);
+				
+				return true;
+			}
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			dialog.setVisible(true);
 		}
+		
+		return false;
 	}
 
 	private BigDecimal getTaxAmount(Node row) {

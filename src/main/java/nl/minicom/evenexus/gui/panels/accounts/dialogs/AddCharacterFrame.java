@@ -180,7 +180,7 @@ public class AddCharacterFrame extends CustomDialog {
 	}
 
 	@Transactional
-	private ApiKey insertCharacter(final EveCharacter character) {
+	protected ApiKey insertCharacter(final EveCharacter character) {
 		Session session = database.getCurrentSession();
 		ApiKey api = new ApiKey();
 		api.setApiKey(character.getApiKey());

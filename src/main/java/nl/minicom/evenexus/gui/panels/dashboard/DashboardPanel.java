@@ -95,7 +95,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 
 	public void reloadTab() {
 		chartPanel.reload();
-		LOG.debug("Dashboard panel reloaded!");
+		LOG.info("Dashboard panel reloaded!");
 	}
 	
 	private ToolBar createTopMenu() {

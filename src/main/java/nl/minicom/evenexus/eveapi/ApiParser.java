@@ -134,7 +134,7 @@ public class ApiParser {
 	}
 	
 	@Transactional
-	private boolean checkIfWeNeedToImportAndIfSoUpdateCooldown(Importer importer, long characterId) {
+	protected boolean checkIfWeNeedToImportAndIfSoUpdateCooldown(Importer importer, long characterId) {
 		Session session = database.getCurrentSession();
 		ImportLogIdentifier id = new ImportLogIdentifier(importer.getId(), characterId);
 		ImportLog log = (ImportLog) session.get(ImportLog.class, id);
@@ -156,7 +156,7 @@ public class ApiParser {
 	}
 	
 	@Transactional
-	private Importer getImporter(final long importerId) {
+	protected Importer getImporter(final long importerId) {
 		Session session = database.getCurrentSession();
 		return (Importer) session.get(Importer.class, importerId);
 	}
@@ -204,7 +204,7 @@ public class ApiParser {
 	}
 
 	@Transactional
-	private void updateCooldown(Node root, long importerId) {
+	protected void updateCooldown(Node root, long importerId) {
 		try {
 			if (isAvailable(root)) {
 				try {

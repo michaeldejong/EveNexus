@@ -14,7 +14,6 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.RefType;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
-import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,25 +38,24 @@ public class RefTypeImporter extends ImporterTask {
 	}
 
 	@Override
-	@Transactional
 	public void parseApi(Node node, ApiKey apiKey) {
-		Session session = getDatabase().getCurrentSession();
 		final Node root = node.get("result").get("rowset");
 		for (int i = root.size() - 1; i >= 0; i--) {
-			processRow(root, i, session);
+			processRow(root, i);
 		}
 	}
 
-	private void processRow(Node root, int i, Session session) {
+	private void processRow(Node root, int i) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, session);
+				persistChangeData(row);
 			}
 		}
 	}
 
-	private void persistChangeData(Node row, Session session) {
+	@Transactional
+	protected void persistChangeData(Node row) {
 		try {			
 			long refTypeId = Long.parseLong(row.getAttribute("refTypeID"));
 			String refTypeName = row.getAttribute("refTypeName");	
@@ -65,7 +63,8 @@ public class RefTypeImporter extends ImporterTask {
 			RefType refType = new RefType();
 			refType.setRefTypeId(refTypeId);
 			refType.setDescription(refTypeName);
-			session.saveOrUpdate(refType);
+			
+			getDatabase().getCurrentSession().saveOrUpdate(refType);
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);

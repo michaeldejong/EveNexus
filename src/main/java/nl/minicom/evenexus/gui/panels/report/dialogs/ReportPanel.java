@@ -75,7 +75,7 @@ public class ReportPanel extends TabPanel {
 
 	@Override
 	public void reloadTab() {
-		LOG.debug("Report panel reloaded!");
+		LOG.info("Report panel reloaded!");
 	}
 	
 }

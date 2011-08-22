@@ -15,7 +15,7 @@ public class ReportGroupingPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
-	private final ReportDefinition definition;
+//	private final ReportDefinition definition;
 	private final Provider<ReportGroupPanel> reportGroupPanelProvider;
 	
 	private ReportModel model;
@@ -24,7 +24,7 @@ public class ReportGroupingPanel extends ReportBuilderPage {
 	public ReportGroupingPanel(ReportDefinition definition, 
 			Provider<ReportGroupPanel> reportGroupPanelProvider) {
 		
-		this.definition = definition;
+//		this.definition = definition;
 		this.reportGroupPanelProvider = reportGroupPanelProvider;
 	}
 	

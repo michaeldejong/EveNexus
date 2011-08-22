@@ -17,7 +17,6 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.Standing;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
-import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +41,7 @@ public class StandingImporter extends ImporterTask {
 	}
 
 	@Override
-	@Transactional
 	public void parseApi(Node node, ApiKey apiKey) {
-		Session session = getDatabase().getCurrentSession();
 		final Node root = node.get("result").get("characterNPCStandings");
 		long characterId = apiKey.getCharacterID();
 		for (int j = 0; j < root.size(); j++) {
@@ -52,23 +49,24 @@ public class StandingImporter extends ImporterTask {
 				Node subNode = (Node) root.get(j);
 				if (subNode.getTag().equals("rowset")) {
 					for (int i = subNode.size() - 1; i >= 0; i--) {
-						processRow(subNode, i, characterId, session);
+						processRow(subNode, i, characterId);
 					}
 				}
 			}
 		}
 	}
 
-	private void processRow(Node root, int i, long characterID, Session session) {
+	private void processRow(Node root, int i, long characterID) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, characterID, session);
+				persistChangeData(row, characterID);
 			}
 		}
 	}
 
-	private void persistChangeData(Node row, long characterId, Session session) {
+	@Transactional
+	protected void persistChangeData(Node row, long characterId) {
 		try {			
 			long fromId = Long.parseLong(row.getAttribute("fromID"));
 			String fromName = row.getAttribute("fromName");
@@ -79,7 +77,8 @@ public class StandingImporter extends ImporterTask {
 			standing.setFromId(fromId);
 			standing.setFromName(fromName);
 			standing.setStanding(value);
-			session.saveOrUpdate(standing);
+			
+			getDatabase().getCurrentSession().saveOrUpdate(standing);
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);

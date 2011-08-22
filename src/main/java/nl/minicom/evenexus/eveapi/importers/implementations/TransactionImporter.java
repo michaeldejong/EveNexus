@@ -52,12 +52,18 @@ public class TransactionImporter extends ImporterTask {
 
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
+		int inserted = 0;
+		
 		final int brokerRelation = getSkillLevel(apiKey.getCharacterID(), 3446);
 		final int accounting = getSkillLevel(apiKey.getCharacterID(), 16622);
 		final Node root = node.get("result").get("rowset");
 		for (int i = root.size() - 1; i >= 0; i--) {
-			processRow(root, i, apiKey, brokerRelation, accounting);
+			if (processRow(root, i, apiKey, brokerRelation, accounting)) {
+				inserted++;
+			}
 		}
+		
+		LOG.info("Inserted " + inserted + " new transactions.");
 	}
 	
 	private int getSkillLevel(long characterId, long skillId) {
@@ -71,22 +77,23 @@ public class TransactionImporter extends ImporterTask {
 	}
 	
 	@Transactional
-	private Skill getSkill(final SkillIdentifier id) {
+	protected Skill getSkill(final SkillIdentifier id) {
 		Session session = getDatabase().getCurrentSession();
 		return (Skill) session.get(Skill.class, id);
 	}
 
-	private void processRow(Node root, int i, ApiKey apiKey, int brokerRelation, int accounting) {
+	private boolean processRow(Node root, int i, ApiKey apiKey, int brokerRelation, int accounting) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, apiKey, brokerRelation, accounting);
+				return persistChangeData(row, apiKey, brokerRelation, accounting);
 			}
 		}
+		return false;
 	}
 
 	@Transactional
-	private void persistChangeData(Node row, ApiKey apiKey, int brokerRelation, int accounting) {
+	protected boolean persistChangeData(Node row, ApiKey apiKey, int brokerRelation, int accounting) {
 		Session session = getDatabase().getCurrentSession();
 
 		try {
@@ -133,17 +140,22 @@ public class TransactionImporter extends ImporterTask {
 				transaction.setStationId(stationId);
 				transaction.setStationName(stationName);
 				transaction.setPersonal(isPersonal);
-				session.save(transaction);		
-			}			
+				
+				session.save(transaction);
+				
+				return true;
+			}
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			dialog.setVisible(true);
 		}
+		
+		return false;
 	}
 
 	@Transactional
-	private BigDecimal getCorporationStanding(ApiKey apiKey, long stationId) {
+	protected BigDecimal getCorporationStanding(ApiKey apiKey, long stationId) {
 		Session session = getDatabase().getCurrentSession();
 		Station station = (Station) session.get(Station.class, stationId);
 		if (station != null) {
@@ -158,7 +170,7 @@ public class TransactionImporter extends ImporterTask {
 	}
 
 	@Transactional
-	private BigDecimal getFactionStanding(ApiKey apiKey, long mapRegionId) {
+	protected BigDecimal getFactionStanding(ApiKey apiKey, long mapRegionId) {
 		Session session = getDatabase().getCurrentSession();
 		MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
 		if (region != null) {

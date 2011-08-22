@@ -100,7 +100,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	public void reloadTab() {
 		table1.reload();
 		table2.reload();
-		LOG.debug("Market orders panel reloaded!");
+		LOG.info("Market orders panel reloaded!");
 	}
 
 	private ToolBar createTopMenu() {

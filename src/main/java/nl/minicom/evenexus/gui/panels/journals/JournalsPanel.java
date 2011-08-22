@@ -87,7 +87,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	@Override
 	public synchronized void reloadTab() {
 		table.reload();
-		LOG.debug("Journal panel reloaded!");
+		LOG.info("Journal panel reloaded!");
 	}
 	
 	private JPanel createTopMenu() {		

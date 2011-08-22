@@ -87,7 +87,7 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	@Override
 	public synchronized void reloadTab() {
 		table.reload();
-		LOG.debug("Transaction panel reloaded!");
+		LOG.info("Transaction panel reloaded!");
 	}
 
 	private ToolBar createTopMenu() {

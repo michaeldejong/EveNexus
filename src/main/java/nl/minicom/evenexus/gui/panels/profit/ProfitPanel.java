@@ -77,7 +77,7 @@ public class ProfitPanel extends TabPanel {
 	@Override
 	public void reloadTab() {
 		table.reload();
-		LOG.debug("Profit panel reloaded!");
+		LOG.info("Profit panel reloaded!");
 	}
 	
 	private ToolBar createTopMenu() {

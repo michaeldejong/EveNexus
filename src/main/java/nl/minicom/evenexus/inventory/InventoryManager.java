@@ -53,8 +53,8 @@ public class InventoryManager {
 	}	
 	
 	public void processUnprocessedTransactions() {
-		LOG.info("Calculating inventory and profits for unprocessed transactions");
 		List<Number> typeIds = queryUnprocessedTypeIds();
+		LOG.info("Calculating inventory and profits for " + typeIds.size() + " unprocessed transaction(s)");
 		for (Number typeId : typeIds) {
 			InventoryWorker worker = workerProvider.get();
 			worker.initialize(typeId.longValue());
@@ -64,7 +64,7 @@ public class InventoryManager {
 	
 	@Transactional
 	@SuppressWarnings("unchecked")
-	private List<Number> queryUnprocessedTypeIds() {
+	protected List<Number> queryUnprocessedTypeIds() {
 		Session session = database.getCurrentSession();
 		String query = "select distinct(t.typeId) from WalletTransaction t where t.price > 0 and t.remaining > 0";
 		return (List<Number>) session.createQuery(query).list();

@@ -27,13 +27,13 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
-	private final ReportDefinition definition;
+//	private final ReportDefinition definition;
 	
 	private ReportModel model;
 
 	@Inject
 	public ReportDisplayPanel(ReportDefinition definition) {
-		this.definition = definition;
+//		this.definition = definition;
 	}
 
 	public ReportBuilderPage initialize(ReportModel model) {

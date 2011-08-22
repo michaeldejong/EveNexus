@@ -138,6 +138,6 @@ public class AccountsPanel extends JPanel {
 		table.getSelectionModel().clearSelection();
 		deleteCharacter.setEnabled(false);
 		table.reload();
-		LOG.debug("Account panel reloaded!");
+		LOG.info("Account panel reloaded!");
 	}
 }

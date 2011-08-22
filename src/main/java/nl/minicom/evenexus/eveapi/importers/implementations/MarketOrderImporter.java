@@ -18,7 +18,6 @@ import nl.minicom.evenexus.persistence.dao.MarketOrder;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.utils.TimeUtils;
 
-import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,26 +42,25 @@ public class MarketOrderImporter extends ImporterTask {
 	}
 
 	@Override
-	@Transactional
 	public void parseApi(Node node, ApiKey apiKey) {
-		Session session = getDatabase().getCurrentSession();
 		final Node root = node.get("result").get("rowset");
-		MarketOrder.markAllActiveAsExpired(session, apiKey.getCharacterID());
+		MarketOrder.markAllActiveAsExpired(apiKey.getCharacterID());
 		for (int i = root.size() - 1; i >= 0; i--) {
-			processRow(root, i, session);
+			processRow(root, i);
 		}
 	}
 
-	private void processRow(Node root, int i, Session session) {
+	private void processRow(Node root, int i) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, session);
+				persistChangeData(row);
 			}
 		}
 	}
 
-	private void persistChangeData(Node row, Session session) {
+	@Transactional
+	protected void persistChangeData(Node row) {
 		try {
 			long orderId = Long.parseLong(row.getAttribute("orderID"));
 			
@@ -82,7 +80,8 @@ public class MarketOrderImporter extends ImporterTask {
 			order.setPrice(BigDecimal.valueOf(Double.valueOf(row.getAttribute("price"))));
 			order.setBid("1".equals(row.getAttribute("bid")));
 			order.setIssued(TimeUtils.convertToTimestamp(row.getAttribute("issued")));
-			session.saveOrUpdate(order);
+			
+			getDatabase().getCurrentSession().saveOrUpdate(order);
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);

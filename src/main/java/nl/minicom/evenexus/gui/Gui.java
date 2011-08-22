@@ -23,7 +23,6 @@ import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
 import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
-import nl.minicom.evenexus.gui.panels.report.dialogs.ReportPanel;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;
@@ -49,7 +48,6 @@ public class Gui extends JFrame {
 	
 	private final SettingsManager settingsManager;
 	
-	private final ReportPanel reportsPanel;
 	private final DashboardPanel dashboardPanel;
 	private final JournalsPanel journalsPanel;
 	private final TransactionsPanel transactionPanel;
@@ -66,7 +64,6 @@ public class Gui extends JFrame {
 
 	@Inject
 	public Gui(SettingsManager settingsManager,
-			ReportPanel reportsPanel,
 			DashboardPanel dashboardPanel,
 			JournalsPanel journalsPanel,
 			TransactionsPanel transactionPanel,
@@ -80,7 +77,6 @@ public class Gui extends JFrame {
 			Provider<AboutDialog> aboutDialogProvider) {
 		
 		this.settingsManager = settingsManager;
-		this.reportsPanel = reportsPanel;
 		this.dashboardPanel = dashboardPanel;
 		this.journalsPanel = journalsPanel;
 		this.transactionPanel = transactionPanel;
@@ -97,7 +93,6 @@ public class Gui extends JFrame {
 	}
 	
 	public void initialize() {
-		reportsPanel.initialize();
 		dashboardPanel.initialize();
 		journalsPanel.initialize();
 		transactionPanel.initialize();
@@ -144,7 +139,6 @@ public class Gui extends JFrame {
 		JTabbedPane pane = new JTabbedPane();
 		pane.setFocusable(false);
 		
-		pane.addTab("Reports", reportsPanel);
 		pane.addTab("Dashboard", dashboardPanel);
 		pane.addTab("Journals", journalsPanel);
 		pane.addTab("Transactions", transactionPanel);
@@ -240,7 +234,6 @@ public class Gui extends JFrame {
 	}
 
 	public void reload() {
-		reportsPanel.reloadTab();
 		dashboardPanel.reloadTab();
 		journalsPanel.reloadTab();
 		transactionPanel.reloadTab();

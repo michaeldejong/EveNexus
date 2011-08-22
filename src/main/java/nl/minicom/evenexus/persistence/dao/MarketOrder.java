@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.Session;
-
 @Entity
 @Table(name = "marketorders")
 public class MarketOrder implements Serializable {
@@ -199,7 +197,7 @@ public class MarketOrder implements Serializable {
 		this.issued = issued;
 	}
 
-	public static void markAllActiveAsExpired(Session session, long characterId) {
+	public static void markAllActiveAsExpired(long characterId) {
 		// TODO Auto-generated method stub
 	}
 	

@@ -44,7 +44,7 @@ public class ImportManager extends Timer {
 		this.listeners = HashMultimap.create();
 	}
 	
-	public void initialize() {
+	public synchronized void initialize() {
 		createCharacterImporters();
 		createGeneralImporters();
 	}
@@ -65,7 +65,7 @@ public class ImportManager extends Timer {
 	}
 
 	@Transactional
-	private void createCharacterImporters() {
+	protected synchronized void createCharacterImporters() {
 		Session session = database.getCurrentSession();
 		List<ApiKey> apiKeys = ApiKey.getAll(session);
 		for (ApiKey apiKey : apiKeys) {
@@ -73,19 +73,26 @@ public class ImportManager extends Timer {
 		}
 	}
 
-	public void addCharacterImporter(ApiKey apiKey) {
-		LOG.debug("Scheduling importers for character: " + apiKey.getCharacterName());
+	public synchronized void addCharacterImporter(ApiKey apiKey) {
+		LOG.info("Scheduling importers for character: " + apiKey.getCharacterName());
 		CharacterImporter importer = characterImporterProvider.get();
 		importer.scheduleApiImporters(apiKey);
 	}
 
-	public void addListener(Api api, ImportListener listener) {
+	public synchronized void addListener(Api api, ImportListener listener) {
 		listeners.put(api, listener);
 	}
 
-	protected void triggerImportCompleteEvent(Api api) {
-		for (ImportListener listener : listeners.get(api)) {
-			listener.onImportComplete();
+	protected synchronized void triggerImportCompleteEvent(Api api) {
+		for (final ImportListener listener : listeners.get(api)) {
+			Runnable runner = new Runnable() {
+				@Override
+				public void run() {
+					listener.onImportComplete();
+				}
+			};
+			
+			new Thread(runner).start();
 		}
 	}
 	

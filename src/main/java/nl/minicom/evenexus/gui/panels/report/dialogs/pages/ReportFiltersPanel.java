@@ -36,7 +36,7 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 
 	private final Database database;
 	
-	private ReportModel model; 
+//	private ReportModel model; 
 
 	@Inject
 	public ReportFiltersPanel(Database database) {
@@ -44,7 +44,7 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 	}
 
 	public ReportBuilderPage initialize(ReportModel model) {
-		this.model = model;
+//		this.model = model;
 		buildGui();
 
 		return this;

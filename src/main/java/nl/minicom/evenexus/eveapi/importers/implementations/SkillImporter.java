@@ -15,7 +15,6 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.Skill;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
-import org.hibernate.Session;
 import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,32 +39,31 @@ public class SkillImporter extends ImporterTask {
 	}
 
 	@Override
-	@Transactional
 	public void parseApi(Node node, ApiKey apiKey) {
-		Session session = getDatabase().getCurrentSession();
 		final Node root = node.get("result");
 		for (int j = 0; j < root.size(); j++) {
 			if (root.get(j) instanceof Node) {
 				Node subNode = (Node) root.get(j);
 				if (subNode.getTag().equals("rowset") && subNode.getAttribute("name").equals("skills")) {
 					for (int i = subNode.size() - 1; i >= 0; i--) {
-						processRow(subNode, i, apiKey, session);
+						processRow(subNode, i, apiKey);
 					}
 				}
 			}
 		}
 	}
 
-	private void processRow(Node root, int i, ApiKey apiKey, Session session) {
+	private void processRow(Node root, int i, ApiKey apiKey) {
 		if (root.get(i) instanceof Node) {
 			Node row = (Node) root.get(i);
 			if (row.getTag().equals("row")) {
-				persistChangeData(row, apiKey, session);
+				persistChangeData(row, apiKey);
 			}
 		}
 	}
 
-	private void persistChangeData(Node row, ApiKey apiKey, Session session) {
+	@Transactional
+	protected void persistChangeData(Node row, ApiKey apiKey) {
 		try {			
 			long typeId = Long.parseLong(row.getAttribute("typeID"));
 			int level = Integer.parseInt(row.getAttribute("level")); 
@@ -74,7 +72,8 @@ public class SkillImporter extends ImporterTask {
 			skill.setCharacterId(apiKey.getCharacterID());
 			skill.setTypeId(typeId);
 			skill.setLevel(level);
-			session.saveOrUpdate(skill);
+			
+			getDatabase().getCurrentSession().saveOrUpdate(skill);
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
