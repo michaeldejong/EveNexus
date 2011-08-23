@@ -52,15 +52,15 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	private List<Object[]> loadTable() throws HibernateException {
 		final String sql = new StringBuilder()
 		.append("SELECT ")
-		.append("journal.date, ")
-		.append("journal.ownername1, ")
-		.append("journal.ownername2, ")
-		.append("journal.argname1, ")
-		.append("journal.amount, ")
-		.append("journal.balance, ")
-		.append("journal.reason, ")
-		.append("journal.taxamount, ")
-		.append("reftypes.description ")
+		.append("journal.date AS date, ")
+		.append("journal.ownername1 AS ownername1, ")
+		.append("journal.ownername2 AS ownername2, ")
+		.append("journal.argname1 AS argname1, ")
+		.append("journal.amount AS amount, ")
+		.append("journal.balance AS balance, ")
+		.append("journal.reason AS reason, ")
+		.append("journal.taxamount AS taxamount, ")
+		.append("reftypes.description AS description ")
 		.append("FROM journal, reftypes ")
 		.append("WHERE journal.journalTypeID = reftypes.refTypeID ")
 		.append("AND journal.date > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
@@ -90,7 +90,7 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	}
 
 	public void initialize() {
-		settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK);
+		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK));
 	}
 
 	@Override

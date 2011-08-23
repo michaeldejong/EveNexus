@@ -51,8 +51,8 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 
 	public synchronized void initialize() {
 		columnModel.initialize();
-		table.initialize(journalData, columnModel);
 		journalData.initialize();
+		table.initialize(journalData, columnModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);

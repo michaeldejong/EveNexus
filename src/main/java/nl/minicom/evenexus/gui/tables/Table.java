@@ -53,6 +53,7 @@ public class Table extends JTable {
 		
 		this.tableDataModel = tableDataModel;
 		this.columnModel = columns;
+		this.isInitialized = true;
 
 		setRowHeight(21);		
 		getTableHeader().setReorderingAllowed(false);
@@ -66,8 +67,6 @@ public class Table extends JTable {
 		setAutoCreateRowSorter(true);
 		
 		getColumnModel().addColumnModelListener(new TableColumnResizeModelListener(columnModel));
-		
-		this.isInitialized = true;
 	}
 	
 	private void updateColumns() {		
