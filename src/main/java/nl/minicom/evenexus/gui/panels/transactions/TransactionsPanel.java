@@ -46,7 +46,7 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		this.columnModel = columnModel;
 		this.settingsManager = settingsManager;
 		
-		importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);    	
+		importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);
 	}
 	
 	public synchronized void initialize() {

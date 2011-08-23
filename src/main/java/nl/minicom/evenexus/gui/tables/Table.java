@@ -59,7 +59,6 @@ public class Table extends JTable {
 		updateColumns();
 		setAutoCreateRowSorter(true);
 		
-		
 		getColumnModel().addColumnModelListener(new TableColumnResizeModelListener(columnModel));		
 	}
 	
