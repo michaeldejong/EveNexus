@@ -38,13 +38,19 @@ public class Table extends JTable {
 	private ColumnModel columnModel;
 	private ITableDataModel tableDataModel;
 	
+	private volatile boolean isInitialized = false;
+	
 	@Inject
 	public Table(BugReportDialog dialog) {
 		this.data = new ArrayList<Map<String, Object>>();
 		this.dialog = dialog;
 	}
 	
-	public void initialize(ITableDataModel tableDataModel, ColumnModel columns) {
+	public synchronized void initialize(ITableDataModel tableDataModel, ColumnModel columns) {
+		if (isInitialized) {
+			throw new IllegalStateException("Table was already initialized!");
+		}
+		
 		this.tableDataModel = tableDataModel;
 		this.columnModel = columns;
 
@@ -59,10 +65,12 @@ public class Table extends JTable {
 		updateColumns();
 		setAutoCreateRowSorter(true);
 		
-		getColumnModel().addColumnModelListener(new TableColumnResizeModelListener(columnModel));		
+		getColumnModel().addColumnModelListener(new TableColumnResizeModelListener(columnModel));
+		
+		this.isInitialized = true;
 	}
 	
-	public final void updateColumns() {		
+	private void updateColumns() {		
 		for (int i = 0; i < columnModel.getSize(); i++) {
 			Column column = columnModel.get(i);
 			if (column.isVisible() && isRemoved(column)) {
@@ -116,7 +124,11 @@ public class Table extends JTable {
 		}
 	}
 	
-	public final void reload() {
+	public synchronized final void reload() {
+		if (!isInitialized) {
+			return;
+		}
+		
 		try {
 			data.clear();
 			String[] fields = tableDataModel.getFields();
@@ -153,7 +165,7 @@ public class Table extends JTable {
 		return -1;
 	}
 	
-	public final ScrollableResults getSelectedResultRow() {
+	public synchronized final ScrollableResults getSelectedResultRow() {
 		try {
 			result.setRowNumber(getSelectedRow());
 		}
@@ -164,7 +176,7 @@ public class Table extends JTable {
 		return result;
 	}
 
-	public void delete(int selectedIndex) {
+	public synchronized void delete(int selectedIndex) {
 		try {
 			result.setRowNumber(selectedIndex);
 			// TODO : remove...
@@ -240,11 +252,11 @@ public class Table extends JTable {
 		};
 	}
 
-	public ITableDataModel getDataModel() {
+	public synchronized ITableDataModel getDataModel() {
 		return tableDataModel;
 	}
 
-	public ColumnModel getColumns() {
+	public synchronized ColumnModel getColumns() {
 		return columnModel;
 	}
 	
