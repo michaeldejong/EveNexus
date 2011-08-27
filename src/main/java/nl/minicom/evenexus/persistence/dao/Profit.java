@@ -268,4 +268,8 @@ public class Profit implements Serializable {
 			.append(id)
 			.toHashCode();
 	}
+	
+	public String toString() {
+		return "<Profit buyId=" + id.getBuyTransactionId() + " sellId=" + id.getSellTransactionId() + ">";
+	}
 }

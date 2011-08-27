@@ -88,7 +88,7 @@ public class InventoryManager {
 	@SuppressWarnings("unchecked")
 	protected List<Number> queryUnprocessedTypeIds() {
 		Session session = database.getCurrentSession();
-		String query = "select distinct(t.typeId) from WalletTransaction t where t.price > 0 and t.remaining > 0";
+		String query = "select distinct(t.typeId) from WalletTransaction t where t.remaining > 0";
 		return (List<Number>) session.createQuery(query).list();
 	}
 

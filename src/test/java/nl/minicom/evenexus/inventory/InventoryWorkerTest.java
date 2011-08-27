@@ -23,9 +23,9 @@ import com.google.inject.Injector;
 
 public class InventoryWorkerTest {
 	
-	private static RevisionExecutor executor;
-	private static Provider<InventoryWorker> workerProvider;
-	private static InventoryTestCasePreparer preparer;
+	private RevisionExecutor executor;
+	private Provider<InventoryWorker> workerProvider;
+	private InventoryTestCasePreparer preparer;
 	
 	@Before
 	public void setup() {
@@ -45,20 +45,25 @@ public class InventoryWorkerTest {
 	
 	@Test
 	public void testBuyTransactionsOnly() throws IOException {
-		runTestCase("/inventory/test-case-01.json");
+		testProfitMatching("/inventory/test-case-01.json");
 	}
 	
 	@Test
 	public void testMixedTransactions() throws IOException {
-		runTestCase("/inventory/test-case-02.json");
+		testProfitMatching("/inventory/test-case-02.json");
 	}
 	
 	@Test
 	public void testInvalidlyOrderedTransactions() throws IOException {
-		runTestCase("/inventory/test-case-03.json");
+		testProfitMatching("/inventory/test-case-03.json");
 	}
 	
-	private void runTestCase(String fileName) throws IOException {
+	@Test
+	public void testInvalidlyMatchedTransactions() throws IOException {
+		testProfitMatching("/inventory/test-case-04.json");
+	}
+	
+	private void testProfitMatching(String fileName) throws IOException {
 		// Read test case from file.
 		InventoryTestCase testCase = parseTestCase(fileName);
 		

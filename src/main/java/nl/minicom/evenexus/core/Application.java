@@ -8,11 +8,11 @@ import javax.inject.Singleton;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.utils.progresswindows.ProgressManager;
-import nl.minicom.evenexus.gui.utils.progresswindows.SplashFrame;
 import nl.minicom.evenexus.i18n.Translator;
 import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.Version;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import nl.minicom.evenexus.persistence.versioning.ContentUpgrader;
 import nl.minicom.evenexus.persistence.versioning.RevisionExecutor;
 import nl.minicom.evenexus.persistence.versioning.StructureUpgrader;
@@ -24,11 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 @Singleton
-public final class Application {
+public class Application {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 	
@@ -42,24 +40,6 @@ public final class Application {
 	@Inject private Gui gui;
 	
 	private boolean initialized = false;
-	
-	public static void main(String[] args) throws Exception {
-		LOG.info("");
-		SplashFrame frame = new SplashFrame();
-		frame.buildGui();
-		frame.setVisible(true);
-		
-		LOG.info("Creating Guice injector...");
-		frame.update(9, 0, "Creating Guice injector...");
-		Injector injector = Guice.createInjector(new ApplicationModule());
-		Application application = injector.getInstance(Application.class);
-		
-		LOG.info("Launching application...");
-		application.initialize(frame, args);
-		frame.dispose();
-		
-		application.initializeGui();
-	}
 	
 	public void initialize(ProgressManager progressManager, String[] args) throws Exception {
 		synchronized (this) {
@@ -110,8 +90,8 @@ public final class Application {
 			initialized = true;
 		}
 	}
-	
-	private void initializeGui() {
+
+	public void initializeGui() {
 		gui.initialize();
 	}
 	
@@ -123,7 +103,8 @@ public final class Application {
 		return getVersion("content");
 	}
 	
-	private String getVersion(String type) {
+	@Transactional
+	protected String getVersion(String type) {
 		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
 		
 		Session session = database.getCurrentSession();
