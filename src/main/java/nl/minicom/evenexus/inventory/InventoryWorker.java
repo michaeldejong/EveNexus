@@ -80,9 +80,6 @@ public class InventoryWorker implements Runnable {
 			
 			LOG.info("Finished de-matching " + matches.size() + " invalid TransactionMatches for type: " + typeId + ".");
 		}
-		else {
-			LOG.info("No invalid TransactionMatches found for type: " + typeId);
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -99,7 +96,6 @@ public class InventoryWorker implements Runnable {
 		query.append("	(s.transactionDateTime >= ? OR b.transactionDateTime >= ?) ");
 		query.append("ORDER BY ");
 		query.append("	s.transactionDateTime DESC, s.transactionId DESC");
-		
 		
 		Query q = session.createQuery(query.toString());
 		q.setTimestamp(0, timestamp);

@@ -10,8 +10,6 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.google.gson.Gson;
-
 /**
  * Entity representing matching fulfilled buy and sell orders.
  * 
@@ -77,15 +75,6 @@ public class TransactionMatch implements Serializable {
 		return new HashCodeBuilder()
 			.append(key)
 			.toHashCode();
-	}
-	
-	public static void main(String[] args) {
-		
-		TransactionMatch match1 = new TransactionMatch();
-		match1.setKey(new TransactionMatchIdentifier(1, 3));
-		match1.setQuantity(500);
-		
-		System.err.println(new Gson().toJson(match1));
 	}
 	
 }
