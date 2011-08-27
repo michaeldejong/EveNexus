@@ -85,18 +85,9 @@ public class Application {
 			translator.initialize(Locale.ENGLISH);
 			
 			// 4. Create inventory manager.
-			new Thread() {
-				public void run() {
-					try {
-						Thread.sleep(30000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					LOG.info("Initializing inventory manager...");
-					progressManager.update(9, 5, "Initializing inventory manager...");
-					inventoryManager.processUnprocessedTransactions();
-				}
-			}.start();
+			LOG.info("Initializing inventory manager...");
+			progressManager.update(9, 5, "Initializing inventory manager...");
+			inventoryManager.processUnprocessedTransactions();
 			
 			// 5. Initializing importers.
 			LOG.info("Initializing API importers...");
