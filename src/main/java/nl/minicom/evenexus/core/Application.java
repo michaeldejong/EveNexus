@@ -30,18 +30,33 @@ public class Application {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 	
-	@Inject private Database database;
-	@Inject private SettingsManager settingsManager;
-	@Inject private InventoryManager inventoryManager;
-	@Inject private RevisionExecutor revisionExecutor;
-	@Inject private Translator translator;
-	@Inject private ProxyManager proxyManager;
-	@Inject private ImportManager importManager;
-	@Inject private Gui gui;
+	private final Database database;
+	private final SettingsManager settingsManager;
+	private final InventoryManager inventoryManager;
+	private final RevisionExecutor revisionExecutor;
+	private final Translator translator;
+	private final ProxyManager proxyManager;
+	private final ImportManager importManager;
+	private final Gui gui;
 	
 	private boolean initialized = false;
 	
-	public void initialize(ProgressManager progressManager, String[] args) throws Exception {
+	@Inject
+	public Application(Database database, SettingsManager settingsManager, InventoryManager inventoryManager,
+			RevisionExecutor revisionExecutor, Translator translator, ProxyManager proxyManager, 
+			ImportManager importManager, Gui gui) {
+		
+		this.database = database;
+		this.settingsManager = settingsManager;
+		this.inventoryManager = inventoryManager;
+		this.revisionExecutor = revisionExecutor;
+		this.translator = translator;
+		this.proxyManager = proxyManager;
+		this.importManager = importManager;
+		this.gui = gui;
+	}
+	
+	public void initialize(final ProgressManager progressManager, String[] args) throws Exception {
 		synchronized (this) {
 			Preconditions.checkArgument(!initialized, "This class has already been initialized!");
 			
@@ -70,9 +85,18 @@ public class Application {
 			translator.initialize(Locale.ENGLISH);
 			
 			// 4. Create inventory manager.
-			LOG.info("Initializing inventory manager...");
-			progressManager.update(9, 5, "Initializing inventory manager...");
-			inventoryManager.processUnprocessedTransactions();
+			new Thread() {
+				public void run() {
+					try {
+						Thread.sleep(30000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					LOG.info("Initializing inventory manager...");
+					progressManager.update(9, 5, "Initializing inventory manager...");
+					inventoryManager.processUnprocessedTransactions();
+				}
+			}.start();
 			
 			// 5. Initializing importers.
 			LOG.info("Initializing API importers...");

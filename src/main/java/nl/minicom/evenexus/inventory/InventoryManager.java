@@ -1,5 +1,6 @@
 package nl.minicom.evenexus.inventory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +17,6 @@ import javax.inject.Singleton;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
-import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
@@ -32,17 +32,17 @@ public class InventoryManager {
 	private final Database database;
 	private final Provider<InventoryWorker> workerProvider;
 	private final ThreadPoolExecutor executor;
-	private final ProfitPanel profitPanel;
+	private final List<InventoryListener> listeners;
 	
 	@Inject
 	public InventoryManager(ImportManager importManager, 
 			Provider<InventoryWorker> workerProvider, 
-			ProfitPanel profitPanel, Database database) {
+			Database database) {
 		
-		this.profitPanel = profitPanel;
 		this.workerProvider = workerProvider;
 		this.database = database;
 		this.executor = new ThreadPoolExecutor(5, 10, 5, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(256, true));
+		this.listeners = new ArrayList<InventoryListener>();
 		
 		executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 			@Override
@@ -57,30 +57,37 @@ public class InventoryManager {
 				processUnprocessedTransactions();
 			}
 		});
-	}	
+	}
 	
 	public void processUnprocessedTransactions() {
 		Collection<Future<?>> futures = new LinkedList<Future<?>>();
 		List<Number> typeIds = queryUnprocessedTypeIds();
-		LOG.info("Calculating inventory and profits for " + typeIds.size() + " unprocessed transaction(s)");
 
-		for (Number typeId : typeIds) {
-			InventoryWorker worker = workerProvider.get();
-			worker.initialize(typeId.longValue());
-			Future<?> future = executor.submit(worker);
-			futures.add(future);
-		}
-		
-		for (Future<?> future : futures) {
-			try {
-				future.get();
-			} catch (Exception e) {
-				// Do nothing.
-			}
-		}
-		
 		if (!typeIds.isEmpty()) {
-			profitPanel.reloadTab();
+			LOG.info("Calculating inventory and profits for " + typeIds.size() + " unprocessed transaction(s)");
+		
+			triggerEvent(InventoryEvent.STARTING);
+			
+			for (Number typeId : typeIds) {
+				InventoryWorker worker = workerProvider.get();
+				worker.initialize(typeId.longValue());
+				Future<?> future = executor.submit(worker);
+				futures.add(future);
+			}
+			
+			double finished = 0;
+			for (Future<?> future : futures) {
+				try {
+					future.get();
+					finished++;
+					
+					triggerEvent(new InventoryEvent(false, InventoryEvent.RUNNING_MESSAGE, (double) (finished / futures.size())));
+				} catch (Exception e) {
+					// Do nothing.
+				}
+			}
+			
+			triggerEvent(InventoryEvent.IDLE);
 		}
 	}
 	
@@ -90,6 +97,16 @@ public class InventoryManager {
 		Session session = database.getCurrentSession();
 		String query = "select distinct(t.typeId) from WalletTransaction t where t.remaining > 0";
 		return (List<Number>) session.createQuery(query).list();
+	}
+	
+	private void triggerEvent(InventoryEvent event) {
+		for (InventoryListener listener : listeners) {
+			listener.onUpdate(event);
+		}
+	}
+
+	public void addListener(InventoryListener listener) {
+		listeners.add(listener);
 	}
 
 }

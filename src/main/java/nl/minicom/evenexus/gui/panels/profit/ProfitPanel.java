@@ -1,13 +1,15 @@
 package nl.minicom.evenexus.gui.panels.profit;
 
 
+import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -16,13 +18,16 @@ import nl.minicom.evenexus.gui.tables.columns.models.ProfitColumnModel;
 import nl.minicom.evenexus.gui.tables.datamodel.implementations.ProfitTableDataModel;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
+import nl.minicom.evenexus.inventory.InventoryEvent;
+import nl.minicom.evenexus.inventory.InventoryListener;
+import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class ProfitPanel extends TabPanel {
+public class ProfitPanel extends TabPanel implements InventoryListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(ProfitPanel.class);
@@ -31,14 +36,19 @@ public class ProfitPanel extends TabPanel {
 	private final ColumnModel columnModel;
 	private final ProfitTableDataModel profitData;
 	private final SettingsManager settingsManager;
+	private final InventoryProgressPanel progress;
+	private final InventoryManager inventoryManager;
 	
 	@Inject
 	public ProfitPanel(SettingsManager settingsManager,
-			ImportManager importManager,
+			InventoryManager inventoryManager, 
+			InventoryProgressPanel progress, 
 			ProfitTableDataModel profitData,
 			Table table) {	
 		
+		this.progress = progress;
 		this.settingsManager = settingsManager;
+		this.inventoryManager = inventoryManager;
 		this.columnModel = new ProfitColumnModel(settingsManager);
 		this.profitData = profitData;
 		this.table = table;
@@ -72,6 +82,8 @@ public class ProfitPanel extends TabPanel {
     			.addComponent(scrollPane)
 	    		.addGap(7)
     	);
+    	
+    	inventoryManager.addListener(this);
 	}
 
 	@Override
@@ -86,6 +98,11 @@ public class ProfitPanel extends TabPanel {
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_PROFIT_PERIOD);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
 		
+		JPanel spacer = new JPanel();
+		spacer.setBackground(Color.WHITE);
+		spacer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		spacer.setMinimumSize(new Dimension(Integer.MIN_VALUE, Integer.MIN_VALUE));
+		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);
         
@@ -95,6 +112,8 @@ public class ProfitPanel extends TabPanel {
 			.addComponent(periodSelectionField)
 			.addGap(7)
 			.addComponent(button)
+			.addComponent(spacer)
+			.addComponent(progress)
     	);
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
@@ -103,11 +122,20 @@ public class ProfitPanel extends TabPanel {
 					.addComponent(typeNameSearchField)
 					.addComponent(periodSelectionField)
 					.addComponent(button)
+					.addComponent(spacer)
+					.addComponent(progress)
 		        )
         	)
     	);
 		
 		return toolBar;
+	}
+
+	@Override
+	public void onUpdate(InventoryEvent event) {
+		if (event.isFinished()) {
+			reloadTab();
+		}
 	}
 
 }
