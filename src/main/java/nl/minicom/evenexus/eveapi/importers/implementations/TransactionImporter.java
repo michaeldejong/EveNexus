@@ -14,6 +14,7 @@ import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.eveapi.importers.ImporterTask;
 import nl.minicom.evenexus.eveapi.importers.ImporterThread;
 import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
+import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
@@ -36,17 +37,21 @@ public class TransactionImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionImporter.class);
 	
+	private final InventoryManager inventoryManager;
 	private final BugReportDialog dialog;
-
+	
 	@Inject
 	public TransactionImporter(
 			Database database, 
 			Provider<ApiParser> apiParserProvider, 
 			Provider<ImporterThread> importerThreadProvider, 
 			ImportManager importManager,
+			InventoryManager inventoryManager, 
 			BugReportDialog dialog) {
 		
 		super(database, apiParserProvider, importerThreadProvider, importManager, Api.CHAR_WALLET_TRANSACTIONS);
+		
+		this.inventoryManager = inventoryManager;
 		this.dialog = dialog;
 	}
 
@@ -180,6 +185,11 @@ public class TransactionImporter extends ImporterTask {
 			return standing.getStanding();
 		}
 		return BigDecimal.ZERO;
+	}
+	
+	@Override
+	public final boolean isReady() {
+		return inventoryManager.isIdle();
 	}
 
 }

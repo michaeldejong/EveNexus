@@ -33,7 +33,9 @@ public class ImporterThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			importer.runImporter(apiKey);
+			if (importer.isReady()) {
+				importer.runImporter(apiKey);
+			}
 		}
 		catch (WarnableException e) {
 			LOG.warn(e.getLocalizedMessage(), e);

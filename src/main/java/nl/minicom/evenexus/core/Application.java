@@ -110,6 +110,10 @@ public class Application {
 		gui.initialize();
 	}
 	
+	public void disposeGui() {
+		gui.dispose();
+	}
+	
 	public String getDatabaseVersion() {
 		return getVersion("database");
 	}

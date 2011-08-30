@@ -156,5 +156,9 @@ public abstract class ImporterTask extends TimerTask {
 	public String getName() {
 		return type.name();
 	}
+
+	public boolean isReady() {
+		return true;
+	}
 	
 }

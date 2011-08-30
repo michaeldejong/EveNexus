@@ -34,6 +34,8 @@ public class InventoryManager {
 	private final ThreadPoolExecutor executor;
 	private final List<InventoryListener> listeners;
 	
+	private State state = State.IDLE;
+	
 	@Inject
 	public InventoryManager(ImportManager importManager, 
 			Provider<InventoryWorker> workerProvider, 
@@ -60,6 +62,8 @@ public class InventoryManager {
 	}
 	
 	public void processUnprocessedTransactions() {
+		state = State.RUNNING;
+		
 		Collection<Future<?>> futures = new LinkedList<Future<?>>();
 		List<Number> typeIds = queryUnprocessedTypeIds();
 
@@ -89,6 +93,8 @@ public class InventoryManager {
 			
 			triggerEvent(InventoryEvent.IDLE);
 		}
+		
+		state = State.IDLE;
 	}
 	
 	@Transactional
@@ -108,5 +114,18 @@ public class InventoryManager {
 	public void addListener(InventoryListener listener) {
 		listeners.add(listener);
 	}
+	
+	public final boolean isRunning() {
+		return state == State.RUNNING;
+	}
+	
+	public final boolean isIdle() {
+		return state == State.IDLE;
+	}
 
+	public enum State {
+		IDLE,
+		RUNNING;
+	}
+	
 }

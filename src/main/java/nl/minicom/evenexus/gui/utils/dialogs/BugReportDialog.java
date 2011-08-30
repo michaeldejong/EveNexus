@@ -38,10 +38,14 @@ public class BugReportDialog extends CustomDialog {
 	private JTextField submitterMailField;
 	private JTextArea bugDescriptionArea;
 
+	private boolean fatal = false;
+
 	@Inject
 	public BugReportDialog(BugReporter reporter) {
 		super(DialogTitle.BUG_REPORT, 400, 500);
 		this.reporter = reporter;
+		
+		setModal(true);
 		buildGui();
 	}
 
@@ -82,6 +86,10 @@ public class BugReportDialog extends CustomDialog {
 					public void run() {
 						try {
 							createReport();
+							
+							if (fatal) {
+								System.exit(1);
+							}
 						} 
 						catch (Exception e1) {
 							LOG.warn(e1.getLocalizedMessage(), e1);
@@ -97,6 +105,10 @@ public class BugReportDialog extends CustomDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
+				
+				if (fatal) {
+					System.exit(1);
+				}
 			}
 		});
 
@@ -187,6 +199,10 @@ public class BugReportDialog extends CustomDialog {
 	private void setDimensions(JComponent component, int height) {
 		component.setMinimumSize(new Dimension(0, height));
 		component.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
+	}
+
+	public void setFatal(boolean fatal) {
+		this.fatal  = fatal;
 	}
 
 }
