@@ -25,7 +25,7 @@ public class AccountTableDataModel implements ITableDataModel {
 	
 	@Override
 	public List<Object[]> reload() {
-		String sql = "SELECT name, userid, apikey, charid FROM apisettings ORDER BY name ASC";
+		String sql = "SELECT keyid, verificationcode, characterid, charactername, corporationid, corporationname FROM apikeys ORDER BY charactername ASC";
 		
 		List<Object[]> result = new ArrayList<Object[]>();
 		Session session = database.getCurrentSession();
@@ -43,10 +43,12 @@ public class AccountTableDataModel implements ITableDataModel {
 	@Override
 	public String[] getFields() {
 		return new String[] {
-				"name",
-				"userid",
-				"apikey",
-				"charid"
+				"keyid",
+				"verificationcode",
+				"characterid",
+				"charactername",
+				"corporationid",
+				"corporationname"
 		};
 	}
 

@@ -70,7 +70,7 @@ public class CharacterImporter {
 	
 	private void scheduleApiImporter(ImporterTask task) {
 		importers.put(task.getApi(), task);		
-		long nextRun = task.getNextRun(apiKey.getCharacterID()) + 5000;
+		long nextRun = task.getNextRun(apiKey.getCharacterId()) + 5000;
 		if (nextRun < TimeUtils.getServerTime()) {
 			nextRun = TimeUtils.getServerTime() + 5000;
 		}
@@ -78,7 +78,7 @@ public class CharacterImporter {
 		task.initialize(apiKey);
 		
 		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter(task.getApi().getImporterId()).getCooldown());
-		LOG.info("Scheduling " + task.getName() + " importer (characterID: " + apiKey.getCharacterID() + ") at: " + new Date(nextRun));
+		LOG.info("Scheduling " + task.getName() + " importer (characterID: " + apiKey.getCharacterId() + ") at: " + new Date(nextRun));
 	}
 	
 }

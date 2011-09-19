@@ -741,10 +741,10 @@ public class StructureUpgrader extends RevisionCollection {
 			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS transactionMatches (");
-				builder.append("   quantity BIGINT NOT NULL,");
-				builder.append("   buyTransactionId BIGINT NOT NULL,");
-				builder.append("   sellTransactionId BIGINT NOT NULL,");
-				builder.append("   PRIMARY KEY (buyTransactionId, sellTransactionId))");
+				builder.append("quantity BIGINT NOT NULL,");
+				builder.append("buyTransactionId BIGINT NOT NULL,");
+				builder.append("sellTransactionId BIGINT NOT NULL,");
+				builder.append("PRIMARY KEY (buyTransactionId, sellTransactionId))");
 				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
@@ -754,23 +754,50 @@ public class StructureUpgrader extends RevisionCollection {
 			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE OR REPLACE VIEW profits (buyTransactionId, sellTransactionId, typeId, typeName, ");
-				builder.append("    date, quantity, buyPrice, sellPrice, taxes, grossProfit, netProfit, totalTaxes, ");
-				builder.append("    totalGrossProfit, totalNetProfit, percentalGrossProfit, percentalNetProfit) ");
+				builder.append("	date, quantity, buyPrice, sellPrice, taxes, grossProfit, netProfit, totalTaxes, ");
+				builder.append("	totalGrossProfit, totalNetProfit, percentalGrossProfit, percentalNetProfit) ");
 				builder.append("AS SELECT b.transactionId, s.transactionId, s.typeId, s.typeName, s.transactionDateTime, ");
-				builder.append("		tm.quantity, b.price, s.price, (b.taxes + s.taxes) AS taxes, ");
-				builder.append("		(b.price + s.price) AS grossProfit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) AS netProfit, ");
-				builder.append("		(b.taxes + s.taxes) * tm.quantity AS totalTaxes, ");
-				builder.append("		tm.quantity * (b.price + s.price) AS totalGrossProfit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS totalNetProfit, ");
-				builder.append("		(b.price + s.price) / ABS(b.price) * 100 AS percentalGrossProfit, ");
-				builder.append("		(b.price + s.price + b.taxes + s.taxes) / ABS(b.price) * 100 AS percentalNetProfit ");
-				builder.append("		FROM transactionMatches tm ");
-				builder.append("		INNER JOIN transactions b ON tm.buyTransactionId = b.transactionId ");
-				builder.append("		INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ");
+				builder.append("	tm.quantity, b.price, s.price, (b.taxes + s.taxes) AS taxes, ");
+				builder.append("	(b.price + s.price) AS grossProfit, ");
+				builder.append("	(b.price + s.price + b.taxes + s.taxes) AS netProfit, ");
+				builder.append("	(b.taxes + s.taxes) * tm.quantity AS totalTaxes, ");
+				builder.append("	tm.quantity * (b.price + s.price) AS totalGrossProfit, ");
+				builder.append("	(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS totalNetProfit, ");
+				builder.append("	(b.price + s.price) / ABS(b.price) * 100 AS percentalGrossProfit, ");
+				builder.append("	(b.price + s.price + b.taxes + s.taxes) / ABS(b.price) * 100 AS percentalNetProfit ");
+				builder.append("	FROM transactionMatches tm ");
+				builder.append("	INNER JOIN transactions b ON tm.buyTransactionId = b.transactionId ");
+				builder.append("	INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ");
 				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
+		
+		super.registerRevision(new Revision(193) {
+			@Override
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("CREATE TABLE IF NOT EXISTS apikeys (");
+				builder.append("keyId BIGINT NOT NULL,");
+				builder.append("verificationCode VARCHAR(64) NOT NULL,");
+				builder.append("characterId BIGINT NOT NULL,");
+				builder.append("characterName VARCHAR(128) NOT NULL,");
+				builder.append("corporationId BIGINT NOT NULL,");
+				builder.append("corporationName VARCHAR(128) NOT NULL,");
+				builder.append("PRIMARY KEY (characterId))");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(194) {
+			@Override
+			public void execute(Session session) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("MERGE INTO `importers` (`id`, `name`, `cooldown`, `path`) VALUES ");
+				builder.append("(9, 'Key Info', 300000, '/account/APIKeyInfo.xml.aspx')");
+				session.createSQLQuery(builder.toString()).executeUpdate();
+			}
+		});
+		
 	}
 	
 	@Override

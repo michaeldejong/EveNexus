@@ -59,8 +59,8 @@ public class TransactionImporter extends ImporterTask {
 	public void parseApi(Node node, ApiKey apiKey) {
 		int inserted = 0;
 		
-		final int brokerRelation = getSkillLevel(apiKey.getCharacterID(), 3446);
-		final int accounting = getSkillLevel(apiKey.getCharacterID(), 16622);
+		final int brokerRelation = getSkillLevel(apiKey.getCharacterId(), 3446);
+		final int accounting = getSkillLevel(apiKey.getCharacterId(), 16622);
 		final Node root = node.get("result").get("rowset");
 		for (int i = root.size() - 1; i >= 0; i--) {
 			if (processRow(root, i, apiKey, brokerRelation, accounting)) {
@@ -133,7 +133,7 @@ public class TransactionImporter extends ImporterTask {
 				transaction = new WalletTransaction();
 				transaction.setTransactionId(transactionID);
 				transaction.setTransactionDateTime(currentTime);
-				transaction.setCharacterId(apiKey.getCharacterID());
+				transaction.setCharacterId(apiKey.getCharacterId());
 				transaction.setQuantity(quantity);
 				transaction.setRemaining(quantity);
 				transaction.setTypeName(typeName);
@@ -164,7 +164,7 @@ public class TransactionImporter extends ImporterTask {
 		Session session = getDatabase().getCurrentSession();
 		Station station = (Station) session.get(Station.class, stationId);
 		if (station != null) {
-			long characterId = apiKey.getCharacterID();
+			long characterId = apiKey.getCharacterId();
 			StandingIdentifier id = new StandingIdentifier(characterId, station.getCorporationId());
 			Standing standing = (Standing) session.get(Standing.class, id);
 			if (standing != null) {
@@ -179,7 +179,7 @@ public class TransactionImporter extends ImporterTask {
 		Session session = getDatabase().getCurrentSession();
 		MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
 		if (region != null) {
-			long characterId = apiKey.getCharacterID();
+			long characterId = apiKey.getCharacterId();
 			StandingIdentifier id = new StandingIdentifier(characterId, region.getFactionId());
 			Standing standing = (Standing) session.get(Standing.class, id);
 			return standing.getStanding();

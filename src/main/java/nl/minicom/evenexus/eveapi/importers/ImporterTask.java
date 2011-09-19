@@ -86,7 +86,7 @@ public abstract class ImporterTask extends TimerTask {
 	
 	protected void runImporter(ApiKey apiKey) throws Exception {
 		if (apiKey != null) {
-			LOG.info("Running " + getName() + " importer (characterID: " + apiKey.getCharacterID() + ")");
+			LOG.info("Running " + getName() + " importer (characterID: " + apiKey.getCharacterId() + ")");
 		}
 		else {
 			LOG.info("Running " + getName() + " importer");
@@ -107,7 +107,7 @@ public abstract class ImporterTask extends TimerTask {
 		long importerId = type.getImporterId();
 		long characterId = 0;
 		if (apiKey != null) {
-			characterId = apiKey.getCharacterID();
+			characterId = apiKey.getCharacterId();
 		}
 		
 		ImportLogIdentifier id = new ImportLogIdentifier(importerId, characterId);

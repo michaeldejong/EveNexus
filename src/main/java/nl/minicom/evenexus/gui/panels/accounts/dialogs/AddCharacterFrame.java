@@ -5,9 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -43,7 +43,7 @@ public class AddCharacterFrame extends CustomDialog {
 	private static final long serialVersionUID = 5630084784234969950L;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AddCharacterFrame.class);
-
+	
 	private final AccountsPanel panel;
 	private final Provider<ApiParser> apiParserProvider;
 	private final CharacterPanel characterPanel;
@@ -75,10 +75,10 @@ public class AddCharacterFrame extends CustomDialog {
 
 	@Override
 	public void createGui(JPanel guiPanel) {		
-		final JLabel userIDLabel = new JLabel("User ID");
-		final JLabel apiKeyLabel = new JLabel("API Key");
-		final JTextField userIDField = new JTextField();
-		final JTextField apiKeyField = new JTextField();
+		final JLabel userIDLabel = new JLabel("Key ID");
+		final JLabel apiKeyLabel = new JLabel("Verification Code");
+		final JTextField keyIdField = new JTextField();
+		final JTextField verificationCodeField = new JTextField();
 		final JButton check = new JButton("Check API credentials");
 		final JButton add = new JButton("Add character(s)");
 		
@@ -88,43 +88,43 @@ public class AddCharacterFrame extends CustomDialog {
 		add.setEnabled(false);
 		
 		userIDLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
-		userIDField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		keyIdField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		apiKeyLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
-		apiKeyField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		verificationCodeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		characterPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 		check.setMaximumSize(new Dimension(160, 32));
 		add.setMaximumSize(new Dimension(160, 32));
 		
 		GroupLayout layout = new GroupLayout(guiPanel);
-		guiPanel.setLayout(layout);        
-        layout.setHorizontalGroup(
-        	layout.createSequentialGroup()
-    		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		guiPanel.setLayout(layout);
+layout.setHorizontalGroup(
+	layout.createSequentialGroup()
+		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(userIDLabel)
-				.addComponent(userIDField)
+				.addComponent(keyIdField)
 				.addComponent(apiKeyLabel)
-				.addComponent(apiKeyField)
+				.addComponent(verificationCodeField)
 				.addComponent(check)
 				.addComponent(characterPanel)
 				.addComponent(add)
-    		)
-    	);
-    	layout.setVerticalGroup(
-    		layout.createSequentialGroup()
-    		.addComponent(userIDLabel)
-			.addComponent(userIDField)
+		)
+	);
+	layout.setVerticalGroup(
+		layout.createSequentialGroup()
+		.addComponent(userIDLabel)
+			.addComponent(keyIdField)
 			.addGap(7)
 			.addComponent(apiKeyLabel)
-			.addComponent(apiKeyField)
+			.addComponent(verificationCodeField)
 			.addGap(7)
 			.addComponent(check)
 			.addGap(7)
 			.addComponent(characterPanel)
 			.addGap(7)
 			.addComponent(add)
-    	);
-    	
-    	check.addActionListener(new ActionListener() {
+	);
+	
+	check.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new Thread() {
@@ -132,12 +132,11 @@ public class AddCharacterFrame extends CustomDialog {
 					public void run() {
 						check.setEnabled(false);
 						
-						Map<String, String> request = new TreeMap<String, String>();
-						request.put("userID", userIDField.getText());
-						request.put("apiKey", apiKeyField.getText());
+						long keyId = Long.parseLong(keyIdField.getText());
+						String vCode = verificationCodeField.getText();
 						
 						characterPanel.clear();
-						List<EveCharacter> characters = checkCredentials(request);
+						List<EveCharacter> characters = checkCredentials(keyId, vCode);
 						if (characters != null) {
 							for (EveCharacter character : characters) {
 								characterPanel.addCharacter(character);
@@ -149,8 +148,8 @@ public class AddCharacterFrame extends CustomDialog {
 				}.start();
 			}
 		});
-    	
-    	add.addActionListener(new ActionListener() {
+	
+	add.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new Thread() {
@@ -176,44 +175,42 @@ public class AddCharacterFrame extends CustomDialog {
 			}
 		});
 					
-		setValidation(userIDField, apiKeyField, check);
+		setValidation(keyIdField, verificationCodeField, check);
 	}
 
 	@Transactional
 	protected ApiKey insertCharacter(final EveCharacter character) {
 		Session session = database.getCurrentSession();
 		ApiKey api = new ApiKey();
-		api.setApiKey(character.getApiKey());
-		api.setCharacterID(character.getCharacterId());
-		api.setCharacterName(character.getName());
-		api.setUserID(character.getUserId());
+		api.setVerificationCode(character.getVerificationCode());
+		api.setCharacterId(character.getCharacterId());
+		api.setCharacterName(character.getCharacterName());
+		api.setCorporationId(character.getCorporationId());
+		api.setCorporationName(character.getCorporationName());
+		api.setKeyId(character.getKeyId());
 		session.saveOrUpdate(api);
 		return api;
 	}
 	
-	private List<EveCharacter> checkCredentials(Map<String, String> request) {
-		List<EveCharacter> characters = getCharacterList(request);
+	private List<EveCharacter> checkCredentials(long keyId, String vCode) {
+		List<EveCharacter> characters = getCharacterList(keyId, vCode);
 		if (characters == null || characters.isEmpty()) {
 			LOG.warn("Account has no characters listed!");
 			return null;
 		}
 		
-		request.put("characterID", Long.toString(characters.get(0).getCharacterId()));
-		if (hasSecurityClearance(request)) {
-			return characters;
-		}
-		else {
-			LOG.warn("API key does not have FULL clearance!");
-		}
-		
-		return null;
+		return characters;
 	}
 	
-	private List<EveCharacter> getCharacterList(Map<String, String> request) {
+	private List<EveCharacter> getCharacterList(long keyId, String vCode) {
 		try {
+			Map<String, String> request = new HashMap<String, String>();
+			request.put("keyID", Long.toString(keyId));
+			request.put("vCode", vCode);
+			
 			ApiParser parser = apiParserProvider.get();
-			Node root = parser.parseApi(Api.CHAR_LIST, null, request);
-			return processParser(root, request);
+			Node root = parser.parseApi(Api.KEY_INFO, null, request);
+			return processParser(root, keyId, vCode);
 		}
 		catch (WarnableException e) {
 			LOG.warn(e.getLocalizedMessage(), e);
@@ -224,53 +221,47 @@ public class AddCharacterFrame extends CustomDialog {
 		}
 		return null;
 	}
-	
-	//This should throw an exception when user enters a limited API.
-	private boolean hasSecurityClearance(Map<String, String> request) {
-		try {
-			ApiParser parser = apiParserProvider.get();
-			Node response = parser.parseApi(Api.CHAR_BALANCE, null, request);
-			ApiParser.isAvailable(response);
-		}
-		catch (SecurityNotHighEnoughException e) {
-			LOG.warn(e.getLocalizedMessage(), e);
-			return false;
-		}
-		catch (Exception e) {
-			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
-		}
-		return true;
-	}
 
-	protected List<EveCharacter> processParser(Node root, Map<String, String> request) throws Exception {
-		
+	protected List<EveCharacter> processParser(Node root, long keyId, String vCode) throws Exception {
 		List<EveCharacter> characters = new ArrayList<EveCharacter>();
 		if (ApiParser.isAvailable(root)) {
-			Node node = root.get("result").get("rowset");
+			Node node = root.get("result").get("key");
 			if (node != null) {
-				for (int i = 0; i < node.size(); i++) {
-					EveCharacter character = processRow(node, i, request);
-					if (character != null) {
-						characters.add(character);
+				int mask = Integer.parseInt(node.getAttribute("accessMask"));
+				
+				boolean transactions = (mask & AccessMask.WALLET_TRANSACTIONS.getAccessMask()) != 0; 
+				boolean journals = (mask & AccessMask.WALLET_JOURNAL.getAccessMask()) != 0; 
+				boolean orders = (mask & AccessMask.MARKET_ORDERS.getAccessMask()) != 0; 
+				boolean characterSheet = (mask & AccessMask.CHARACTER_SHEET.getAccessMask()) != 0; 
+				boolean standings = (mask & AccessMask.STANDINGS.getAccessMask()) != 0; 
+				
+				if (transactions && journals && orders && characterSheet && standings) {
+					Node subNode = node.get("rowset");
+					for (int i = 0; i < subNode.size(); i++) {
+						EveCharacter character = processRow(subNode, i, keyId, vCode);
+						if (character != null) {
+							characters.add(character);
+						}
 					}
+				}
+				else {
+					throw new SecurityNotHighEnoughException();
 				}
 			}
 		}
 		return characters;
 	}		
 
-	private EveCharacter processRow(Node root, int index, Map<String, String> request) throws SQLException {
-		
+	private EveCharacter processRow(Node root, int index, long keyId, String vCode) throws SQLException {
 		EveCharacter character = null;
 		if (root.get(index) instanceof Node) {
 			Node row = (Node) root.get(index);
 			if (row != null && row.getTag().equals("row")) {
-				String name = row.getAttribute("name");
-				int userID = Integer.parseInt(request.get("userID"));
-				String apiKey = request.get("apiKey");
-				long characterID = Long.parseLong(row.getAttribute("characterID"));
-				character = new EveCharacter(name, userID, apiKey, characterID);
+				long characterId = Long.parseLong(row.getAttribute("characterID"));
+				String characterName = row.getAttribute("characterName");
+				long corporationId = Long.parseLong(row.getAttribute("corporationID"));
+				String corporationName = row.getAttribute("corporationName");
+				character = new EveCharacter(keyId, vCode, characterId, characterName, corporationId, corporationName);
 			}
 		}
 		return character;
@@ -303,5 +294,46 @@ public class AddCharacterFrame extends CustomDialog {
 		
 		userIDField.addKeyListener(new ValidationListener(userIdRule));
 		apiKeyField.addKeyListener(new ValidationListener(apiKeyRule));
-	}	
+	}
+	
+	
+	public enum AccessMask{
+		ACCOUNT_BALANCE(1),
+		ASSET_LIST(2),
+		CALENDAR_EVENT_ATTENDEES(4),
+		CHARACTER_SHEET(8),
+		CONTACT_LIST(16),
+		CONTACT_NOTIFICATIONS(32),
+		FAC_WAR_STATS(64),
+		INDUSTRY_JOBS(128),
+		KILL_LOG(256),
+		MAIL_BODIES(512),
+		MAILING_LISTS(1024),
+		MAIL_MESSAGES(2048),
+		MARKET_ORDERS(4096),
+		MEDALS(8192),
+		NOTIFICATIONS(16384),
+		NOTIFICATION_TEXTS(32768),
+		RESEARCH(65536),
+		SKILL_IN_TRAINING(131072),
+		SKILL_QUEUE(262144),
+		STANDINGS(524288),
+		UPCOMING_CALENDAR_EVENTS(1048576),
+		WALLET_JOURNAL(2097152),
+		WALLET_TRANSACTIONS(4194304),
+		CHARACTER_INFO_PRIVATE(8388608),
+		CHARACTER_INFO_PUBLIC(16777216),
+		ACCOUNT_STATUS(33554432),
+		CONTRACTS(67108864);
+		
+		private final int accessMask;
+		
+		private AccessMask(int accessMask) {
+			this.accessMask = accessMask;
+		}
+		
+		public int getAccessMask() {
+			return accessMask;
+		}
+	}
 }

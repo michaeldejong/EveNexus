@@ -76,7 +76,8 @@ public class ApiParser {
 		CHAR_WALLET_TRANSACTIONS(5),
 		CHAR_WALLET_JOURNAL(6),
 		CHAR_MARKET_ORDERS(7), 
-		EVE_REF_TYPE(8);
+		EVE_REF_TYPE(8),
+		KEY_INFO(9);
 		
 		private long importerID;
 		
@@ -107,9 +108,9 @@ public class ApiParser {
 	public Node parseApi(Api api, ApiKey apiKey, Map<String, String> additionalArguments) {
 		Map<String, String> arguments = new TreeMap<String, String>();
 		if (apiKey != null) {
-			arguments.put("userID", Integer.toString(apiKey.getUserID()));
-			arguments.put("apiKey", apiKey.getApiKey());
-			arguments.put("characterID", Long.toString(apiKey.getCharacterID()));
+			arguments.put("keyID", Long.toString(apiKey.getKeyId()));
+			arguments.put("vCode", apiKey.getVerificationCode());
+			arguments.put("characterID", Long.toString(apiKey.getCharacterId()));
 		}
 
 		Map<String, String> allArguments = new TreeMap<String, String>(arguments);
@@ -121,7 +122,7 @@ public class ApiParser {
 		
 		String urlWithAdditionalArguments = createURL(allArguments, importer.getPath());
 		if (apiKey != null) {
-			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, apiKey.getCharacterID())) {
+			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, apiKey.getCharacterId())) {
 				return parseAPI(urlWithAdditionalArguments, importer.getPath(), api.getImporterId());
 			}
 		}

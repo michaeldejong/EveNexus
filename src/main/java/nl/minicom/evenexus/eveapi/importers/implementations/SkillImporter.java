@@ -69,7 +69,7 @@ public class SkillImporter extends ImporterTask {
 			int level = Integer.parseInt(row.getAttribute("level")); 
 			
 			Skill skill = new Skill();
-			skill.setCharacterId(apiKey.getCharacterID());
+			skill.setCharacterId(apiKey.getCharacterId());
 			skill.setTypeId(typeId);
 			skill.setLevel(level);
 			

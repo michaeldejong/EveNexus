@@ -234,15 +234,19 @@ public class SettingsManager {
 	public static final String PROXY_PORT = "proxy.port";
 
 	public static final String SETTINGS_VERSION = "settings.version";
-		
-	public static final String TABLE_ACCOUNT_APIKEY_VISIBLE = "table.account.apikey.visible";
-	public static final String TABLE_ACCOUNT_APIKEY_WIDTH = "table.account.apikey.width";
-	public static final String TABLE_ACCOUNT_CHARACTER_VISIBLE = "table.account.character.visible";
-	public static final String TABLE_ACCOUNT_CHARACTER_WIDTH = "table.account.character.width";
+
+	public static final String TABLE_ACCOUNT_KEYID_VISIBLE = "table.account.keyid.visible";
+	public static final String TABLE_ACCOUNT_KEYID_WIDTH = "table.account.keyid.width";
+	public static final String TABLE_ACCOUNT_VCODE_VISIBLE = "table.account.vcode.visible";
+	public static final String TABLE_ACCOUNT_VCODE_WIDTH = "table.account.vcode.width";
 	public static final String TABLE_ACCOUNT_CHARID_VISIBLE = "table.account.charid.visible";
 	public static final String TABLE_ACCOUNT_CHARID_WIDTH = "table.account.charid.width";
-	public static final String TABLE_ACCOUNT_USERID_VISIBLE = "table.account.userid.visible";
-	public static final String TABLE_ACCOUNT_USERID_WIDTH = "table.account.userid.width";
+	public static final String TABLE_ACCOUNT_CHARNAME_VISIBLE = "table.account.character.visible";
+	public static final String TABLE_ACCOUNT_CHARNAME_WIDTH = "table.account.character.width";
+	public static final String TABLE_ACCOUNT_CORPID_VISIBLE = "table.account.corpid.visible";
+	public static final String TABLE_ACCOUNT_CORPID_WIDTH = "table.account.corpid.width";
+	public static final String TABLE_ACCOUNT_CORPNAME_VISIBLE = "table.account.corpname.visible";
+	public static final String TABLE_ACCOUNT_CORPNAME_WIDTH = "table.account.corpname.width";
 
 	public static final String TABLE_JOURNAL_AMOUNT_VISIBLE = "table.journal.amount.visible";
 	public static final String TABLE_JOURNAL_AMOUNT_WIDTH = "table.journal.amount.width";

@@ -15,24 +15,14 @@ public class AccountColumnModel extends ColumnModel {
 
 	@Override
 	public void initialize() {
-		add(new Column(
-				getSettingsManager(), 
-				"Character", 
-				"name", 
-				SettingsManager.TABLE_ACCOUNT_CHARACTER_VISIBLE,
-				true,
-				SettingsManager.TABLE_ACCOUNT_CHARACTER_WIDTH,
-				174,
-				String.class
-		));
 		
 		add(new Column(
 				getSettingsManager(), 
-				"User ID", 
-				"userid", 
-				SettingsManager.TABLE_ACCOUNT_USERID_VISIBLE,
+				"KeyID", 
+				"keyid", 
+				SettingsManager.TABLE_ACCOUNT_KEYID_VISIBLE,
 				true,
-				SettingsManager.TABLE_ACCOUNT_USERID_WIDTH,
+				SettingsManager.TABLE_ACCOUNT_KEYID_WIDTH,
 				88,
 				Long.class,
 				ColumnModel.ALIGN_RIGHT
@@ -40,11 +30,11 @@ public class AccountColumnModel extends ColumnModel {
 		
 		add(new Column(
 				getSettingsManager(), 
-				"API Key", 
-				"apikey", 
-				SettingsManager.TABLE_ACCOUNT_APIKEY_VISIBLE,
+				"Verification Code", 
+				"verificationcode", 
+				SettingsManager.TABLE_ACCOUNT_VCODE_VISIBLE,
 				true,
-				SettingsManager.TABLE_ACCOUNT_APIKEY_WIDTH,
+				SettingsManager.TABLE_ACCOUNT_VCODE_WIDTH,
 				450,
 				String.class
 		));
@@ -52,13 +42,47 @@ public class AccountColumnModel extends ColumnModel {
 		add(new Column(
 				getSettingsManager(), 
 				"Character ID", 
-				"charid", 
+				"characterid", 
 				SettingsManager.TABLE_ACCOUNT_CHARID_VISIBLE,
 				true,
 				SettingsManager.TABLE_ACCOUNT_CHARID_WIDTH,
 				88,
 				Long.class,
 				ColumnModel.ALIGN_RIGHT
+		));
+		
+		add(new Column(
+				getSettingsManager(), 
+				"Character", 
+				"charactername", 
+				SettingsManager.TABLE_ACCOUNT_CHARNAME_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_CHARNAME_WIDTH,
+				174,
+				String.class
+		));
+		
+		add(new Column(
+				getSettingsManager(), 
+				"Corporation ID", 
+				"corporationid", 
+				SettingsManager.TABLE_ACCOUNT_CORPID_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_CORPID_WIDTH,
+				88,
+				Long.class,
+				ColumnModel.ALIGN_RIGHT
+		));
+		
+		add(new Column(
+				getSettingsManager(), 
+				"Corporation", 
+				"corporationname", 
+				SettingsManager.TABLE_ACCOUNT_CORPNAME_VISIBLE,
+				true,
+				SettingsManager.TABLE_ACCOUNT_CORPNAME_WIDTH,
+				174,
+				String.class
 		));
 	}
 	

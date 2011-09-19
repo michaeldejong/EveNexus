@@ -43,7 +43,7 @@ public class StandingImporter extends ImporterTask {
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
 		final Node root = node.get("result").get("characterNPCStandings");
-		long characterId = apiKey.getCharacterID();
+		long characterId = apiKey.getCharacterId();
 		for (int j = 0; j < root.size(); j++) {
 			if (root.get(j) instanceof Node) {
 				Node subNode = (Node) root.get(j);

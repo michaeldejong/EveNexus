@@ -1,121 +1,91 @@
 package nl.minicom.evenexus.persistence.dao;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.Session;
-
-import com.beimin.eveapi.core.ApiAuth;
-
 @Entity
-@Table(name = "apisettings")
-public class ApiKey extends ApiAuth<ApiKey> implements Serializable {
+@Table(name = "apikeys")
+public class ApiKey implements Serializable {
 
 	private static final long serialVersionUID = -5243514709906664430L;
 	
-	public static final String CHAR_ID = "charId";
-	public static final String API_KEY = "apiKey";
-	public static final String NAME = "name";
-	public static final String USER_ID = "userId";
+	public static final String VERIFICATION_CODE = "verificationCode";
+	public static final String KEY_ID = "keyId";
+	
+	public static final String CHARACTER_ID = "characterId";
+	public static final String CHARACTER_NAME = "characterName";
+	public static final String CORPORATION_ID = "corporationId";
+	public static final String CORPORATION_NAME = "corporationName";
 
-	@SuppressWarnings("unchecked")
-	public static List<ApiKey> getAll(Session session) {
-		return session.createCriteria(ApiKey.class).list();
-	}
+	@Column(name = VERIFICATION_CODE, nullable = false)
+	private String verificationCode;
+
+	@Column(name = KEY_ID, nullable = false)
+	private long keyId;
 
 	@Id
-	@Column(name = CHAR_ID, nullable = false)
-	private long charId;
-
-	@Column(name = API_KEY, nullable = false)
-	private String apiKey;
-
-	@Column(name = NAME, nullable = false)
-	private String name;
-
-	@Column(name = USER_ID, nullable = false)
-	private int userId;
+	@Column(name = CHARACTER_ID, nullable = false)
+	private Long characterId;
 	
-	public Long getCharacterID() {
-		return charId;
+	@Column(name = CHARACTER_NAME, nullable = false)
+	private String characterName;
+	
+	@Column(name = CORPORATION_ID, nullable = false)
+	private Long corporationId;
+	
+	@Column(name = CORPORATION_NAME, nullable = false)
+	private String corporationName;
+	
+	public String getVerificationCode() {
+		return verificationCode;
 	}
 
-	public void setCharacterID(long charId) {
-		this.charId = charId;
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
 	}
 
-	public String getApiKey() {
-		return apiKey;
+	public long getKeyId() {
+		return keyId;
 	}
 
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
+	public void setKeyId(long keyId) {
+		this.keyId = keyId;
+	}
+
+	public Long getCharacterId() {
+		return characterId;
+	}
+
+	public void setCharacterId(Long characterId) {
+		this.characterId = characterId;
 	}
 
 	public String getCharacterName() {
-		return name;
+		return characterName;
 	}
 
-	public void setCharacterName(String name) {
-		this.name = name;
+	public void setCharacterName(String characterName) {
+		this.characterName = characterName;
 	}
 
-	public int getUserID() {
-		return userId;
+	public long getCorporationId() {
+		return corporationId;
 	}
 
-	public void setUserID(int userId) {
-		this.userId = userId;
-	}
-	
-	public int getSkillLevel(Session session, long skillId) {
-		int level = 0;
-		SkillIdentifier skillIdentifier = new SkillIdentifier(getCharacterID(), skillId);
-		Skill skill = (Skill) session.get(Skill.class, skillIdentifier);
-		if (skill != null) {
-			level = skill.getLevel();
-		}
-		
-		return level;
+	public void setCorporationId(long corporationId) {
+		this.corporationId = corporationId;
 	}
 
-	public BigDecimal getCorporationStanding(Session session, long stationId) {
-		BigDecimal returnValue = BigDecimal.ZERO;
-		Station station = (Station) session.get(Station.class, stationId);
-		if (station != null) {
-			StandingIdentifier id = new StandingIdentifier(getCharacterID(), station.getCorporationId());
-			Standing standing = (Standing) session.get(Standing.class, id);
-			if (standing != null) {
-				returnValue = standing.getStanding();
-			}
-		}
-
-		return returnValue;
+	public String getCorporationName() {
+		return corporationName;
 	}
 
-	public BigDecimal getFactionStanding(Session session, long mapRegionId) {
-		BigDecimal returnValue = BigDecimal.ZERO;
-		MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
-		if (region != null) {
-			StandingIdentifier id = new StandingIdentifier(getCharacterID(), region.getFactionId());
-			Standing standing = (Standing) session.get(Standing.class, id);
-			if (standing != null) {
-				returnValue = standing.getStanding();
-			}
-		}
-
-		return returnValue;
-	}
-
-	@Override
-	public int compareTo(ApiKey o) {
-		return name.compareTo(o.name);
+	public void setCorporationName(String corporationName) {
+		this.corporationName = corporationName;
 	}
 
 }

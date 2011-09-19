@@ -65,9 +65,11 @@ public class ImportManager extends Timer {
 	}
 
 	@Transactional
+	@SuppressWarnings("unchecked")
 	protected synchronized void createCharacterImporters() {
 		Session session = database.getCurrentSession();
-		List<ApiKey> apiKeys = ApiKey.getAll(session);
+		List<ApiKey> apiKeys = session.createCriteria(ApiKey.class).list();
+
 		for (ApiKey apiKey : apiKeys) {
 			addCharacterImporter(apiKey);
 		}

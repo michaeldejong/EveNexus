@@ -32,6 +32,8 @@ public class Main {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
+				LOG.error(e.getLocalizedMessage(), e);
+				
 				BugReportDialog dialog = injector.getInstance(BugReportDialog.class);
 				dialog.setFatal(true);
 				dialog.setVisible(true);
@@ -43,8 +45,6 @@ public class Main {
 		frame.dispose();
 		
 		application.initializeGui();
-		
-		throw new RuntimeException("Oh noos!");
 	}
 	
 }

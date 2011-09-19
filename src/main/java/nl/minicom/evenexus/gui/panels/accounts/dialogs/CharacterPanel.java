@@ -51,7 +51,7 @@ public class CharacterPanel extends JPanel {
 	
 	public void addCharacter(EveCharacter c) {
 		if (!characterExists(c.getCharacterId())) {
-			characterMap.put(c, new JCheckBox(c.getName()));
+			characterMap.put(c, new JCheckBox(c.getCharacterName()));
 		}
 		reload();
 	}

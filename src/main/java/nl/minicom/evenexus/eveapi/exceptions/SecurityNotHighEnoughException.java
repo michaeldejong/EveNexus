@@ -7,7 +7,7 @@ public class SecurityNotHighEnoughException extends WarnableException {
 	
 	@Override
 	public String createWarningMessage() {
-		return "You are using the limited API. EveNexus requires your full API in order to function.";
+		return "You are using an API key which does not support all of the following APIs: WalletTransactions, WalletJournals, MarketOrders, CharacterSheet and Standings.";
 	}
 
 }

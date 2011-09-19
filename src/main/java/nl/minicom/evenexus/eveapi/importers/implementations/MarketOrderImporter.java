@@ -44,7 +44,7 @@ public class MarketOrderImporter extends ImporterTask {
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
 		final Node root = node.get("result").get("rowset");
-		MarketOrder.markAllActiveAsExpired(apiKey.getCharacterID());
+		MarketOrder.markAllActiveAsExpired(apiKey.getCharacterId());
 		for (int i = root.size() - 1; i >= 0; i--) {
 			processRow(root, i);
 		}
