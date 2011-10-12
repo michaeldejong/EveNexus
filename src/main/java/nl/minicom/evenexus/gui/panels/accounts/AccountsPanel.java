@@ -1,6 +1,5 @@
 package nl.minicom.evenexus.gui.panels.accounts;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,6 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.accounts.dialogs.AddCharacterFrame;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
@@ -75,8 +75,8 @@ public class AccountsPanel extends JPanel {
 	public void initialize() {
 		accountModel.initialize();
 		table.initialize(accountData, accountModel);
-		
-		setBackground(Color.WHITE);	
+
+		setBackground(GuiConstants.getTabBackground());
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         

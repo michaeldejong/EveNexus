@@ -22,6 +22,7 @@ import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
 import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
 import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
+import nl.minicom.evenexus.gui.panels.profit.InventoryProgressPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
@@ -55,6 +56,8 @@ public class Gui extends JFrame {
 	private final ProfitPanel profitPanel;
 	private final AccountsPanel accountsPanel;
 	
+	private final InventoryProgressPanel state;
+	
 	private final GuiListener guiListener;
 	
 	private final Provider<ImportDatabaseDialog> importDatabaseDialogProvider;
@@ -70,6 +73,7 @@ public class Gui extends JFrame {
 			MarketOrdersPanel marketOrderPanel,
 			ProfitPanel profitPanel,
 			AccountsPanel accountsPanel,
+			InventoryProgressPanel state,
 			GuiListener guiListener,
 			Provider<ImportDatabaseDialog> importDatabaseDialogProvider,
 			Provider<ExportDatabaseDialog> exportDatabaseDialogProvider,
@@ -83,6 +87,8 @@ public class Gui extends JFrame {
 		this.marketOrderPanel = marketOrderPanel;
 		this.profitPanel = profitPanel;
 		this.accountsPanel = accountsPanel;
+		
+		this.state = state;
 		
 		this.guiListener = guiListener;
 		
@@ -151,14 +157,17 @@ public class Gui extends JFrame {
         layout.setHorizontalGroup(
         	layout.createSequentialGroup()
         		.addGap(7)
-        		.addComponent(pane)
+        		.addGroup(layout.createParallelGroup()
+        				.addComponent(pane)
+        				.addComponent(state)
+        		)
         		.addGap(6)
     	);
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
 	    		.addGap(7)
 	    		.addComponent(pane)
-	    		.addGap(7)
+	    		.addComponent(state)
     	);
 	}
 

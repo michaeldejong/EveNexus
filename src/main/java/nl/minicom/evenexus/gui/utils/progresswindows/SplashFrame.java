@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import nl.minicom.evenexus.gui.Gui;
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 
 
@@ -42,7 +43,7 @@ public class SplashFrame extends ProgressManager {
 		JLabel progressLabel = getProgressLabel();
 		progressLabel.setFont(progressLabel.getFont().deriveFont(8));
 		progressLabel.setForeground(Color.WHITE);
-		progressLabel.setBounds(54, 140, 383, 20);
+		progressLabel.setBounds(54, 140, 383, GuiConstants.PROGRESS_BAR_HEIGHT);
 		progressLabel.setHorizontalAlignment(JLabel.RIGHT);
 		progressLabel.setVerticalAlignment(JLabel.BOTTOM);
 		logo.add(progressLabel);

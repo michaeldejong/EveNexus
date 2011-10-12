@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -60,7 +61,8 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 		columnModel.initialize();
 		table1.initialize(sellOrderData, columnModel);
 		table2.initialize(buyOrderData, columnModel);
-		
+
+		setBackground(GuiConstants.getTabBackground());
 		JScrollPane scrollPane1 = new JScrollPane(table1);
 		scrollPane1.getVerticalScrollBar().setUnitIncrement(16);
 		JScrollPane scrollPane2 = new JScrollPane(table2);

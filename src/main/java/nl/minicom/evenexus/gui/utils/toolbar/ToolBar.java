@@ -1,7 +1,6 @@
 package nl.minicom.evenexus.gui.utils.toolbar;
 
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,12 +37,12 @@ public class ToolBar extends JPanel {
 		
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, 51));
 		setMinimumSize(new Dimension(0, 51));
-		setBackground(Color.WHITE);
+		setBackground(GuiConstants.getTabBackground());
 	}
 
 	public JPanel createTypeNameSearchField(final Table... tables) {
 		JPanel filterPanel = new JPanel();
-		filterPanel.setBackground(Color.WHITE);
+		filterPanel.setBackground(GuiConstants.getTabBackground());
 		filterPanel.setMinimumSize(new Dimension(145, 51));
 		filterPanel.setMaximumSize(new Dimension(145, 51));
 		filterPanel.setLayout(null);
@@ -78,7 +77,7 @@ public class ToolBar extends JPanel {
 	
 	public JPanel createPeriodSelectionField(final Table table, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
-		filterPanel.setBackground(Color.WHITE);
+		filterPanel.setBackground(GuiConstants.getTabBackground());
 		filterPanel.setMinimumSize(new Dimension(130, 51));
 		filterPanel.setMaximumSize(new Dimension(130, 51));
 		filterPanel.setLayout(null);
@@ -130,7 +129,7 @@ public class ToolBar extends JPanel {
 	
 	public JPanel createPeriodSelectionField(final LineGraphEngine chartPanel, final SettingsManager settingsManager, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
-		filterPanel.setBackground(Color.WHITE);
+		filterPanel.setBackground(GuiConstants.getTabBackground());
 		filterPanel.setMinimumSize(new Dimension(130, 51));
 		filterPanel.setMaximumSize(new Dimension(130, 51));
 		filterPanel.setLayout(null);

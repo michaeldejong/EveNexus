@@ -1,13 +1,13 @@
 package nl.minicom.evenexus.gui.utils.toolbar;
 
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 
 public class ToolBarButton extends JButton {
@@ -18,7 +18,7 @@ public class ToolBarButton extends JButton {
 		super(Icon.getIcon(icon));
 		setToolTipText(tooltip);
         setFocusable(false);
-        setBackground(Color.WHITE);
+		setBackground(GuiConstants.getTabBackground());
         setMinimumSize(new Dimension(48, 48));
         setMaximumSize(new Dimension(48, 48));
 

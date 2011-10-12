@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
@@ -53,7 +54,8 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		columnModel.initialize();
 		tableDataModel.initialize();
 		table.initialize(tableDataModel, columnModel);
-		
+
+		setBackground(GuiConstants.getTabBackground());
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		ToolBar panel = createTopMenu();

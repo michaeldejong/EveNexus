@@ -1,15 +1,13 @@
 package nl.minicom.evenexus.gui.panels.profit;
 
 
-import java.awt.Color;
-import java.awt.Dimension;
-
 import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
@@ -36,17 +34,14 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 	private final ColumnModel columnModel;
 	private final ProfitTableDataModel profitData;
 	private final SettingsManager settingsManager;
-	private final InventoryProgressPanel progress;
 	private final InventoryManager inventoryManager;
 	
 	@Inject
 	public ProfitPanel(SettingsManager settingsManager,
 			InventoryManager inventoryManager, 
-			InventoryProgressPanel progress, 
 			ProfitTableDataModel profitData,
 			Table table) {	
 		
-		this.progress = progress;
 		this.settingsManager = settingsManager;
 		this.inventoryManager = inventoryManager;
 		this.columnModel = new ProfitColumnModel(settingsManager);
@@ -58,7 +53,8 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 		columnModel.initialize();
 		profitData.initialize();
 		table.initialize(profitData, columnModel);
-		
+
+		setBackground(GuiConstants.getTabBackground());
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);		
 		ToolBar panel = createTopMenu();
@@ -98,11 +94,6 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_PROFIT_PERIOD);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
 		
-		JPanel spacer = new JPanel();
-		spacer.setBackground(Color.WHITE);
-		spacer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-		spacer.setMinimumSize(new Dimension(Integer.MIN_VALUE, Integer.MIN_VALUE));
-		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);
         
@@ -112,8 +103,6 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 			.addComponent(periodSelectionField)
 			.addGap(7)
 			.addComponent(button)
-			.addComponent(spacer)
-			.addComponent(progress)
     	);
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
@@ -122,8 +111,6 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 					.addComponent(typeNameSearchField)
 					.addComponent(periodSelectionField)
 					.addComponent(button)
-					.addComponent(spacer)
-					.addComponent(progress)
 		        )
         	)
     	);

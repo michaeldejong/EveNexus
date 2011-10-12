@@ -1,8 +1,6 @@
 package nl.minicom.evenexus.gui.panels.journals;
 
 
-import java.awt.Color;
-
 import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -12,6 +10,7 @@ import javax.swing.JScrollPane;
 import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
@@ -53,7 +52,8 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 		columnModel.initialize();
 		journalData.initialize();
 		table.initialize(journalData, columnModel);
-		
+
+		setBackground(GuiConstants.getTabBackground());
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		JPanel toolBar = createTopMenu();
@@ -92,7 +92,6 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	
 	private JPanel createTopMenu() {		
 		ToolBar toolBar = new ToolBar(settingsManager);
-		toolBar.setBackground(Color.WHITE);
 		
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_JOURNAL_PERIOD);
 		final ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));

@@ -6,6 +6,7 @@ import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
 import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
 import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
+import nl.minicom.evenexus.gui.panels.profit.InventoryProgressPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.ReportModule;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
@@ -43,6 +44,8 @@ public class GuiModule extends AbstractModule {
 		bind(MarketOrdersPanel.class).in(Singleton.class);
 		bind(ProfitPanel.class).in(Singleton.class);
 		bind(TransactionsPanel.class).in(Singleton.class);
+		
+		bind(InventoryProgressPanel.class).in(Singleton.class);
 		
 		bind(Translator.class).in(Singleton.class);
 		

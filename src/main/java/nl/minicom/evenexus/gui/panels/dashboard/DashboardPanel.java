@@ -12,10 +12,14 @@ import nl.minicom.evenexus.eveapi.ApiParser.Api;
 import nl.minicom.evenexus.eveapi.importers.ImportListener;
 import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.Gui;
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.tables.columns.GraphColumnSelectionFrame;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
+import nl.minicom.evenexus.inventory.InventoryEvent;
+import nl.minicom.evenexus.inventory.InventoryListener;
+import nl.minicom.evenexus.inventory.InventoryManager;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 import org.slf4j.Logger;
@@ -27,6 +31,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardPanel.class);
 	
 	private final ImportManager importManager;
+	private final InventoryManager inventoryManager;
 	private final SettingsManager settingsManager;
 	private final ProfitGraphElement profitGraphElement;
 	private final TaxesGraphElement taxesGraphElement;
@@ -36,6 +41,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 
 	@Inject
 	public DashboardPanel(ImportManager importManager,
+			InventoryManager inventoryManager,
 			SettingsManager settingsManager,
 			ProfitGraphElement profitGraphElement,
 			TaxesGraphElement taxesGraphElement,
@@ -45,6 +51,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 
 		this.settingsManager = settingsManager;
 		this.importManager = importManager;
+		this.inventoryManager = inventoryManager;
 		this.profitGraphElement = profitGraphElement;
 		this.taxesGraphElement = taxesGraphElement;
 		this.salesGraphElement = salesGraphElement;
@@ -62,7 +69,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 		chartPanel.reload();
 
 		Gui.setLookAndFeel();
-		setBackground(Color.WHITE);
+		setBackground(GuiConstants.getTabBackground());
 		ToolBar toolBar = createTopMenu();
         
 		GroupLayout layout = new GroupLayout(this);
@@ -86,6 +93,14 @@ public class DashboardPanel extends TabPanel implements ImportListener {
     	);
     	
     	importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);
+    	inventoryManager.addListener(new InventoryListener() {
+			@Override
+			public void onUpdate(InventoryEvent event) {
+				if (event.isFinished()) {
+					reloadTab();
+				}
+			}
+		});
 	}
 	
 	@Override
