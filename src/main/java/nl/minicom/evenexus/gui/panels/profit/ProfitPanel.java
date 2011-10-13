@@ -93,6 +93,7 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table);
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_PROFIT_PERIOD);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
+		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);
@@ -100,8 +101,11 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
         layout.setHorizontalGroup(
         	layout.createSequentialGroup()
 			.addComponent(typeNameSearchField)
+			.addGap(3)
 			.addComponent(periodSelectionField)
-			.addGap(7)
+			.addGap(3)
+			.addComponent(spacer)
+			.addGap(3)
 			.addComponent(button)
     	);
     	layout.setVerticalGroup(
@@ -110,6 +114,7 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 					.addComponent(typeNameSearchField)
 					.addComponent(periodSelectionField)
+					.addComponent(spacer)
 					.addComponent(button)
 		        )
         	)

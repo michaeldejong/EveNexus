@@ -3,7 +3,7 @@ package nl.minicom.evenexus.inventory;
 public class InventoryEvent {
 	
 	public static final String IDLE_MESSAGE = "Idle";
-	public static final String RUNNING_MESSAGE = "Running";
+	public static final String RUNNING_MESSAGE = "Parsing transactions...";
 	
 	public static final InventoryEvent STARTING = new InventoryEvent(false, RUNNING_MESSAGE, 0.0);
 	public static final InventoryEvent IDLE = new InventoryEvent(true, IDLE_MESSAGE, 0.0);

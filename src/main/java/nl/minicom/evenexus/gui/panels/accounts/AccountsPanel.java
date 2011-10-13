@@ -82,6 +82,7 @@ public class AccountsPanel extends JPanel {
         
         ToolBar toolBar = new ToolBar(settingsManager);
         ToolBarButton columnSelectButton = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(accountModel, table));
+        JPanel spacer = toolBar.createSpacer();
         
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);        
@@ -91,6 +92,8 @@ public class AccountsPanel extends JPanel {
     		.addGap(3)
     		.addComponent(deleteCharacter)
     		.addGap(3)
+    		.addComponent(spacer)
+    		.addGap(3)
     		.addComponent(columnSelectButton)
     	);
     	layout.setVerticalGroup(
@@ -98,6 +101,7 @@ public class AccountsPanel extends JPanel {
     		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(addCharacter)
 				.addComponent(deleteCharacter)
+				.addComponent(spacer)
 				.addComponent(columnSelectButton)
 			)
     	);

@@ -43,16 +43,16 @@ public class ToolBar extends JPanel {
 	public JPanel createTypeNameSearchField(final Table... tables) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
-		filterPanel.setMinimumSize(new Dimension(145, 51));
-		filterPanel.setMaximumSize(new Dimension(145, 51));
+		filterPanel.setMinimumSize(new Dimension(256, 51));
+		filterPanel.setMaximumSize(new Dimension(256, 51));
 		filterPanel.setLayout(null);
 	
 		JLabel itemName = new JLabel("Item name");
-		itemName.setBounds(0, 2, 140, GuiConstants.TEXT_FIELD_HEIGHT);
+		itemName.setBounds(0, 2, 251, GuiConstants.TEXT_FIELD_HEIGHT);
 		filterPanel.add(itemName);
 		
 		final JTextField itemField = new JTextField();
-		itemField.setBounds(0, 21, 140, GuiConstants.TEXT_FIELD_HEIGHT);
+		itemField.setBounds(0, 21, 251, GuiConstants.TEXT_FIELD_HEIGHT);
 		filterPanel.add(itemField);
 		itemField.addKeyListener(new KeyListener() {
 			@Override
@@ -78,12 +78,12 @@ public class ToolBar extends JPanel {
 	public JPanel createPeriodSelectionField(final Table table, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
-		filterPanel.setMinimumSize(new Dimension(130, 51));
-		filterPanel.setMaximumSize(new Dimension(130, 51));
+		filterPanel.setMinimumSize(new Dimension(206, 51));
+		filterPanel.setMaximumSize(new Dimension(206, 51));
 		filterPanel.setLayout(null);
 	
 		JLabel itemName = new JLabel("Show only the last");
-		itemName.setBounds(0, 2, 125, GuiConstants.COMBO_BOX_HEIGHT);
+		itemName.setBounds(0, 2, 201, GuiConstants.COMBO_BOX_HEIGHT);
 		filterPanel.add(itemName);
 		
 		Vector<String> dateList = new Vector<String>();
@@ -99,7 +99,7 @@ public class ToolBar extends JPanel {
 		dateValueList.add(IPeriodFilter.FOUR_WEEKS);
 		
 		final JComboBox dateField = new JComboBox(dateList);
-		dateField.setBounds(0, 21, 125, GuiConstants.COMBO_BOX_HEIGHT);
+		dateField.setBounds(0, 21, 201, GuiConstants.COMBO_BOX_HEIGHT);
 		
 		int days = settingsManager.loadInt(selectedPeriodSetting, 14);
 		((IPeriodFilter) table.getDataModel()).setPeriod(days);
@@ -127,15 +127,23 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 	
+	public JPanel createSpacer() {
+		JPanel panel = new JPanel();
+		panel.setMinimumSize(new Dimension(0, 51));
+		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 51));
+		panel.setBackground(GuiConstants.getTabBackground());
+		return panel;
+	}
+	
 	public JPanel createPeriodSelectionField(final LineGraphEngine chartPanel, final SettingsManager settingsManager, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
-		filterPanel.setMinimumSize(new Dimension(130, 51));
-		filterPanel.setMaximumSize(new Dimension(130, 51));
+		filterPanel.setMinimumSize(new Dimension(206, 51));
+		filterPanel.setMaximumSize(new Dimension(206, 51));
 		filterPanel.setLayout(null);
 	
 		JLabel itemName = new JLabel("Show only the last");
-		itemName.setBounds(0, 2, 125, 23);
+		itemName.setBounds(0, 2, 201, 23);
 		filterPanel.add(itemName);
 		
 		Vector<String> dateList = new Vector<String>();
@@ -151,7 +159,7 @@ public class ToolBar extends JPanel {
 		dateValueList.add(IPeriodFilter.EIGHT_WEEKS);
 		
 		final JComboBox dateField = new JComboBox(dateList);
-		dateField.setBounds(0, 21, 125, 23);
+		dateField.setBounds(0, 21, 201, 23);
 		
 		for (int i = 0; i < dateValueList.size(); i++) {
 			if (dateValueList.get(i).equals(settingsManager.loadInt(selectedPeriodSetting, 14))) {

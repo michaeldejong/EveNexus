@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.inject.Inject;
+import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -29,20 +30,49 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.FOLDED_STATUS_BAR));
 		setBackground(GuiConstants.APPLICATION_BACKGROUND_COLOR);
 		
+		JPanel spacer = new JPanel();
+		spacer.setMinimumSize(new Dimension(0, 0));
+		spacer.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.FOLDED_STATUS_BAR));
+		
 		label = new JLabel();
-		label.setBounds(4, 4, 128, GuiConstants.PROGRESS_BAR_HEIGHT);
+		label.setMinimumSize(new Dimension(128, GuiConstants.PROGRESS_BAR_HEIGHT));
+		label.setMaximumSize(new Dimension(128, GuiConstants.PROGRESS_BAR_HEIGHT));
 		add(label);
 		
 		progress = new JProgressBar();
-		progress.setBounds(132, 4, 125, GuiConstants.PROGRESS_BAR_HEIGHT);
+		progress.setMaximumSize(new Dimension(148, GuiConstants.PROGRESS_BAR_HEIGHT));
+		progress.setMinimumSize(new Dimension(148, GuiConstants.PROGRESS_BAR_HEIGHT));
 		progress.setForeground(new Color(0, 114, 186));
 		progress.setBackground(Color.WHITE);
 		add(progress);
 		
 		image = new JLabel();
-		image.setBounds(260, 6, 16, 16);
+		image.setMinimumSize(new Dimension(GuiConstants.PROGRESS_BAR_HEIGHT, GuiConstants.PROGRESS_BAR_HEIGHT));
+		image.setMaximumSize(new Dimension(GuiConstants.PROGRESS_BAR_HEIGHT, GuiConstants.PROGRESS_BAR_HEIGHT));
 		image.setIcon(Icon.getIcon("img/16/clock.png"));
 		add(image);
+		
+		GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);        
+        layout.setHorizontalGroup(
+        	layout.createSequentialGroup()
+	        	.addComponent(spacer)
+        		.addComponent(label)
+        		.addGap(5)
+        		.addComponent(progress)
+        		.addGap(5)
+        		.addComponent(image)
+        		.addGap(5)
+    	);
+    	layout.setVerticalGroup(
+    		layout.createSequentialGroup()
+	    		.addGroup(layout.createParallelGroup()
+	    				.addComponent(spacer)
+	            		.addComponent(label)
+	            		.addComponent(progress)
+	            		.addComponent(image)
+	    		)
+    	);
 		
 		onUpdate(InventoryEvent.IDLE);
 		
@@ -55,6 +85,8 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 	}
 	
 	private void setState(boolean enabled, String message, double percentage) {
+		setVisible(enabled);
+		
 		label.setText("Status: " + message);
 		label.setForeground(enabled ? Color.BLACK : Color.GRAY);
 		label.setVisible(enabled);

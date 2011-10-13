@@ -85,6 +85,8 @@ public class InventoryManager {
 					future.get();
 					finished++;
 					
+					Thread.sleep(1000);
+					
 					triggerEvent(new InventoryEvent(false, InventoryEvent.RUNNING_MESSAGE, (double) (finished / futures.size())));
 				} catch (Exception e) {
 					LOG.error(e.getLocalizedMessage(), e);

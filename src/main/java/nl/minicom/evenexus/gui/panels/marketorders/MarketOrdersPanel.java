@@ -109,6 +109,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 		ToolBar toolBar = new ToolBar(settingsManager);		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table1, table2);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table1, table2));
+		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);
@@ -116,7 +117,9 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 		layout.setHorizontalGroup(
         	layout.createSequentialGroup()
 			.addComponent(typeNameSearchField)
-			.addGap(7)
+			.addGap(3)
+			.addComponent(spacer)
+			.addGap(3)
 			.addComponent(button)
     	);
     	layout.setVerticalGroup(
@@ -124,6 +127,7 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
     		.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 					.addComponent(typeNameSearchField)
+					.addComponent(spacer)
 					.addComponent(button)
 		        )
         	)

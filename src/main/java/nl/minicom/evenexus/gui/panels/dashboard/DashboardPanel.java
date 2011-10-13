@@ -117,6 +117,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 		ToolBar toolBar = new ToolBar(settingsManager);
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(chartPanel, settingsManager, SettingsManager.FILTER_DASHBOARD_PERIOD);
 		ToolBarButton lineSelectionButton = toolBar.createTableSelectColumnsButton(new GraphColumnSelectionFrame(chartPanel));
+		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);
@@ -124,7 +125,9 @@ public class DashboardPanel extends TabPanel implements ImportListener {
         layout.setHorizontalGroup(
         	layout.createSequentialGroup()
         	.addComponent(periodSelectionField)
-        	.addGap(7)
+        	.addGap(3)
+        	.addComponent(spacer)
+        	.addGap(3)
         	.addComponent(lineSelectionButton)
     	);
     	layout.setVerticalGroup(
@@ -132,6 +135,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
     		.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 					.addComponent(periodSelectionField)
+					.addComponent(spacer)
 		        	.addComponent(lineSelectionButton)
 		        )
         	)

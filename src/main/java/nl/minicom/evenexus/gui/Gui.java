@@ -151,7 +151,7 @@ public class Gui extends JFrame {
 		pane.addTab("Market orders", marketOrderPanel);
 		pane.addTab("Profits", profitPanel);
 		pane.addTab("Accounts", accountsPanel);
-				
+		
 		GroupLayout layout = new GroupLayout(getContentPane());
         setLayout(layout);        
         layout.setHorizontalGroup(

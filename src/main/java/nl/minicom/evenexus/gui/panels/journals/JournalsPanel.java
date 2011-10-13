@@ -94,6 +94,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 		ToolBar toolBar = new ToolBar(settingsManager);
 		
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_JOURNAL_PERIOD);
+		JPanel spacer = toolBar.createSpacer();
 		final ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
 		
         GroupLayout layout = new GroupLayout(toolBar);
@@ -102,7 +103,9 @@ public class JournalsPanel extends TabPanel implements ImportListener {
         layout.setHorizontalGroup(
         	layout.createSequentialGroup()
         	.addComponent(periodSelectionField)
-    		.addGap(7)
+    		.addGap(3)
+    		.addComponent(spacer)
+    		.addGap(3)
     		.addComponent(button)
     	);
     	layout.setVerticalGroup(
@@ -110,6 +113,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
     		.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 					.addComponent(periodSelectionField)
+					.addComponent(spacer)
 					.addComponent(button)
 		        )
         	)
