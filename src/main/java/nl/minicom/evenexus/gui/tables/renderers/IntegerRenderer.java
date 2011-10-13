@@ -8,7 +8,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Locale;
 
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.NumberFormatter;
@@ -22,8 +21,14 @@ public class IntegerRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = -4703532359023302661L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(IntegerRenderer.class);
-	private static final AbstractFormatter FORMATTER = new NumberFormatter(new DecimalFormat("###,###,###,###,###,##0", DecimalFormatSymbols.getInstance(Locale.US)));
+	
+	private static final String FORMAT = "###,###,###,###,###,##0";
+	private static final DecimalFormatSymbols SYMBOLS = DecimalFormatSymbols.getInstance(Locale.US);
+	private static final NumberFormatter FORMATTER = new NumberFormatter(new DecimalFormat(FORMAT, SYMBOLS));
 
+	/**
+	 * This constructs a new {@link IntegerRenderer} object.
+	 */
 	public IntegerRenderer() {
 		setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
 	}

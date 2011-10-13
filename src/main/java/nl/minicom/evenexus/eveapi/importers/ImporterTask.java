@@ -157,8 +157,6 @@ public abstract class ImporterTask extends TimerTask {
 		return type.name();
 	}
 
-	public boolean isReady() {
-		return true;
-	}
+	public abstract boolean isReady();
 	
 }

@@ -44,9 +44,11 @@ public class ImportManager extends Timer {
 		this.listeners = HashMultimap.create();
 	}
 	
-	public synchronized void initialize() {
-		createCharacterImporters();
-		createGeneralImporters();
+	public void initialize() {
+		synchronized (this) {
+			createCharacterImporters();
+			createGeneralImporters();
+		}
 	}
 	
 	private void createGeneralImporters() {
@@ -66,35 +68,43 @@ public class ImportManager extends Timer {
 
 	@Transactional
 	@SuppressWarnings("unchecked")
-	protected synchronized void createCharacterImporters() {
-		Session session = database.getCurrentSession();
-		List<ApiKey> apiKeys = session.createCriteria(ApiKey.class).list();
-
-		for (ApiKey apiKey : apiKeys) {
-			addCharacterImporter(apiKey);
+	protected void createCharacterImporters() {
+		synchronized (this) {
+			Session session = database.getCurrentSession();
+			List<ApiKey> apiKeys = session.createCriteria(ApiKey.class).list();
+			
+			for (ApiKey apiKey : apiKeys) {
+				addCharacterImporter(apiKey);
+			}
 		}
 	}
 
-	public synchronized void addCharacterImporter(ApiKey apiKey) {
-		LOG.info("Scheduling importers for character: " + apiKey.getCharacterName());
-		CharacterImporter importer = characterImporterProvider.get();
-		importer.scheduleApiImporters(apiKey);
+	public void addCharacterImporter(ApiKey apiKey) {
+		synchronized (this) {
+			LOG.info("Scheduling importers for character: " + apiKey.getCharacterName());
+			CharacterImporter importer = characterImporterProvider.get();
+			importer.scheduleApiImporters(apiKey);
+		}
 	}
 
-	public synchronized void addListener(Api api, ImportListener listener) {
-		listeners.put(api, listener);
+	public void addListener(Api api, ImportListener listener) {
+		synchronized (this) {
+			listeners.put(api, listener);
+		}
 	}
 
-	protected synchronized void triggerImportCompleteEvent(Api api) {
-		for (final ImportListener listener : listeners.get(api)) {
-			Runnable runner = new Runnable() {
-				@Override
-				public void run() {
-					listener.onImportComplete();
-				}
-			};
-			
-			new Thread(runner).start();
+	protected void triggerImportCompleteEvent(Api api) {
+		synchronized (this) {
+			for (final ImportListener listener : listeners.get(api)) {
+				Runnable runner = new Runnable() {
+					@Override
+					public void run() {
+						listener.onImportComplete();
+					}
+				};
+				
+				new Thread(runner).start();
+			}
 		}
 	}
 	

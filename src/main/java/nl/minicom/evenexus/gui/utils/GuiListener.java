@@ -32,19 +32,28 @@ public class GuiListener implements ComponentListener, WindowStateListener, Wind
 	// WindowListener
 	
 	@Override
-	public void windowOpened(WindowEvent arg0) { }
+	public void windowOpened(WindowEvent arg0) {
+		// Do nothing.
+	}
 	
 	@Override
-	public void windowIconified(WindowEvent arg0) { }
+	public void windowIconified(WindowEvent arg0) {
+		// Do nothing.
+	}
 	
 	@Override
-	public void windowDeiconified(WindowEvent arg0) { }
+	public void windowDeiconified(WindowEvent arg0) {
+		// Do nothing.
+	}
 	
 	@Override
-	public void windowDeactivated(WindowEvent arg0) { }
+	public void windowDeactivated(WindowEvent arg0) {
+		// Do nothing.
+	}
 	
 	@Override
 	public void windowClosing(WindowEvent arg0) {
+		// Do nothing.
 	}
 	
 	@Override
@@ -53,12 +62,16 @@ public class GuiListener implements ComponentListener, WindowStateListener, Wind
 	}
 	
 	@Override
-	public void windowActivated(WindowEvent arg0) { }
+	public void windowActivated(WindowEvent arg0) {
+		// Do nothing.
+	}
 	
 	// ComponentListener
 
 	@Override
-	public void componentShown(ComponentEvent arg0) { }
+	public void componentShown(ComponentEvent arg0) {
+		// Do nothing.
+	}
 	
 	@Override
 	public void componentResized(ComponentEvent arg0) {
@@ -79,7 +92,9 @@ public class GuiListener implements ComponentListener, WindowStateListener, Wind
 	}
 	
 	@Override
-	public void componentHidden(ComponentEvent arg0) { }
+	public void componentHidden(ComponentEvent arg0) {
+		// Do nothing.
+	}
 	
 	// WindowStateListener
 	

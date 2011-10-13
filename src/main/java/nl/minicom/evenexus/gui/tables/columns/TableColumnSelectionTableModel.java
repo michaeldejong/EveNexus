@@ -25,7 +25,9 @@ public class TableColumnSelectionTableModel implements TableModel {
 	}
 	
 	@Override
-	public void removeTableModelListener(TableModelListener arg0) { }
+	public void removeTableModelListener(TableModelListener arg0) {
+		// Do nothing.
+	}
 	
 	@Override
 	public boolean isCellEditable(int row, int column) {

@@ -26,6 +26,7 @@ public class GraphColumnSelectionFrame extends ColumnSelectionFrame {
 				
 				@Override
 				public void removeTableModelListener(TableModelListener arg0) {
+					// Do nothing.
 				}
 				
 				@Override
@@ -75,6 +76,7 @@ public class GraphColumnSelectionFrame extends ColumnSelectionFrame {
 				
 				@Override
 				public void addTableModelListener(TableModelListener arg0) {
+					// Do nothing.
 				}
 		};
 	}

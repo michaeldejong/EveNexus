@@ -58,13 +58,13 @@ public class InventoryWorker implements Runnable {
 	}
 	
 	@Transactional
-	protected void revertMostRecentTransactionsIfRequired() {
+	void revertMostRecentTransactionsIfRequired() {
 		Session session = database.getCurrentSession();
 		
 		Timestamp timestamp = getEarliestMatchErrorTimestamp(session);
 		if (timestamp != null) {
 			List<TransactionMatch> matches = listInvalidMatches(timestamp, session);
-			LOG.info("Found " + matches.size() + " invalid TransactionMatches for type: " + typeId + ", now de-matching...");
+			LOG.info("Found " + matches.size() + " invalid matches for type: " + typeId + ", now de-matching...");
 			
 			for (TransactionMatch match : matches) {
 				WalletTransaction buy = (WalletTransaction) session.get(WalletTransaction.class, match.getBuyTransactionId());
@@ -78,12 +78,12 @@ public class InventoryWorker implements Runnable {
 				session.delete(match);
 			}
 			
-			LOG.info("Finished de-matching " + matches.size() + " invalid TransactionMatches for type: " + typeId + ".");
+			LOG.info("Finished de-matching " + matches.size() + " invalid matches for type: " + typeId + ".");
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected List<TransactionMatch> listInvalidMatches(Timestamp timestamp, Session session) {
+	private List<TransactionMatch> listInvalidMatches(Timestamp timestamp, Session session) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT ");
 		query.append("	m ");
@@ -105,7 +105,7 @@ public class InventoryWorker implements Runnable {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Timestamp getEarliestMatchErrorTimestamp(Session session) {
+	private Timestamp getEarliestMatchErrorTimestamp(Session session) {
 		List<WalletTransaction> transactions = session.createCriteria(WalletTransaction.class)
 				.add(Restrictions.eq(WalletTransaction.TYPE_ID, typeId))
 				.addOrder(Order.desc(WalletTransaction.TRANSACTION_DATE_TIME))
@@ -120,7 +120,7 @@ public class InventoryWorker implements Runnable {
 			Timestamp time = transaction.getTransactionDateTime();
 			if (transaction.isBuy()) {
 				if (buyTransactionsWithoutStock && transaction.getRemaining() > 0) {
-					result = result == null || time.before(result) ? time : result;
+					result = getEarliest(result, time);
 				}
 				else if (transaction.getRemaining() == 0) {
 					buyTransactionsWithoutStock = true;
@@ -128,7 +128,7 @@ public class InventoryWorker implements Runnable {
 			} 
 			else {
 				if (sellTransactionsWithoutStock && transaction.getRemaining() > 0) {
-					result = result == null || time.before(result) ? time : result;
+					result = getEarliest(result, time);
 				}
 				else if (transaction.getRemaining() == 0) {
 					sellTransactionsWithoutStock = true;
@@ -138,9 +138,16 @@ public class InventoryWorker implements Runnable {
 		
 		return result;
 	}
+	
+	private Timestamp getEarliest(Timestamp result, Timestamp time) {
+		if (result == null || time.before(result)) {
+			return time;
+		}
+		return result;
+	}
 
 	@Transactional
-	protected boolean match(Queue<WalletTransaction> buys, Queue<WalletTransaction> sales) {
+	boolean match(Queue<WalletTransaction> buys, Queue<WalletTransaction> sales) {
 		WalletTransaction buyTransaction = buys.peek();
 		WalletTransaction sellTransaction = sales.peek();
 		
@@ -199,7 +206,7 @@ public class InventoryWorker implements Runnable {
 	}
 
 	@Transactional
-	protected void persistTransactionMatch(WalletTransaction buyTransaction, WalletTransaction sellTransaction, long amount) {
+	void persistTransactionMatch(WalletTransaction buyTransaction, WalletTransaction sellTransaction, long amount) {
 		TransactionMatch match = new TransactionMatch();
 		match.setKey(new TransactionMatchIdentifier(buyTransaction.getTransactionId(), sellTransaction.getTransactionId()));
 		match.setQuantity(amount);
@@ -210,7 +217,7 @@ public class InventoryWorker implements Runnable {
 
 	@Transactional
 	@SuppressWarnings("unchecked")
-	protected Queue<WalletTransaction> queryRemainingBuyTransactions() {
+	Queue<WalletTransaction> queryRemainingBuyTransactions() {
 		Session session = database.getCurrentSession();
 		return new LinkedList<WalletTransaction>(
 				session.createCriteria(WalletTransaction.class)
@@ -224,7 +231,7 @@ public class InventoryWorker implements Runnable {
 	
 	@Transactional
 	@SuppressWarnings("unchecked")
-	protected Queue<WalletTransaction> queryRemainingSellTransactions() {
+	Queue<WalletTransaction> queryRemainingSellTransactions() {
 		Session session = database.getCurrentSession();
 		return new LinkedList<WalletTransaction>(
 				session.createCriteria(WalletTransaction.class)

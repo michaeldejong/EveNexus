@@ -56,7 +56,9 @@ public class ToolBar extends JPanel {
 		filterPanel.add(itemField);
 		itemField.addKeyListener(new KeyListener() {
 			@Override
-			public void keyTyped(KeyEvent arg0) { }
+			public void keyTyped(KeyEvent arg0) {
+				// Do nothing.
+			}
 			
 			@Override
 			public void keyReleased(KeyEvent arg0) {
@@ -69,7 +71,9 @@ public class ToolBar extends JPanel {
 			}
 			
 			@Override
-			public void keyPressed(KeyEvent arg0) { }
+			public void keyPressed(KeyEvent arg0) {
+				// Do nothing.
+			}
 		});
 		
 		return filterPanel;
@@ -127,7 +131,7 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 	
-	public JPanel createSpacer() {
+	public final JPanel createSpacer() {
 		JPanel panel = new JPanel();
 		panel.setMinimumSize(new Dimension(0, 51));
 		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 51));
@@ -135,7 +139,7 @@ public class ToolBar extends JPanel {
 		return panel;
 	}
 	
-	public JPanel createPeriodSelectionField(final LineGraphEngine chartPanel, final SettingsManager settingsManager, final String selectedPeriodSetting) {
+	public final JPanel createPeriodSelectionField(final LineGraphEngine chartPanel, final SettingsManager settingsManager, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
 		filterPanel.setMinimumSize(new Dimension(206, 51));
@@ -182,7 +186,7 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 
-	public ToolBarButton createTableSelectColumnsButton(final ColumnSelectionFrame columnSelectionFrame) {
+	public final ToolBarButton createTableSelectColumnsButton(final ColumnSelectionFrame columnSelectionFrame) {
 		ToolBarButton button = new ToolBarButton("img/32/add_column.png", "Show / hide columns");
 		button.addActionListener(new ActionListener() {
 			@Override

@@ -25,8 +25,20 @@ public class AccountTableDataModel implements ITableDataModel {
 	
 	@Override
 	public List<Object[]> reload() {
-		String sql = "SELECT keyid, verificationcode, characterid, charactername, corporationid, corporationname FROM apikeys ORDER BY charactername ASC";
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT ");
+		builder.append("	keyid, ");
+		builder.append("	verificationcode, ");
+		builder.append("	characterid, ");
+		builder.append("	charactername, ");
+		builder.append("	corporationid, ");
+		builder.append("	corporationname ");
+		builder.append("FROM ");
+		builder.append("	apikeys ");
+		builder.append("ORDER BY ");
+		builder.append("	charactername ASC");
 		
+		String sql = builder.toString();
 		List<Object[]> result = new ArrayList<Object[]>();
 		Session session = database.getCurrentSession();
 		SQLQuery query = session.createSQLQuery(sql);

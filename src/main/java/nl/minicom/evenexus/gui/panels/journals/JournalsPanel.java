@@ -23,7 +23,11 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This class is responsible for displaying all data related to journal entries.
+ *
+ * @author michael
+ */
 public class JournalsPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;
@@ -34,6 +38,21 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 	private final JournalTableDataModel journalData;
 	private final Table table;
 	
+	/**
+	 * This constructs a new {@link JournalsPanel} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param journalData
+	 * 		The {@link JournalTableDataModel} representing the data.
+	 * 
+	 * @param table
+	 * 		The Table which will display the data.
+	 */
 	@Inject
 	public JournalsPanel(SettingsManager settingsManager,
 			ImportManager importManager,
@@ -48,54 +67,61 @@ public class JournalsPanel extends TabPanel implements ImportListener {
     	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
 	}
 
-	public synchronized void initialize() {
-		columnModel.initialize();
-		journalData.initialize();
-		table.initialize(journalData, columnModel);
-
-		setBackground(GuiConstants.getTabBackground());
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		JPanel toolBar = createTopMenu();
-        
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);        
-        layout.setHorizontalGroup(
-        	layout.createSequentialGroup()
-        		.addGap(7)
-        		.addGroup(layout.createParallelGroup(Alignment.LEADING)
-       				.addComponent(scrollPane)
-       				.addComponent(toolBar)
-        		)
-				.addGap(7)
-    	);
-    	layout.setVerticalGroup(
-    		layout.createSequentialGroup()
-	    		.addGap(5)
-	    		.addComponent(toolBar)
-	    		.addGap(7)
-	    		.addComponent(scrollPane)
-	    		.addGap(7)
-    	);
+	public void initialize() {
+		synchronized (this) {
+			columnModel.initialize();
+			journalData.initialize();
+			table.initialize(journalData, columnModel);
+			
+			setBackground(GuiConstants.getTabBackground());
+			JScrollPane scrollPane = new JScrollPane(table);
+			scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+			JPanel toolBar = createTopMenu();
+			
+			GroupLayout layout = new GroupLayout(this);
+			setLayout(layout);        
+			layout.setHorizontalGroup(
+					layout.createSequentialGroup()
+					.addGap(7)
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+							.addComponent(scrollPane)
+							.addComponent(toolBar)
+							)
+							.addGap(7)
+					);
+			layout.setVerticalGroup(
+					layout.createSequentialGroup()
+					.addGap(5)
+					.addComponent(toolBar)
+					.addGap(7)
+					.addComponent(scrollPane)
+					.addGap(7)
+					);
+		}
 	}
 	
 	@Override
-	public synchronized void onImportComplete() {
-		reloadTab();
+	public void onImportComplete() {
+		synchronized (this) {
+			reloadTab();
+		}
 	}
 
 	@Override
-	public synchronized void reloadTab() {
-		table.reload();
-		LOG.info("Journal panel reloaded!");
+	public void reloadTab() {
+		synchronized (this) {
+			table.reload();
+			LOG.info("Journal panel reloaded!");
+		}
 	}
 	
 	private JPanel createTopMenu() {		
 		ToolBar toolBar = new ToolBar(settingsManager);
 		
+		TableColumnSelectionFrame columnSelectionFrame = new TableColumnSelectionFrame(columnModel, table);
 		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_JOURNAL_PERIOD);
+		final ToolBarButton button = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
 		JPanel spacer = toolBar.createSpacer();
-		final ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
 		
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);

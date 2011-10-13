@@ -47,20 +47,20 @@ public class TaxesGraphElement implements GraphElement {
 	public void reload() {
 		Session session = database.getCurrentSession();
 		
-		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("SELECT ");
-		queryBuilder.append("	ABS(SUM(quantity * taxes)), ");
-		queryBuilder.append("	day ");
-		queryBuilder.append("FROM (");
-		queryBuilder.append("	SELECT ");
-		queryBuilder.append("		" + WalletTransaction.QUANTITY + " AS quantity, ");
-		queryBuilder.append("		" + WalletTransaction.TAXES + " AS taxes, ");
-		queryBuilder.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + WalletTransaction.TRANSACTION_DATE_TIME + ") AS day ");
-		queryBuilder.append("	FROM transactions ");
-		queryBuilder.append("	WHERE " + WalletTransaction.TRANSACTION_DATE_TIME + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ");
-		queryBuilder.append(") ");
-		queryBuilder.append("GROUP BY day ");
-		queryBuilder.append("ORDER BY day ASC");
+		StringBuilder queryBuilder = new StringBuilder()
+		.append("SELECT ")
+		.append("	ABS(SUM(quantity * taxes)), ")
+		.append("	day ")
+		.append("FROM (")
+		.append("	SELECT ")
+		.append("		" + WalletTransaction.QUANTITY + " AS quantity, ")
+		.append("		" + WalletTransaction.TAXES + " AS taxes, ")
+		.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + WalletTransaction.TRANSACTION_DATE_TIME + ") AS day ")
+		.append("	FROM transactions ")
+		.append("	WHERE " + WalletTransaction.TRANSACTION_DATE_TIME + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
+		.append(") ")
+		.append("GROUP BY day ")
+		.append("ORDER BY day ASC");
 		
 		SQLQuery query = session.createSQLQuery(queryBuilder.toString());
 		query.setLong(0, -28);

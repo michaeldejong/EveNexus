@@ -24,6 +24,8 @@ public class RefTypeImporter extends ImporterTask {
 	private static final Logger LOG = LoggerFactory.getLogger(RefTypeImporter.class);
 	
 	private final BugReportDialog dialog;
+	
+	private volatile boolean isReady = true;
 
 	@Inject
 	public RefTypeImporter(
@@ -39,9 +41,13 @@ public class RefTypeImporter extends ImporterTask {
 
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
-		final Node root = node.get("result").get("rowset");
-		for (int i = root.size() - 1; i >= 0; i--) {
-			processRow(root, i);
+		synchronized (this) {
+			isReady = false;
+			final Node root = node.get("result").get("rowset");
+			for (int i = root.size() - 1; i >= 0; i--) {
+				processRow(root, i);
+			}
+			isReady = true;
 		}
 	}
 
@@ -55,7 +61,7 @@ public class RefTypeImporter extends ImporterTask {
 	}
 
 	@Transactional
-	protected void persistChangeData(Node row) {
+	void persistChangeData(Node row) {
 		try {			
 			long refTypeId = Long.parseLong(row.getAttribute("refTypeID"));
 			String refTypeName = row.getAttribute("refTypeName");	
@@ -69,6 +75,13 @@ public class RefTypeImporter extends ImporterTask {
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			dialog.setVisible(true);
+		}
+	}
+
+	@Override
+	public boolean isReady() {
+		synchronized (this) {
+			return isReady;
 		}
 	}
 }

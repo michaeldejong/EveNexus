@@ -28,6 +28,8 @@ public class StandingImporter extends ImporterTask {
 	
 	private final BugReportDialog dialog;
 
+	private volatile boolean isReady = true;
+	
 	@Inject
 	public StandingImporter(
 			Database database, 
@@ -42,17 +44,21 @@ public class StandingImporter extends ImporterTask {
 
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
-		final Node root = node.get("result").get("characterNPCStandings");
-		long characterId = apiKey.getCharacterId();
-		for (int j = 0; j < root.size(); j++) {
-			if (root.get(j) instanceof Node) {
-				Node subNode = (Node) root.get(j);
-				if (subNode.getTag().equals("rowset")) {
-					for (int i = subNode.size() - 1; i >= 0; i--) {
-						processRow(subNode, i, characterId);
+		synchronized (this) {
+			isReady = false;
+			final Node root = node.get("result").get("characterNPCStandings");
+			long characterId = apiKey.getCharacterId();
+			for (int j = 0; j < root.size(); j++) {
+				if (root.get(j) instanceof Node) {
+					Node subNode = (Node) root.get(j);
+					if (subNode.getTag().equals("rowset")) {
+						for (int i = subNode.size() - 1; i >= 0; i--) {
+							processRow(subNode, i, characterId);
+						}
 					}
 				}
 			}
+			isReady = true;
 		}
 	}
 
@@ -66,7 +72,7 @@ public class StandingImporter extends ImporterTask {
 	}
 
 	@Transactional
-	protected void persistChangeData(Node row, long characterId) {
+	void persistChangeData(Node row, long characterId) {
 		try {			
 			long fromId = Long.parseLong(row.getAttribute("fromID"));
 			String fromName = row.getAttribute("fromName");
@@ -85,4 +91,12 @@ public class StandingImporter extends ImporterTask {
 			dialog.setVisible(true);
 		}
 	}
+
+	@Override
+	public boolean isReady() {
+		synchronized (this) {
+			return isReady;
+		}
+	}
+	
 }

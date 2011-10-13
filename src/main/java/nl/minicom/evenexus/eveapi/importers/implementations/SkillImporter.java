@@ -25,6 +25,8 @@ public class SkillImporter extends ImporterTask {
 	private static final Logger LOG = LoggerFactory.getLogger(SkillImporter.class);
 	
 	private final BugReportDialog dialog;
+	
+	private volatile boolean isReady = true;
 
 	@Inject
 	public SkillImporter(
@@ -40,16 +42,20 @@ public class SkillImporter extends ImporterTask {
 
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
-		final Node root = node.get("result");
-		for (int j = 0; j < root.size(); j++) {
-			if (root.get(j) instanceof Node) {
-				Node subNode = (Node) root.get(j);
-				if (subNode.getTag().equals("rowset") && subNode.getAttribute("name").equals("skills")) {
-					for (int i = subNode.size() - 1; i >= 0; i--) {
-						processRow(subNode, i, apiKey);
+		synchronized (this) {
+			isReady = false;
+			final Node root = node.get("result");
+			for (int j = 0; j < root.size(); j++) {
+				if (root.get(j) instanceof Node) {
+					Node subNode = (Node) root.get(j);
+					if (subNode.getTag().equals("rowset") && subNode.getAttribute("name").equals("skills")) {
+						for (int i = subNode.size() - 1; i >= 0; i--) {
+							processRow(subNode, i, apiKey);
+						}
 					}
 				}
 			}
+			isReady = true;
 		}
 	}
 
@@ -63,7 +69,7 @@ public class SkillImporter extends ImporterTask {
 	}
 
 	@Transactional
-	protected void persistChangeData(Node row, ApiKey apiKey) {
+	void persistChangeData(Node row, ApiKey apiKey) {
 		try {			
 			long typeId = Long.parseLong(row.getAttribute("typeID"));
 			int level = Integer.parseInt(row.getAttribute("level")); 
@@ -78,6 +84,13 @@ public class SkillImporter extends ImporterTask {
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			dialog.setVisible(true);
+		}
+	}
+
+	@Override
+	public boolean isReady() {
+		synchronized (this) {
+			return isReady;
 		}
 	}
 

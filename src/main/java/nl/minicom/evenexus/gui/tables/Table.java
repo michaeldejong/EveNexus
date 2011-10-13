@@ -46,27 +46,29 @@ public class Table extends JTable {
 		this.dialog = dialog;
 	}
 	
-	public synchronized void initialize(ITableDataModel tableDataModel, ColumnModel columns) {
-		if (isInitialized) {
-			throw new IllegalStateException("Table was already initialized!");
+	public void initialize(ITableDataModel tableDataModel, ColumnModel columns) {
+		synchronized (this) {
+			if (isInitialized) {
+				throw new IllegalStateException("Table was already initialized!");
+			}
+			
+			this.tableDataModel = tableDataModel;
+			this.columnModel = columns;
+			this.isInitialized = true;
+			
+			setRowHeight(21);		
+			getTableHeader().setReorderingAllowed(false);
+			setFillsViewportHeight(true);
+			setSelectionBackground(new Color(51, 153, 255));
+			setGridColor(new Color(223, 223, 223));
+			
+			reload();
+			setModel(createTableModel());		
+			updateColumns();
+			setAutoCreateRowSorter(true);
+			
+			getColumnModel().addColumnModelListener(new TableColumnResizeModelListener(columnModel));
 		}
-		
-		this.tableDataModel = tableDataModel;
-		this.columnModel = columns;
-		this.isInitialized = true;
-
-		setRowHeight(21);		
-		getTableHeader().setReorderingAllowed(false);
-		setFillsViewportHeight(true);
-		setSelectionBackground(new Color(51, 153, 255));
-		setGridColor(new Color(223, 223, 223));
-		
-		reload();
-		setModel(createTableModel());		
-		updateColumns();
-		setAutoCreateRowSorter(true);
-		
-		getColumnModel().addColumnModelListener(new TableColumnResizeModelListener(columnModel));
 	}
 	
 	private void updateColumns() {		
@@ -123,34 +125,36 @@ public class Table extends JTable {
 		}
 	}
 	
-	public synchronized final void reload() {
-		if (!isInitialized) {
-			return;
-		}
-		
-		try {
-			data.clear();
-			String[] fields = tableDataModel.getFields();
-			List<Object[]> values = tableDataModel.reload();
-			for (Object[] value : values) {
-				Map<String, Object> row = new TreeMap<String, Object>();
-				for (int i = 0; i < columnModel.getSize(); i++) {
-					Column column = columnModel.get(i);
-					int index = indexOf(fields, column.getColumn());
-					if (index >= 0) {
-						row.put(column.getName(), value[index]);
-					}
-				}
-				data.add(row);
+	public final void reload() {
+		synchronized (this) {
+			if (!isInitialized) {
+				return;
 			}
 			
-			updateColumns();
-			revalidate();
-			repaint();
-		}
-		catch (Exception e) {
-			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
+			try {
+				data.clear();
+				String[] fields = tableDataModel.getFields();
+				List<Object[]> values = tableDataModel.reload();
+				for (Object[] value : values) {
+					Map<String, Object> row = new TreeMap<String, Object>();
+					for (int i = 0; i < columnModel.getSize(); i++) {
+						Column column = columnModel.get(i);
+						int index = indexOf(fields, column.getColumn());
+						if (index >= 0) {
+							row.put(column.getName(), value[index]);
+						}
+					}
+					data.add(row);
+				}
+				
+				updateColumns();
+				revalidate();
+				repaint();
+			}
+			catch (Exception e) {
+				LOG.error(e.getLocalizedMessage(), e);
+				dialog.setVisible(true);
+			}
 		}
 	}
 	
@@ -164,25 +168,29 @@ public class Table extends JTable {
 		return -1;
 	}
 	
-	public synchronized final ScrollableResults getSelectedResultRow() {
-		try {
-			result.setRowNumber(getSelectedRow());
+	public final ScrollableResults getSelectedResultRow() {
+		synchronized (this) {
+			try {
+				result.setRowNumber(getSelectedRow());
+			}
+			catch (Exception e) {
+				LOG.error(e.getLocalizedMessage(), e);
+				dialog.setVisible(true);
+			}
+			return result;
 		}
-		catch (Exception e) {
-			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
-		}
-		return result;
 	}
 
-	public synchronized void delete(int selectedIndex) {
-		try {
-			result.setRowNumber(selectedIndex);
-			// TODO : remove...
-		}
-		catch (Exception e) {
-			LOG.error(e.getLocalizedMessage(), e);
-			dialog.setVisible(true);
+	public void delete(int selectedIndex) {
+		synchronized (this) {
+			try {
+				result.setRowNumber(selectedIndex);
+				// TODO : remove...
+			}
+			catch (Exception e) {
+				LOG.error(e.getLocalizedMessage(), e);
+				dialog.setVisible(true);
+			}
 		}
 	}
 	
@@ -192,10 +200,12 @@ public class Table extends JTable {
 			
 			@Override
 			public void setValueAt(Object arg0, int arg1, int arg2) {
+				// Do nothing.
 			}
 			
 			@Override
 			public void removeTableModelListener(TableModelListener arg0) {
+				// Do nothing.
 			}
 			
 			@Override
@@ -247,16 +257,21 @@ public class Table extends JTable {
 			
 			@Override
 			public void addTableModelListener(TableModelListener arg0) {
+				// Do nothing.
 			}
 		};
 	}
 
-	public synchronized ITableDataModel getDataModel() {
-		return tableDataModel;
+	public ITableDataModel getDataModel() {
+		synchronized (this) {
+			return tableDataModel;
+		}
 	}
 
-	public synchronized ColumnModel getColumns() {
-		return columnModel;
+	public ColumnModel getColumns() {
+		synchronized (this) {
+			return columnModel;
+		}
 	}
 	
 }

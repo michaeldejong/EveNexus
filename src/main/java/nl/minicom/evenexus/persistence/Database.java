@@ -27,24 +27,28 @@ public class Database {
 		}
 	}
 	
-	public synchronized Session getCurrentSession() {
-		ensureInitialized();
-		Session session = sessionMapping.get(Thread.currentThread());
-		if (session == null || !session.isOpen()) {
-			session = sessionFactory.openSession();
-			sessionMapping.put(Thread.currentThread(), session);
+	public Session getCurrentSession() {
+		synchronized (this) {
+			ensureInitialized();
+			Session session = sessionMapping.get(Thread.currentThread());
+			if (session == null || !session.isOpen()) {
+				session = sessionFactory.openSession();
+				sessionMapping.put(Thread.currentThread(), session);
+			}
+			
+			return session;
 		}
-		
-		return session;
 	}
 	
-	public synchronized void closeCurrentSession() {
-		Session session = sessionMapping.get(Thread.currentThread());
-		if (session != null) {
-			if (session.isOpen()) {
-				session.close();
+	public void closeCurrentSession() {
+		synchronized (this) {
+			Session session = sessionMapping.get(Thread.currentThread());
+			if (session != null) {
+				if (session.isOpen()) {
+					session.close();
+				}
+				sessionMapping.remove(Thread.currentThread());
 			}
-			sessionMapping.remove(Thread.currentThread());
 		}
 	}
 	

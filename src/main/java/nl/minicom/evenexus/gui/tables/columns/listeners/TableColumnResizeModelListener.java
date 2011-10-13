@@ -31,18 +31,22 @@ public class TableColumnResizeModelListener implements TableColumnModelListener 
 	
 	@Override
 	public void columnAdded(TableColumnModelEvent e) {
+		// Do nothing.
 	}
 	
 	@Override
 	public void columnSelectionChanged(ListSelectionEvent e) {
+		// Do nothing.
 	}
 	
 	@Override
 	public void columnRemoved(TableColumnModelEvent e) {
+		// Do nothing.
 	}
 	
 	@Override
 	public void columnMoved(TableColumnModelEvent e) {
+		// Do nothing.
 	}
 
 }

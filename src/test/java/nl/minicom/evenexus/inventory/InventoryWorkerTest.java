@@ -23,14 +23,13 @@ import com.google.inject.Injector;
 
 public class InventoryWorkerTest {
 	
-	private RevisionExecutor executor;
 	private Provider<InventoryWorker> workerProvider;
 	private InventoryTestCasePreparer preparer;
 	
 	@Before
 	public void setup() {
 		Injector injector = Guice.createInjector(new TestModule());
-		executor = injector.getInstance(RevisionExecutor.class);
+		RevisionExecutor executor = injector.getInstance(RevisionExecutor.class);
 		workerProvider = injector.getProvider(InventoryWorker.class);
 		preparer = injector.getInstance(InventoryTestCasePreparer.class);
 

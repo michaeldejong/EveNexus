@@ -50,46 +50,55 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		importManager.addListener(Api.CHAR_WALLET_TRANSACTIONS, this);
 	}
 	
-	public synchronized void initialize() {
-		columnModel.initialize();
-		tableDataModel.initialize();
-		table.initialize(tableDataModel, columnModel);
-
-		setBackground(GuiConstants.getTabBackground());
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		ToolBar panel = createTopMenu();
-		        
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);        
-        layout.setHorizontalGroup(
-        	layout.createSequentialGroup()
-        		.addGap(7)
-        		.addGroup(layout.createParallelGroup(Alignment.TRAILING)
-        			.addComponent(panel)
-        			.addComponent(scrollPane)
-        		)
-				.addGap(7)
-    	);
-    	layout.setVerticalGroup(
-    		layout.createSequentialGroup()
-	    		.addGap(5)
-    			.addComponent(panel)
-	    		.addGap(7)
-    			.addComponent(scrollPane)
-	    		.addGap(7)
-    	);
+	/**
+	 * This method initializes this {@link TransactionsPanel} object.
+	 */
+	public void initialize() {
+		synchronized (this) {
+			columnModel.initialize();
+			tableDataModel.initialize();
+			table.initialize(tableDataModel, columnModel);
+			
+			setBackground(GuiConstants.getTabBackground());
+			JScrollPane scrollPane = new JScrollPane(table);
+			scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+			ToolBar panel = createTopMenu();
+			
+			GroupLayout layout = new GroupLayout(this);
+			setLayout(layout);        
+			layout.setHorizontalGroup(
+					layout.createSequentialGroup()
+					.addGap(7)
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+							.addComponent(panel)
+							.addComponent(scrollPane)
+							)
+							.addGap(7)
+					);
+			layout.setVerticalGroup(
+					layout.createSequentialGroup()
+					.addGap(5)
+					.addComponent(panel)
+					.addGap(7)
+					.addComponent(scrollPane)
+					.addGap(7)
+					);
+		}
 	}
 	
 	@Override
-	public synchronized void onImportComplete() {
-		reloadTab();
+	public void onImportComplete() {
+		synchronized (this) {
+			reloadTab();
+		}
 	}
 
 	@Override
-	public synchronized void reloadTab() {
-		table.reload();
-		LOG.info("Transaction panel reloaded!");
+	public void reloadTab() {
+		synchronized (this) {
+			table.reload();
+			LOG.info("Transaction panel reloaded!");
+		}
 	}
 
 	private ToolBar createTopMenu() {

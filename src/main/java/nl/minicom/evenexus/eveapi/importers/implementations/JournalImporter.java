@@ -30,6 +30,8 @@ public class JournalImporter extends ImporterTask {
 	
 	private final BugReportDialog dialog;
 	
+	private volatile boolean isReady = true; 
+	
 	@Inject
 	public JournalImporter(
 			Database database, 
@@ -44,16 +46,20 @@ public class JournalImporter extends ImporterTask {
 
 	@Override
 	public void parseApi(Node root, ApiKey apiKey) {
-		int inserted = 0;
-		
-		final Node node = root.get("result").get("rowset");
-		for (int i = node.size() - 1; i >= 0; i--) {
-			if (processRow(node, i)) {
-				inserted++;
+		synchronized (this) {
+			isReady = false;
+			
+			int inserted = 0;
+			final Node node = root.get("result").get("rowset");
+			for (int i = node.size() - 1; i >= 0; i--) {
+				if (processRow(node, i)) {
+					inserted++;
+				}
 			}
+			
+			LOG.info("Inserted " + inserted + " new journal entries.");
+			isReady = true;
 		}
-		
-		LOG.info("Inserted " + inserted + " new journal entries.");
 	}
 
 	private boolean processRow(Node root, int i) {
@@ -68,7 +74,7 @@ public class JournalImporter extends ImporterTask {
 	}
 
 	@Transactional
-	protected boolean persistChangeData(Node row) {
+	boolean persistChangeData(Node row) {
 		Session session = getDatabase().getCurrentSession();
 		
 		try {			
@@ -134,5 +140,12 @@ public class JournalImporter extends ImporterTask {
 			taxReceiverId = Long.parseLong(taxReceiverIdString);
 		}
 		return taxReceiverId;
+	}
+
+	@Override
+	public boolean isReady() {
+		synchronized (this) {
+			return isReady;
+		}
 	}
 }

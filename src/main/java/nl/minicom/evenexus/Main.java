@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class Main {
+public final class Main {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 	
@@ -45,6 +45,10 @@ public class Main {
 		frame.dispose();
 		
 		application.initializeGui();
+	}
+	
+	private Main() {
+		// Prevent instantiation.
 	}
 	
 }

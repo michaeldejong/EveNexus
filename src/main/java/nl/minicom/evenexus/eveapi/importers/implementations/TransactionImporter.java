@@ -98,7 +98,7 @@ public class TransactionImporter extends ImporterTask {
 	}
 
 	@Transactional
-	protected boolean persistChangeData(Node row, ApiKey apiKey, int brokerRelation, int accounting) {
+	boolean persistChangeData(Node row, ApiKey apiKey, int brokerRelation, int accounting) {
 		Session session = getDatabase().getCurrentSession();
 
 		try {

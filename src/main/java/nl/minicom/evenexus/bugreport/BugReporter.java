@@ -19,6 +19,11 @@ import com.github.api.v2.services.GitHubServiceFactory;
 import com.github.api.v2.services.IssueService;
 import com.github.api.v2.services.auth.LoginTokenAuthentication;
 
+/**
+ * This class is responsible for reporting bugs to the GitHub bug repo.
+ *
+ * @author michael
+ */
 @Singleton
 public class BugReporter {
 	
@@ -31,11 +36,32 @@ public class BugReporter {
 
 	private final Database database;
 	
+	/**
+	 * This constructs a new {@link BugReporter} object.
+	 * 
+	 * @param database
+	 * 		A reference to the {@link Database}.
+	 */
 	@Inject
 	BugReporter(Database database) {
 		this.database = database;
 	}
 	
+	/**
+	 * This method creates a new GitHub issue.
+	 * 
+	 * @param title
+	 * 		The title of the issue.
+	 * 
+	 * @param message
+	 * 		The message of the issue.
+	 * 
+	 * @return
+	 * 		The number of the issue which was just created.
+	 * 
+	 * @throws Exception
+	 * 		If for some reason we could not create a new GitHub issue.
+	 */
 	public int createNewIssue(String title, String message) throws Exception {
 		IssueService service = createService();
 		createNewIssue(title, message, service);
@@ -62,7 +88,7 @@ public class BugReporter {
 	}
 
 	@Transactional
-	protected void persistIssue(int issueNumber) {
+	void persistIssue(int issueNumber) {
 		Session session = database.getCurrentSession();
 		BugReport report = new BugReport();
 		report.setIssueNumber(issueNumber);

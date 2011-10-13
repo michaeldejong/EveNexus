@@ -227,29 +227,35 @@ layout.setHorizontalGroup(
 		if (ApiParser.isAvailable(root)) {
 			Node node = root.get("result").get("key");
 			if (node != null) {
-				int mask = Integer.parseInt(node.getAttribute("accessMask"));
-				
-				boolean transactions = (mask & AccessMask.WALLET_TRANSACTIONS.getAccessMask()) != 0; 
-				boolean journals = (mask & AccessMask.WALLET_JOURNAL.getAccessMask()) != 0; 
-				boolean orders = (mask & AccessMask.MARKET_ORDERS.getAccessMask()) != 0; 
-				boolean characterSheet = (mask & AccessMask.CHARACTER_SHEET.getAccessMask()) != 0; 
-				boolean standings = (mask & AccessMask.STANDINGS.getAccessMask()) != 0; 
-				
-				if (transactions && journals && orders && characterSheet && standings) {
-					Node subNode = node.get("rowset");
-					for (int i = 0; i < subNode.size(); i++) {
-						EveCharacter character = processRow(subNode, i, keyId, vCode);
-						if (character != null) {
-							characters.add(character);
-						}
-					}
-				}
-				else {
-					throw new SecurityNotHighEnoughException();
-				}
+				processKey(keyId, vCode, characters, node);
 			}
 		}
 		return characters;
+	}
+
+	private void processKey(long keyId, String vCode, List<EveCharacter> characters, Node node) throws 
+			SQLException, SecurityNotHighEnoughException {
+		
+		int mask = Integer.parseInt(node.getAttribute("accessMask"));
+		
+		boolean transactions = (mask & AccessMask.WALLET_TRANSACTIONS.getAccessMask()) != 0; 
+		boolean journals = (mask & AccessMask.WALLET_JOURNAL.getAccessMask()) != 0; 
+		boolean orders = (mask & AccessMask.MARKET_ORDERS.getAccessMask()) != 0; 
+		boolean characterSheet = (mask & AccessMask.CHARACTER_SHEET.getAccessMask()) != 0; 
+		boolean standings = (mask & AccessMask.STANDINGS.getAccessMask()) != 0; 
+		
+		if (transactions && journals && orders && characterSheet && standings) {
+			Node subNode = node.get("rowset");
+			for (int i = 0; i < subNode.size(); i++) {
+				EveCharacter character = processRow(subNode, i, keyId, vCode);
+				if (character != null) {
+					characters.add(character);
+				}
+			}
+		}
+		else {
+			throw new SecurityNotHighEnoughException();
+		}
 	}		
 
 	private EveCharacter processRow(Node root, int index, long keyId, String vCode) throws SQLException {
@@ -297,7 +303,7 @@ layout.setHorizontalGroup(
 	}
 	
 	
-	public enum AccessMask{
+	public enum AccessMask {
 		ACCOUNT_BALANCE(1),
 		ASSET_LIST(2),
 		CALENDAR_EVENT_ATTENDEES(4),

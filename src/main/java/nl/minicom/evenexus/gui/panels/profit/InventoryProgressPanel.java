@@ -74,21 +74,29 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 	    		)
     	);
 		
-		onUpdate(InventoryEvent.IDLE);
+    	setState(false, null, 0.0);
 		
 		inventoryManager.addListener(this);
 	}
 
 	@Override
-	public synchronized void onUpdate(InventoryEvent event) {
-		setState(!event.isFinished(), event.getState(), event.getProgress());
+	public void onUpdate(InventoryEvent event) {
+		synchronized (this) {
+			setState(!event.isFinished(), event.getState(), event.getProgress());
+		}
 	}
 	
 	private void setState(boolean enabled, String message, double percentage) {
 		setVisible(enabled);
 		
+		if (enabled) {
+			label.setForeground(Color.BLACK);
+		}
+		else {
+			label.setForeground(Color.GRAY);
+		}
+		
 		label.setText("Status: " + message);
-		label.setForeground(enabled ? Color.BLACK : Color.GRAY);
 		label.setVisible(enabled);
 		
 		progress.setMinimum(0);

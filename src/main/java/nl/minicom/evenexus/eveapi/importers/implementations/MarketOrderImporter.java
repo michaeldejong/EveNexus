@@ -29,6 +29,8 @@ public class MarketOrderImporter extends ImporterTask {
 	
 	private final BugReportDialog dialog;
 	
+	private volatile boolean isReady = true;
+	
 	@Inject
 	public MarketOrderImporter(
 			Database database, 
@@ -43,10 +45,14 @@ public class MarketOrderImporter extends ImporterTask {
 
 	@Override
 	public void parseApi(Node node, ApiKey apiKey) {
-		final Node root = node.get("result").get("rowset");
-		MarketOrder.markAllActiveAsExpired(apiKey.getCharacterId());
-		for (int i = root.size() - 1; i >= 0; i--) {
-			processRow(root, i);
+		synchronized (this) {
+			isReady = false;
+			final Node root = node.get("result").get("rowset");
+			MarketOrder.markAllActiveAsExpired(apiKey.getCharacterId());
+			for (int i = root.size() - 1; i >= 0; i--) {
+				processRow(root, i);
+			}
+			isReady = true;
 		}
 	}
 
@@ -60,7 +66,7 @@ public class MarketOrderImporter extends ImporterTask {
 	}
 
 	@Transactional
-	protected void persistChangeData(Node row) {
+	void persistChangeData(Node row) {
 		try {
 			long orderId = Long.parseLong(row.getAttribute("orderID"));
 			
@@ -86,6 +92,13 @@ public class MarketOrderImporter extends ImporterTask {
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			dialog.setVisible(true);
+		}
+	}
+
+	@Override
+	public boolean isReady() {
+		synchronized (this) {
+			return isReady;
 		}
 	}
 

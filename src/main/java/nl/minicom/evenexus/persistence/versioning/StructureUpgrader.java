@@ -752,23 +752,27 @@ public class StructureUpgrader extends RevisionCollection {
 		// new view for profits
 		super.registerRevision(new Revision(192) {
 			public void execute(Session session) {
-				StringBuilder builder = new StringBuilder();
-				builder.append("CREATE OR REPLACE VIEW profits (buyTransactionId, sellTransactionId, typeId, typeName, ");
-				builder.append("	date, quantity, buyPrice, sellPrice, taxes, grossProfit, netProfit, totalTaxes, ");
-				builder.append("	totalGrossProfit, totalNetProfit, percentalGrossProfit, percentalNetProfit) ");
-				builder.append("AS SELECT b.transactionId, s.transactionId, s.typeId, s.typeName, s.transactionDateTime, ");
-				builder.append("	tm.quantity, b.price, s.price, (b.taxes + s.taxes) AS taxes, ");
-				builder.append("	(b.price + s.price) AS grossProfit, ");
-				builder.append("	(b.price + s.price + b.taxes + s.taxes) AS netProfit, ");
-				builder.append("	(b.taxes + s.taxes) * tm.quantity AS totalTaxes, ");
-				builder.append("	tm.quantity * (b.price + s.price) AS totalGrossProfit, ");
-				builder.append("	(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS totalNetProfit, ");
-				builder.append("	(b.price + s.price) / ABS(b.price) * 100 AS percentalGrossProfit, ");
-				builder.append("	(b.price + s.price + b.taxes + s.taxes) / ABS(b.price) * 100 AS percentalNetProfit ");
-				builder.append("	FROM transactionMatches tm ");
-				builder.append("	INNER JOIN transactions b ON tm.buyTransactionId = b.transactionId ");
-				builder.append("	INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ");
-				session.createSQLQuery(builder.toString()).executeUpdate();
+				String sql = new StringBuilder()
+				.append("CREATE OR REPLACE VIEW profits (buyTransactionId, sellTransactionId, typeId, ")
+				.append("	typeName, date, quantity, buyPrice, sellPrice, taxes, grossProfit, netProfit, ")
+				.append("	 totalTaxes,totalGrossProfit, totalNetProfit, percentalGrossProfit, ")
+				.append("	percentalNetProfit) ")
+				.append("AS SELECT b.transactionId, s.transactionId, s.typeId, s.typeName, ")
+				.append("	s.transactionDateTime, tm.quantity, b.price, s.price, ")
+				.append("	(b.taxes + s.taxes) AS taxes, ")
+				.append("	(b.price + s.price) AS grossProfit, ")
+				.append("	(b.price + s.price + b.taxes + s.taxes) AS netProfit, ")
+				.append("	(b.taxes + s.taxes) * tm.quantity AS totalTaxes, ")
+				.append("	tm.quantity * (b.price + s.price) AS totalGrossProfit, ")
+				.append("	(b.price + s.price + b.taxes + s.taxes) * tm.quantity AS totalNetProfit, ")
+				.append("	(b.price + s.price) / ABS(b.price) * 100 AS percentalGrossProfit, ")
+				.append("	(b.price + s.price + b.taxes + s.taxes) / ABS(b.price) * 100 AS percentalNetProfit ")
+				.append("	FROM transactionMatches tm ")
+				.append("	INNER JOIN transactions b ON tm.buyTransactionId = b.transactionId ")
+				.append("	INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ")
+				.toString();
+				
+				session.createSQLQuery(sql).executeUpdate();
 			}
 		});
 		

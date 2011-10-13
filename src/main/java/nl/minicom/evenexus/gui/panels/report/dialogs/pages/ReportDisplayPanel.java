@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.DisplayType;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.core.report.engine.ReportModelListener;
@@ -27,14 +26,7 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
-//	private final ReportDefinition definition;
-	
 	private ReportModel model;
-
-	@Inject
-	public ReportDisplayPanel(ReportDefinition definition) {
-//		this.definition = definition;
-	}
 
 	public ReportBuilderPage initialize(ReportModel model) {
 		this.model = model;

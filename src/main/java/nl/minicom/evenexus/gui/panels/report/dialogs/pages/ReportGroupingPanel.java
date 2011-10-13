@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 
-import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
@@ -15,16 +14,12 @@ public class ReportGroupingPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
-//	private final ReportDefinition definition;
 	private final Provider<ReportGroupPanel> reportGroupPanelProvider;
 	
 	private ReportModel model;
 
 	@Inject
-	public ReportGroupingPanel(ReportDefinition definition, 
-			Provider<ReportGroupPanel> reportGroupPanelProvider) {
-		
-//		this.definition = definition;
+	public ReportGroupingPanel(Provider<ReportGroupPanel> reportGroupPanelProvider) {
 		this.reportGroupPanelProvider = reportGroupPanelProvider;
 	}
 	

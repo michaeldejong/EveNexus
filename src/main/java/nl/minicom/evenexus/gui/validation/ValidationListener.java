@@ -25,6 +25,7 @@ public class ValidationListener implements KeyListener, ActionListener, ChangeLi
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
+		// Do nothing.
 	}
 
 	@Override
@@ -34,6 +35,7 @@ public class ValidationListener implements KeyListener, ActionListener, ChangeLi
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
+		// Do nothing.
 	}
 
 	@Override

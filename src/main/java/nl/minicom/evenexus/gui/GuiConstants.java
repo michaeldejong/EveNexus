@@ -2,7 +2,7 @@ package nl.minicom.evenexus.gui;
 
 import java.awt.Color;
 
-public class GuiConstants {
+public final class GuiConstants {
 
 	public static final int BUTTON_HEIGHT = 32;
 	
@@ -23,6 +23,10 @@ public class GuiConstants {
 			return new Color(228, 228, 228);
 		}
 		return Color.WHITE;
+	}
+	
+	private GuiConstants() {
+		// Prevent instantiation.
 	}
 	
 }
