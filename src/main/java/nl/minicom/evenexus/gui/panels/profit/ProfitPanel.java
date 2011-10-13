@@ -91,7 +91,7 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 	private ToolBar createTopMenu() {
 		ToolBar toolBar = new ToolBar(settingsManager);		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table);
-		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_PROFIT_PERIOD);
+		JPanel periodSelectionField = toolBar.createPeriodField(table, SettingsManager.FILTER_PROFIT_PERIOD);
 		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
 		JPanel spacer = toolBar.createSpacer();
 		

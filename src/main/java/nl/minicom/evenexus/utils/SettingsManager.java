@@ -21,6 +21,11 @@ import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The {@link SettingsManager} class is responsible for loading, retrieving and storing settings.
+ *
+ * @author michael
+ */
 @Singleton
 public class SettingsManager {
 	
@@ -32,6 +37,12 @@ public class SettingsManager {
 	
 	private volatile boolean initialized = false;
 	
+	/**
+	 * This constructs a new {@link SettingsManager} object.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public SettingsManager(BugReportDialog dialog) {
 		this.dialog = dialog;

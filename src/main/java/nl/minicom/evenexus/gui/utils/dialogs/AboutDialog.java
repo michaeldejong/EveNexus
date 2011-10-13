@@ -24,7 +24,11 @@ import nl.minicom.evenexus.core.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This class represents a dialog which has some about info about the application.
+ *
+ * @author michael
+ */
 public class AboutDialog extends CustomDialog {
 
 	private static final long serialVersionUID = 8860569373371189189L;
@@ -33,6 +37,15 @@ public class AboutDialog extends CustomDialog {
 	private final Application application;
 	private final BugReportDialog dialog;
 	
+	/**
+	 * This constructs a new {@link AboutDialog} object.
+	 * 
+	 * @param application
+	 * 		The {@link Application}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public AboutDialog(Application application, BugReportDialog dialog) {
 		super(DialogTitle.ABOUT_TITLE, 370, 384);
@@ -40,6 +53,9 @@ public class AboutDialog extends CustomDialog {
 		this.dialog = dialog;
 	}
 	
+	/**
+	 * This method initializes this {@link AboutDialog} object.
+	 */
 	public void initialize() {
 		buildGui();
 		setVisible(true);
@@ -48,7 +64,6 @@ public class AboutDialog extends CustomDialog {
 
 	@Override
 	public void createGui(JPanel guiPanel) {	
-		
 		JPanel devPanel = createDevPanel();
 		JPanel versionPanel = createVersionPanel();
 		JPanel contributionPanel = createContributionPanel();

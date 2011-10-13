@@ -25,6 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * The {@link AccountsPanel} is a {@link JPanel} which contains the user interface regarding the accounts data.
+ *
+ * @author michael
+ */
 public class AccountsPanel extends JPanel {
 
 	private static final long serialVersionUID = -4187071888216622511L;
@@ -38,6 +43,24 @@ public class AccountsPanel extends JPanel {
 	private final ToolBarButton addCharacter;
 	private final ToolBarButton deleteCharacter;
 	
+	/**
+	 * This constructs a new {@link AccountsPanel} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param accountData
+	 * 		The {@link AccountTableDataModel}.
+	 * 
+	 * @param accountModel
+	 * 		The {@link AccountColumnModel}.
+	 * 
+	 * @param table
+	 * 		The {@link Table} used to display the data.
+	 * 
+	 * @param addCharacterFrameProvider
+	 * 		The {@link AddCharacterFrame} provider.
+	 */
 	@Inject
 	public AccountsPanel(SettingsManager settingsManager,
 			AccountTableDataModel accountData,
@@ -72,6 +95,9 @@ public class AccountsPanel extends JPanel {
 		});
 	}
 
+	/**
+	 * This method initializes this {@link AccountsPanel} object.
+	 */
 	public void initialize() {
 		accountModel.initialize();
 		table.initialize(accountData, accountModel);
@@ -81,7 +107,8 @@ public class AccountsPanel extends JPanel {
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         
         ToolBar toolBar = new ToolBar(settingsManager);
-        ToolBarButton columnSelectButton = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(accountModel, table));
+        TableColumnSelectionFrame columnSelectionFrame = new TableColumnSelectionFrame(accountModel, table);
+		ToolBarButton columnSelectButton = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
         JPanel spacer = toolBar.createSpacer();
         
         GroupLayout layout = new GroupLayout(toolBar);
@@ -138,6 +165,9 @@ public class AccountsPanel extends JPanel {
     	);
 	}
 
+	/**
+	 * This method reloads the data on this tab.
+	 */
 	public void reloadTab() {
 		table.getSelectionModel().clearSelection();
 		deleteCharacter.setEnabled(false);

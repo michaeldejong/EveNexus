@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.inject.Inject;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Group;
 import javax.swing.ImageIcon;
@@ -22,12 +21,26 @@ import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
 
+/**
+ * This class is responsible for selecting a representation form for a report.
+ *
+ * @author michael
+ */
 public class ReportDisplayPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private ReportModel model;
 
+	/**
+	 * This initializes this {@link ReportBuilderPage} object.
+	 * 
+	 * @param model
+	 * 		The {@link ReportModel} to use.
+	 * 
+	 * @return
+	 * 		This object.
+	 */
 	public ReportBuilderPage initialize(ReportModel model) {
 		this.model = model;
 		buildGui();

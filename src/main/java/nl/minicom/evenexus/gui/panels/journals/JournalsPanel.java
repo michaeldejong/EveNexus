@@ -119,7 +119,7 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 		ToolBar toolBar = new ToolBar(settingsManager);
 		
 		TableColumnSelectionFrame columnSelectionFrame = new TableColumnSelectionFrame(columnModel, table);
-		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_JOURNAL_PERIOD);
+		JPanel periodSelectionField = toolBar.createPeriodField(table, SettingsManager.FILTER_JOURNAL_PERIOD);
 		final ToolBarButton button = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
 		JPanel spacer = toolBar.createSpacer();
 		

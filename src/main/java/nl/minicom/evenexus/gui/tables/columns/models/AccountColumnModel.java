@@ -6,8 +6,19 @@ import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
 
+/**
+ * This class defines all the columns in the accounts table.
+ *
+ * @author michael
+ */
 public class AccountColumnModel extends ColumnModel {
 
+	/**
+	 * This constructs a new {@link AccountColumnModel} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public AccountColumnModel(SettingsManager settingsManager) {
 		super(settingsManager);
@@ -15,7 +26,6 @@ public class AccountColumnModel extends ColumnModel {
 
 	@Override
 	public void initialize() {
-		
 		add(new Column(
 				getSettingsManager(), 
 				"KeyID", 

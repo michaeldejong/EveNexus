@@ -105,8 +105,9 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		ToolBar toolBar = new ToolBar(settingsManager);
 		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table);
-		JPanel periodSelectionField = toolBar.createPeriodSelectionField(table, SettingsManager.FILTER_TRANSACTION_PERIOD);
-		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(table.getColumns(), table));
+		JPanel periodSelectionField = toolBar.createPeriodField(table, SettingsManager.FILTER_TRANSACTION_PERIOD);
+		TableColumnSelectionFrame columnSelectionFrame = new TableColumnSelectionFrame(table.getColumns(), table);
+		ToolBarButton button = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
 		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);

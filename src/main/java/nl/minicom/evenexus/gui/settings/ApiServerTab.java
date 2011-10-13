@@ -37,22 +37,15 @@ public class ApiServerTab extends JPanel {
 	
 	public void initialize() {
 		setBackground(Color.WHITE);
-		final JCheckBox userDefinedUserApiServer = new JCheckBox("Use user-defined API server");
-		userDefinedUserApiServer.setBackground(Color.WHITE);
+		final JCheckBox userServerCheckBox = new JCheckBox("Use user-defined API server");
+		userServerCheckBox.setBackground(Color.WHITE);
 		
 		final JLabel apiServerLabel = new JLabel("API Server");
 		final JTextField apiServerField = new JTextField();
 		final JButton apply = new JButton("Apply");
 		
-		Object userDefinedUserApiServerSetting = settingsManager.loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false);
-		if (userDefinedUserApiServerSetting != null) {
-			userDefinedUserApiServer.setSelected(Boolean.parseBoolean(userDefinedUserApiServerSetting.toString()));
-		}
-		
-		Object proxyServerSetting = settingsManager.loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, ApiServerManager.DEFAULT_API_SERVER);
-		if (proxyServerSetting != null) {
-			apiServerField.setText(proxyServerSetting.toString());
-		}		
+		userServerCheckBox.setSelected(settingsManager.loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false));
+		apiServerField.setText(settingsManager.loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, ApiServerManager.DEFAULT_API_SERVER));
 		
 		apiServerField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		apiServerLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
@@ -64,7 +57,7 @@ public class ApiServerTab extends JPanel {
         	layout.createSequentialGroup()
     		.addGap(7)
     		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-    			.addComponent(userDefinedUserApiServer)
+    			.addComponent(userServerCheckBox)
 				.addComponent(apiServerField)
 				.addComponent(apiServerLabel)
 				.addComponent(apply)
@@ -74,7 +67,7 @@ public class ApiServerTab extends JPanel {
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
     		.addGap(6)
-			.addComponent(userDefinedUserApiServer)
+			.addComponent(userServerCheckBox)
     		.addGap(7)
     		.addComponent(apiServerLabel)
 			.addComponent(apiServerField)
@@ -86,7 +79,7 @@ public class ApiServerTab extends JPanel {
     	final ValidationRule userDefinedApiServerEnabledRule = new ValidationRule() {			
 			@Override
 			public boolean isValid() {
-				return userDefinedUserApiServer.isSelected();
+				return userServerCheckBox.isSelected();
 			}
 		};
 		
@@ -126,13 +119,13 @@ public class ApiServerTab extends JPanel {
 		
 		userDefinedApiServerEnabledRule.trigger();
 		
-		userDefinedUserApiServer.addActionListener(new ValidationListener(userDefinedApiServerEnabledRule));
+		userServerCheckBox.addActionListener(new ValidationListener(userDefinedApiServerEnabledRule));
 		apiServerField.addKeyListener(new ValidationListener(userDefinedApiServerHostRule));
 		
 		apply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (userDefinedUserApiServer.isSelected()) {
+				if (userServerCheckBox.isSelected()) {
 					String apiServer = apiServerField.getText();
 					apiServerManager.setApiServer(apiServer);
 				}

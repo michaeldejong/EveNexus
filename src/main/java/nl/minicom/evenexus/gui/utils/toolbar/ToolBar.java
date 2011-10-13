@@ -79,7 +79,7 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 	
-	public JPanel createPeriodSelectionField(final Table table, final String selectedPeriodSetting) {
+	public JPanel createPeriodField(final Table table, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
 		filterPanel.setMinimumSize(new Dimension(206, 51));
