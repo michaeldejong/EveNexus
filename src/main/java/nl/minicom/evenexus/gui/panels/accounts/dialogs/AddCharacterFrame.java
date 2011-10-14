@@ -25,7 +25,7 @@ import nl.minicom.evenexus.eveapi.importers.ImportManager;
 import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
 import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.AddCharacterTitle;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
@@ -51,6 +51,27 @@ public class AddCharacterFrame extends CustomDialog {
 	private final Database database;
 	private final BugReportDialog dialog;
 	
+	/**
+	 * This constructs a new {@link AddCharacterFrame}.
+	 * 
+	 * @param panel
+	 * 		The {@link AccountsPanel}.
+	 * 
+	 * @param apiParserProvider
+	 * 		A provider of {@link ApiParser} object.
+	 * 
+	 * @param characterPanel
+	 * 		The {@link CharacterPanel}.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public AddCharacterFrame(AccountsPanel panel, 
 			Provider<ApiParser> apiParserProvider,
@@ -59,7 +80,7 @@ public class AddCharacterFrame extends CustomDialog {
 			Database database,
 			BugReportDialog dialog) {
 		
-		super(DialogTitle.CHARACTER_ADD_TITLE, 400, 375);
+		super(new AddCharacterTitle(), 400, 375);
 		this.apiParserProvider = apiParserProvider;
 		this.characterPanel = characterPanel;
 		this.importManager = importManager;
@@ -68,6 +89,9 @@ public class AddCharacterFrame extends CustomDialog {
 		this.dialog = dialog;
 	}
 	
+	/**
+	 * This method initializes this {@link CustomDialog}.
+	 */
 	public void initialize() {
 		buildGui();
 		setVisible(true);

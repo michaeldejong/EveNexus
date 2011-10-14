@@ -7,6 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * This class represents a submitted bug report.
+ *
+ * @author michael
+ */
 @Entity
 @Table(name = "bugreports")
 public class BugReport implements Serializable {
@@ -19,10 +24,20 @@ public class BugReport implements Serializable {
 	@Column(name = ISSUE_NUMBER, nullable = false)
 	private long issueNumber;
 
+	/**
+	 * @return
+	 * 		The issue number.
+	 */
 	public long getIssueNumber() {
 		return issueNumber;
 	}
 
+	/**
+	 * This method sets the issue number.
+	 * 
+	 * @param issueNumber
+	 * 		The new issueNumber.
+	 */
 	public void setIssueNumber(long issueNumber) {
 		this.issueNumber = issueNumber;
 	}

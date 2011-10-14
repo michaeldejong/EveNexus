@@ -62,38 +62,37 @@ public class InventoryManager {
 	}
 	
 	public void processUnprocessedTransactions() {
-		state = State.RUNNING;
-		
-		Collection<Future<?>> futures = new LinkedList<Future<?>>();
-		List<Number> typeIds = queryUnprocessedTypeIds();
-
-		if (!typeIds.isEmpty()) {
-			LOG.info("Calculating inventory and profits for " + typeIds.size() + " unprocessed transaction(s)");
-		
-			triggerEvent(InventoryEvent.STARTING);
+		synchronized (state) {
+			state = State.RUNNING;
 			
-			for (Number typeId : typeIds) {
-				InventoryWorker worker = workerProvider.get();
-				worker.initialize(typeId.longValue());
-				Future<?> future = executor.submit(worker);
-				futures.add(future);
-			}
+			Collection<Future<?>> futures = new LinkedList<Future<?>>();
+			List<Number> typeIds = queryUnprocessedTypeIds();
 			
-			double finished = 0;
-			for (Future<?> future : futures) {
-				try {
-					future.get();
-					finished++;
-					
-					Thread.sleep(1000);
-					
-					triggerEvent(new InventoryEvent(false, InventoryEvent.RUNNING_MESSAGE, (double) (finished / futures.size())));
-				} catch (Exception e) {
-					LOG.error(e.getLocalizedMessage(), e);
+			if (!typeIds.isEmpty()) {
+				LOG.info("Calculating inventory and profits for " + typeIds.size() + " unprocessed transaction(s)");
+				
+				triggerEvent(InventoryEvent.STARTING);
+				
+				for (Number typeId : typeIds) {
+					InventoryWorker worker = workerProvider.get();
+					worker.initialize(typeId.longValue());
+					Future<?> future = executor.submit(worker);
+					futures.add(future);
 				}
+				
+				double finished = 0;
+				for (Future<?> future : futures) {
+					try {
+						future.get();
+						double progress = (double) (++finished / futures.size());
+						triggerEvent(new InventoryEvent(false, InventoryEvent.RUNNING_MESSAGE, progress));
+					} catch (Exception e) {
+						LOG.error(e.getLocalizedMessage(), e);
+					}
+				}
+				
+				triggerEvent(InventoryEvent.IDLE);
 			}
-			
-			triggerEvent(InventoryEvent.IDLE);
 		}
 		
 		state = State.IDLE;
@@ -101,7 +100,7 @@ public class InventoryManager {
 	
 	@Transactional
 	@SuppressWarnings("unchecked")
-	protected List<Number> queryUnprocessedTypeIds() {
+	List<Number> queryUnprocessedTypeIds() {
 		Session session = database.getCurrentSession();
 		String query = "select distinct(t.typeId) from WalletTransaction t where t.remaining > 0";
 		return (List<Number>) session.createQuery(query).list();
@@ -114,15 +113,21 @@ public class InventoryManager {
 	}
 
 	public void addListener(InventoryListener listener) {
-		listeners.add(listener);
+		synchronized (state) {
+			listeners.add(listener);
+		}
 	}
 	
 	public final boolean isRunning() {
-		return state == State.RUNNING;
+		synchronized (state) {
+			return state == State.RUNNING;
+		}
 	}
 	
 	public final boolean isIdle() {
-		return state == State.IDLE;
+		synchronized (state) {
+			return state == State.IDLE;
+		}
 	}
 
 	public enum State {

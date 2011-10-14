@@ -67,8 +67,8 @@ public class InventoryWorker implements Runnable {
 			LOG.info("Found " + matches.size() + " invalid matches for type: " + typeId + ", now de-matching...");
 			
 			for (TransactionMatch match : matches) {
-				WalletTransaction buy = (WalletTransaction) session.get(WalletTransaction.class, match.getBuyTransactionId());
-				WalletTransaction sell = (WalletTransaction) session.get(WalletTransaction.class, match.getSellTransactionId());
+				WalletTransaction buy = getWalletTransaction(match.getBuyTransactionId());
+				WalletTransaction sell = getWalletTransaction(match.getSellTransactionId());
 				
 				buy.setRemaining(Math.min(buy.getQuantity(), buy.getRemaining() + match.getQuantity()));
 				sell.setRemaining(Math.min(sell.getQuantity(), sell.getRemaining() + match.getQuantity()));
@@ -80,6 +80,21 @@ public class InventoryWorker implements Runnable {
 			
 			LOG.info("Finished de-matching " + matches.size() + " invalid matches for type: " + typeId + ".");
 		}
+	}
+	
+	/**
+	 * This method retrieves a certain {@link WalletTransaction} object from the database.
+	 * 
+	 * @param id
+	 * 		The id of the {@link WalletTransaction}.
+	 * 
+	 * @return
+	 * 		The retrieved {@link WalletTransaction}.
+	 */
+	@Transactional
+	WalletTransaction getWalletTransaction(long id) {
+		Session session = database.getCurrentSession();
+		return (WalletTransaction) session.get(WalletTransaction.class, id);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -206,13 +221,12 @@ public class InventoryWorker implements Runnable {
 	}
 
 	@Transactional
-	void persistTransactionMatch(WalletTransaction buyTransaction, WalletTransaction sellTransaction, long amount) {
+	void persistTransactionMatch(WalletTransaction buy, WalletTransaction sell, long amount) {
 		TransactionMatch match = new TransactionMatch();
-		match.setKey(new TransactionMatchIdentifier(buyTransaction.getTransactionId(), sellTransaction.getTransactionId()));
+		match.setKey(new TransactionMatchIdentifier(buy.getTransactionId(), sell.getTransactionId()));
 		match.setQuantity(amount);
 
-		Session session = database.getCurrentSession();
-		session.save(match);
+		database.getCurrentSession().saveOrUpdate(match);
 	}
 
 	@Transactional

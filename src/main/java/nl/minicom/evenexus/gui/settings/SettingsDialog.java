@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.SettingsTitle;
 
 public class SettingsDialog extends CustomDialog {
 
@@ -20,7 +20,7 @@ public class SettingsDialog extends CustomDialog {
 	public SettingsDialog(ProxyTab proxyTab,
 			ApiServerTab apiServerTab) {
 		
-		super(DialogTitle.SETTINGS, 420, 350);
+		super(new SettingsTitle(), 420, 350);
 		this.proxyTab = proxyTab;
 		this.apiServerTab = apiServerTab;
 	}

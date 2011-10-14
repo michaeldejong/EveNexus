@@ -6,6 +6,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+/**
+ * This class holds all time related methods.
+ *
+ * @author michael
+ */
 public final class TimeUtils {
 	
 	private TimeUtils() {
@@ -25,9 +30,15 @@ public final class TimeUtils {
 	/**
 	 * Converts a given dateTime String (from the API) into a timestamp which 
 	 * corresponds with the Tranquility server time in the United Kingdom.
+	 * 
 	 * @param dateTime
+	 * 		The time to parse.
+	 * 
 	 * @return
+	 * 		The converted {@link Timestamp}.
+	 * 
 	 * @throws ParseException
+	 * 		When the string could not be parsed.
 	 */
 	public static Timestamp convertToTimestamp(String dateTime) throws ParseException {
 		Calendar calendar = new GregorianCalendar();
@@ -46,8 +57,12 @@ public final class TimeUtils {
 	
 	/**
 	 * This method translates a timestamp into a date Calendar.
+	 * 
 	 * @param timestamp
+	 * 		The time to convert.
+	 * 
 	 * @return
+	 * 		The created {@link Calendar}.
 	 */
 	public static Calendar convertToCalendar(long timestamp) {
 		Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("Europe/London"));
@@ -57,8 +72,12 @@ public final class TimeUtils {
 	
 	/**
 	 * This method translates a timestamp into a date String.
+	 * 
 	 * @param timestamp
+	 * 		The timestamp to convert.
+	 * 		
 	 * @return
+	 * 		The converted time.
 	 */
 	public static String convertToDate(long timestamp) {
 		Calendar calendar = convertToCalendar(timestamp);
@@ -77,8 +96,12 @@ public final class TimeUtils {
 	
 	/**
 	 * This method translates a timestamp into a date String.
+	 * 
 	 * @param timestamp
+	 * 		The time to convert.
+	 * 
 	 * @return
+	 * 		The converted time.
 	 */
 	public static String convertToDate2(long timestamp) {
 		Calendar calendar = convertToCalendar(timestamp);

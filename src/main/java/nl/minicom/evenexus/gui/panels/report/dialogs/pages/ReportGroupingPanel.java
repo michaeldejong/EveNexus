@@ -6,7 +6,8 @@ import javax.swing.JLabel;
 
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.core.report.engine.ReportModelListener;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportGroupingTitle;
 
 import com.google.inject.Provider;
 
@@ -90,7 +91,7 @@ public class ReportGroupingPanel extends ReportBuilderPage {
 
 	@Override
 	public DialogTitle getTitle() {
-		return DialogTitle.REPORT_GROUP_TITLE;
+		return new ReportGroupingTitle();
 	}
 	
 }

@@ -19,7 +19,8 @@ import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.core.report.engine.ReportModelListener;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportDisplayTitle;
 
 /**
  * This class is responsible for selecting a representation form for a report.
@@ -172,7 +173,7 @@ public class ReportDisplayPanel extends ReportBuilderPage {
 
 	@Override
 	public DialogTitle getTitle() {
-		return DialogTitle.REPORT_DISPLAY_TITLE;
+		return new ReportDisplayTitle();
 	}
 	
 }

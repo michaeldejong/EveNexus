@@ -37,7 +37,7 @@ public class Tray {
 	public Tray(BugReportDialog dialog) {
 		this.dialog = dialog;
 
-		Image image = Icon.getImage("img/48/logo.png");
+		Image image = Icon.getImage("/img/48/logo.png");
 		Image scaled = image.getScaledInstance(16, 16, BufferedImage.TYPE_INT_RGB);
 		
 		Package parent = getClass().getPackage();

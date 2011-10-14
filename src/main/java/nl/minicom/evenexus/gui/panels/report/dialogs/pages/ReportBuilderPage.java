@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nl.minicom.evenexus.gui.GuiConstants;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 public abstract class ReportBuilderPage extends JPanel {
 

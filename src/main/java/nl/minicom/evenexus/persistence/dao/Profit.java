@@ -86,166 +86,272 @@ public class Profit implements Serializable {
 	@Column(name = PERCENTAL_NET_PROFIT)
 	private double percentalNetProfit;
 
+	/**
+	 * @return
+	 * 		The {@link ProfitIdentifier} of this object.
+	 */
 	public ProfitIdentifier getId() {
 		return id;
 	}
 
+	/**
+	 * This method sets the id of this DAO.
+	 * 
+	 * @param id
+	 * 		The new id of this object.
+	 */
 	public void setId(ProfitIdentifier id) {
 		this.id = id;
 	}
 
 	/**
-	 * Answer the internal typeId identifying the item.
+	 * @return 
+	 * 		The internal typeId identifying the item.
 	 */
 	public long getTypeID() {
 		return typeID;
 	}
 
+	/**
+	 * This method sets the typeID of this {@link Profit} DAO.
+	 * 
+	 * @param typeID
+	 * 		The new typeID.
+	 */
 	public void setTypeID(long typeID) {
 		this.typeID = typeID;
 	}
 
 	/**
-	 * Answer the item's name.
+	 * @return 
+	 * 		The item's name.
 	 */
 	public String getTypeName() {
 		return typeName;
 	}
 
+	/**
+	 * This sets the item's name.
+	 * 
+	 * @param typeName
+	 * 		The new item name.
+	 */
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
 
 	/**
-	 * Answer the timestamp when the profit was made.
+	 * @return 
+	 * 		The timestamp when the profit was made.
 	 */
 	public Timestamp getDate() {
 		return date;
 	}
 
+	/**
+	 * This method sets the date.
+	 * 
+	 * @param date
+	 * 		The new date of the {@link Profit} DAO.
+	 */
 	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 
 	/**
-	 * Answer the number of items involved in this profit.
+	 * @return 
+	 * 		The number of items involved in this profit.
 	 */
 	public long getQuantity() {
 		return quantity;
 	}
 
+	/**
+	 * This method sets a new quantity.
+	 * 
+	 * @param quantity
+	 * 		The new quantity.
+	 */
 	public void setQuantity(long quantity) {
 		this.quantity = quantity;
 	}
 
 	/**
-	 * Answer the amount of taxes per item.
+	 * @return 
+	 * 		The amount of taxes per item.
 	 */
 	public BigDecimal getTaxes() {
 		return taxes;
 	}
 
+	/**
+	 * This method sets the taxes.
+	 * 
+	 * @param taxes
+	 * 		The new taxes for this item.
+	 */
 	public void setTaxes(BigDecimal taxes) {
 		this.taxes = taxes;
 	}
 	
 	/**
-	 * Answer the buy price for one item.
+	 * @return
+	 * 		The buy price for one item.
 	 */
 	public BigDecimal getBuyPrice() {
 		return buyPrice;
 	}
 
+	/**
+	 * This method sets the new buy price.
+	 * 
+	 * @param buyPrice
+	 * 		The new buy price.
+	 */
 	public void setBuyPrice(BigDecimal buyPrice) {
 		this.buyPrice = buyPrice;
 	}
 
 	/**
-	 * Answer the sell price for one item.
+	 * @return
+	 *		The sell price for one item.
 	 */
 	public BigDecimal getSellPrice() {
 		return sellPrice;
 	}
 
+	/**
+	 * This method sets the sell price.
+	 * 
+	 * @param sellPrice
+	 * 		The new sell price.
+	 */
 	public void setSellPrice(BigDecimal sellPrice) {
 		this.sellPrice = sellPrice;
 	}
 
 	/**
-	 * Answer the profit per item without taxes.
+	 * @return 
+	 * 		The profit per item without taxes.
 	 */
 	public BigDecimal getGrossProfit() {
 		return grossProfit;
 	}
 	
+	/**
+	 * This method sets the gross profit.
+	 * 
+	 * @param grossProfit
+	 * 		The new gross profit.
+	 */
 	public void setGrossProfit(BigDecimal grossProfit) {
 		this.grossProfit = grossProfit;
 	}
 	
 	/**
-	 * Answer the profit per item including taxes.
+	 * @return
+	 * 		The profit per item including taxes.
 	 */
 	public BigDecimal getNetProfit() {
 		return netProfit;
 	}
 	
+	/**
+	 * This method sets the net profit.
+	 * 
+	 * @param netProfit
+	 * 		The new net profit.
+	 */
 	public void setNetProfit(BigDecimal netProfit) {
 		this.netProfit = netProfit;
 	}
 
 	/**
-	 * Answer the amount of total taxes paid.
+	 * @return
+	 * 		The amount of total taxes paid.
 	 */
 	public BigDecimal getTotalTaxes() {
 		return totalTaxes;
 	}
 
+	/**
+	 * This method sets the total taxes.
+	 * 
+	 * @param totalTaxes
+	 * 		The new total taxes.
+	 */
 	public void setTotalTaxes(BigDecimal totalTaxes) {
 		this.totalTaxes = totalTaxes;
 	}
 
 	/**
-	 * Answer the total profit without taxes.
+	 * @return 
+	 * 		The total profit without taxes.
 	 */
-	public BigDecimal getTotalGrossProfit()
-	{
+	public BigDecimal getTotalGrossProfit() {
 		return totalGrossProfit;
 	}
 	
+	/**
+	 * This method sets the total gross profit.
+	 * 
+	 * @param totalGrossProfit
+	 * 		The new total gross profit.
+	 */
 	public void setTotalGrossProfit(BigDecimal totalGrossProfit) {
 		this.totalGrossProfit = totalGrossProfit;
 	}
 	
 	/**
-	 * Answer the total profit including taxes.
+	 * @return
+	 * 		The total profit including taxes.
 	 */
-	public BigDecimal getTotalNetProfit()
-	{
+	public BigDecimal getTotalNetProfit() {
 		return totalNetProfit;
 	}
 	
+	/**
+	 * This method sets the total net profit.
+	 * 
+	 * @param totalNetProfit
+	 * 		The new total net profit.
+	 */
 	public void setTotalNetProfit(BigDecimal totalNetProfit) {
 		this.totalNetProfit = totalNetProfit;
 	}
 
 	/**
-	 * Answer the profit in percent including taxes.
+	 * @return
+	 * 		The profit in percent including taxes.
 	 */
 	public double getPercentalGrossProfit() {
 		return percentalGrossProfit;
 	}
 
+	/**
+	 * This method sets the percental gross profit.
+	 * 
+	 * @param percentalGrossProfit
+	 * 		The new percental gross profit.
+	 */
 	public void setPercentalGrossProfit(double percentalGrossProfit) {
 		this.percentalGrossProfit = percentalGrossProfit;
 	}
 	
 	/**
-	 * Answer the profit in percent without taxes.
+	 * @return
+	 * 		The profit in percent without taxes.
 	 */
 	public double getPercentalNetProfit() {
 		return percentalNetProfit;
 	}
 	
+	/**
+	 * This method sets the percental net profit.
+	 * 
+	 * @param percentalNetProfit
+	 * 		The new percental net profit.
+	 */
 	public void setPercentalNetProfit(double percentalNetProfit) {
 		this.percentalNetProfit = percentalNetProfit;
 	}
@@ -269,6 +375,7 @@ public class Profit implements Serializable {
 			.toHashCode();
 	}
 	
+	@Override
 	public String toString() {
 		return "<Profit buyId=" + id.getBuyTransactionId() + " sellId=" + id.getSellTransactionId() + ">";
 	}

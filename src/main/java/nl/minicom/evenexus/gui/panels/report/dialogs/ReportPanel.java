@@ -37,7 +37,7 @@ public class ReportPanel extends TabPanel {
 	public void initialize() {
 		setBackground(GuiConstants.getTabBackground());
 		
-		ToolBarButton createReport = new ToolBarButton("img/32/pie_chart.png", "Create a new report");
+		ToolBarButton createReport = new ToolBarButton("/img/32/pie_chart.png", "Create a new report");
         createReport.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {

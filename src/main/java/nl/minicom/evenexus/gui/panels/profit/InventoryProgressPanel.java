@@ -35,13 +35,13 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		spacer.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.FOLDED_STATUS_BAR));
 		
 		label = new JLabel();
-		label.setMinimumSize(new Dimension(128, GuiConstants.PROGRESS_BAR_HEIGHT));
-		label.setMaximumSize(new Dimension(128, GuiConstants.PROGRESS_BAR_HEIGHT));
+		label.setMinimumSize(new Dimension(256, GuiConstants.PROGRESS_BAR_HEIGHT));
+		label.setMaximumSize(new Dimension(256, GuiConstants.PROGRESS_BAR_HEIGHT));
 		add(label);
 		
 		progress = new JProgressBar();
-		progress.setMaximumSize(new Dimension(148, GuiConstants.PROGRESS_BAR_HEIGHT));
-		progress.setMinimumSize(new Dimension(148, GuiConstants.PROGRESS_BAR_HEIGHT));
+		progress.setMaximumSize(new Dimension(200, GuiConstants.PROGRESS_BAR_HEIGHT));
+		progress.setMinimumSize(new Dimension(200, GuiConstants.PROGRESS_BAR_HEIGHT));
 		progress.setForeground(new Color(0, 114, 186));
 		progress.setBackground(Color.WHITE);
 		add(progress);
@@ -49,7 +49,7 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		image = new JLabel();
 		image.setMinimumSize(new Dimension(GuiConstants.PROGRESS_BAR_HEIGHT, GuiConstants.PROGRESS_BAR_HEIGHT));
 		image.setMaximumSize(new Dimension(GuiConstants.PROGRESS_BAR_HEIGHT, GuiConstants.PROGRESS_BAR_HEIGHT));
-		image.setIcon(Icon.getIcon("img/16/clock.png"));
+		image.setIcon(Icon.getIcon("/img/16/clock.png"));
 		add(image);
 		
 		GroupLayout layout = new GroupLayout(this);
@@ -86,10 +86,10 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		}
 	}
 	
-	private void setState(boolean enabled, String message, double percentage) {
-		setVisible(enabled);
+	private void setState(boolean isBusy, String message, double percentage) {
+		setVisible(isBusy);
 		
-		if (enabled) {
+		if (isBusy) {
 			label.setForeground(Color.BLACK);
 		}
 		else {
@@ -97,13 +97,13 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		}
 		
 		label.setText("Status: " + message);
-		label.setVisible(enabled);
+		label.setVisible(isBusy);
 		
 		progress.setMinimum(0);
 		progress.setMaximum(1000);
 		progress.setValue((int) percentage * 1000);
 		
-		image.setEnabled(enabled);
+		image.setEnabled(isBusy);
 	}
 	
 }

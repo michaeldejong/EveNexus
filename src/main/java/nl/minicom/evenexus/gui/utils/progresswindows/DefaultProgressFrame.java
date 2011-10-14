@@ -23,7 +23,7 @@ public class DefaultProgressFrame extends ProgressManager {
 	@Override
 	public final void buildGui() {
 		setTitle(getClass().getPackage().getSpecificationTitle());
-		setIconImage(Icon.getImage("img/other/logo.png"));
+		setIconImage(Icon.getImage("/img/other/logo.png"));
 		setAlwaysOnTop(true);
 		
 		setResizable(false);

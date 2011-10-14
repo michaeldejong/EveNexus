@@ -108,7 +108,7 @@ public class Gui extends JFrame {
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(getClass().getPackage().getSpecificationTitle() + " - EVE Online trading overview");
-		setIconImage(Icon.getImage("img/other/logo.png"));
+		setIconImage(Icon.getImage("/img/other/logo.png"));
 		setSizeAndPosition();
 		setLookAndFeel();
 		
@@ -175,7 +175,7 @@ public class Gui extends JFrame {
 		JMenuBar bar = new JMenuBar();
 		JMenu applicationMenu = new JMenu("Application");
 		
-		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon("img/16/database_down.png"));
+		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon("/img/16/database_down.png"));
 		applicationMenu.add(importMenu);
 		importMenu.addActionListener(new ActionListener() {
 			@Override
@@ -184,7 +184,7 @@ public class Gui extends JFrame {
 			}
 		});
 		
-		JMenuItem exportMenu = new JMenuItem("Export database", Icon.getIcon("img/16/database_next.png"));
+		JMenuItem exportMenu = new JMenuItem("Export database", Icon.getIcon("/img/16/database_next.png"));
 		applicationMenu.add(exportMenu);
 		exportMenu.addActionListener(new ActionListener() {
 			@Override
@@ -195,7 +195,7 @@ public class Gui extends JFrame {
 		
 		applicationMenu.addSeparator();
 		
-		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon("img/16/process.png"));
+		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon("/img/16/process.png"));
 		applicationMenu.add(proxyMenu);
 		proxyMenu.addActionListener(new ActionListener() {
 			@Override
@@ -206,7 +206,7 @@ public class Gui extends JFrame {
 		
 		applicationMenu.addSeparator();
 		
-		JMenuItem exitMenu = new JMenuItem("Exit", Icon.getIcon("img/16/remove.png"));
+		JMenuItem exitMenu = new JMenuItem("Exit", Icon.getIcon("/img/16/remove.png"));
 		applicationMenu.add(exitMenu);
 		exitMenu.addActionListener(new ActionListener() {
 			@Override
@@ -219,7 +219,7 @@ public class Gui extends JFrame {
 		
 		JMenu helpMenu = new JMenu("Help");
 		
-		JMenuItem aboutMenu = new JMenuItem("About", Icon.getIcon("img/16/info.png"));
+		JMenuItem aboutMenu = new JMenuItem("About", Icon.getIcon("/img/16/info.png"));
 		helpMenu.add(aboutMenu);
 		aboutMenu.addActionListener(new ActionListener() {
 			@Override

@@ -31,7 +31,11 @@ public class Model<T> {
 	 * This will construct a {@link Model} obejct with the supplied value as
 	 * the initial value of the {@link Model}.
 	 * 
-	 * @param value		The initial value of this {@link Model}.
+	 * @param reportModel
+	 * 		The {@link ReportModel}.
+	 * 
+	 * @param value		
+	 * 		The initial value of this {@link Model}.
 	 */
 	public Model(ReportModel reportModel, T value) {
 		this.value = value;

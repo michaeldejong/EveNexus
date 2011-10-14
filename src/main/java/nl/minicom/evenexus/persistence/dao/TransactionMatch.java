@@ -31,29 +31,54 @@ public class TransactionMatch implements Serializable {
 	@Column(name = QUANTITY)
 	private long quantity;
 
+	/**
+	 * @return
+	 * 		The id of this object.
+	 */
 	public TransactionMatchIdentifier getKey() {
 		return key;
 	}
 
+	/**
+	 * This method sets the id of this object.
+	 * 
+	 * @param key
+	 * 		The new id of this object.
+	 */
 	public void setKey(TransactionMatchIdentifier key) {
 		this.key = key;
 	}
 
 	/**
-	 * Answer the number of items matching those transactions.
+	 * @return
+	 * 		The number of items matching those transactions.
 	 */
 	public long getQuantity() {
 		return quantity;
 	}
 
+	/**
+	 * This method sets the quantity.
+	 * 
+	 * @param quantity
+	 * 		The new quantity of this object.
+	 */
 	public void setQuantity(long quantity) {
 		this.quantity = quantity;
 	}
 	
+	/**
+	 * @return
+	 * 		The quantity of this object.
+	 */
 	public long getBuyTransactionId() {
 		return key.getBuyTransactionId();
 	}
 	
+	/**
+	 * @return
+	 * 		The sell transaction's id.
+	 */
 	public long getSellTransactionId() {
 		return key.getSellTransactionId();
 	}

@@ -14,7 +14,8 @@ import javax.swing.JScrollPane;
 import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
 import nl.minicom.evenexus.i18n.Translator;
 
 public class ReportItemsPanel extends ReportBuilderPage {
@@ -83,7 +84,7 @@ public class ReportItemsPanel extends ReportBuilderPage {
 
 	@Override
 	public DialogTitle getTitle() {
-		return DialogTitle.REPORT_ITEM_TITLE;
+		return new ReportItemTitle();
 	}
 	
 }

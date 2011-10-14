@@ -87,6 +87,12 @@ public class BugReporter {
 		return issues.get(issues.size() - 1).getNumber();
 	}
 
+	/**
+	 * This method saves the issue number to the database.
+	 * 
+	 * @param issueNumber
+	 * 		The saved issue number.
+	 */
 	@Transactional
 	void persistIssue(int issueNumber) {
 		Session session = database.getCurrentSession();

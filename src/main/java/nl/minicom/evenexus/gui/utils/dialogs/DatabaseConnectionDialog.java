@@ -4,6 +4,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DatabaseConnectionTitle;
+
 /**
  * This class is responsible for displaying a message
  * (the application could not connect to the database)
@@ -23,7 +25,7 @@ public final class DatabaseConnectionDialog extends CustomDialog {
 	}
 	
 	private DatabaseConnectionDialog() {
-		super(DialogTitle.DATABASE_CONNECTION_TITLE, 370, 190);
+		super(new DatabaseConnectionTitle(), 370, 190);
 		buildGui();
 		setVisible(true);
 		toFront();

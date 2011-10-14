@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 
 import javax.inject.Provider;
 
@@ -88,8 +87,8 @@ public class InventoryWorkerTest {
 			builder.append(line);
 		}
 		
-		Type type = new TypeToken<InventoryTestCase>() { }.getType();
-		return new Gson().fromJson(builder.toString(), type);
+		TypeToken<InventoryTestCase> typeToken = new TypeToken<InventoryTestCase>() { };
+		return new Gson().fromJson(builder.toString(), typeToken.getType());
 	}
 	
 }

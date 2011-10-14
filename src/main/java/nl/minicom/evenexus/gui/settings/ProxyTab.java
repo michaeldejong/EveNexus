@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
@@ -32,7 +33,7 @@ public class ProxyTab extends JPanel {
 	}
 	
 	public void initialize() {
-		setBackground(Color.WHITE);
+		setBackground(GuiConstants.getTabBackground());
 		final JCheckBox proxyEnabledBox = new JCheckBox("Enable proxy settings");
 		proxyEnabledBox.setBackground(Color.WHITE);
 		

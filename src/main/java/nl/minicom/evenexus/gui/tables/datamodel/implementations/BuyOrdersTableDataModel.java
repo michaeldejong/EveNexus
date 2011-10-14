@@ -19,7 +19,11 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The data model for the buy order table.
+ *
+ * @author michael
+ */
 public class BuyOrdersTableDataModel implements ITableDataModel, ITypeNameFilter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(BuyOrdersTableDataModel.class);
@@ -29,6 +33,15 @@ public class BuyOrdersTableDataModel implements ITableDataModel, ITypeNameFilter
 	
 	private String typeName;
 	
+	/**
+	 * This constructs a new {@link BuyOrdersTableDataModel} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database} object.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog} object.
+	 */
 	@Inject
 	public BuyOrdersTableDataModel(Database database, BugReportDialog dialog) {
 		this.database = database;

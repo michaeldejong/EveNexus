@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import nl.minicom.evenexus.eveapi.ApiServerManager;
+import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
@@ -36,18 +37,18 @@ public class ApiServerTab extends JPanel {
 	}
 	
 	public void initialize() {
-		setBackground(Color.WHITE);
-		final JCheckBox userServerCheckBox = new JCheckBox("Use user-defined API server");
-		userServerCheckBox.setBackground(Color.WHITE);
+		setBackground(GuiConstants.getTabBackground());
+		final JCheckBox checkBox = new JCheckBox("Use user-defined API server");
+		checkBox.setBackground(GuiConstants.getTabBackground());
 		
 		final JLabel apiServerLabel = new JLabel("API Server");
-		final JTextField apiServerField = new JTextField();
+		final JTextField server = new JTextField();
 		final JButton apply = new JButton("Apply");
 		
-		userServerCheckBox.setSelected(settingsManager.loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false));
-		apiServerField.setText(settingsManager.loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, ApiServerManager.DEFAULT_API_SERVER));
+		checkBox.setSelected(settingsManager.loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false));
+		server.setText(settingsManager.loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, ApiServerManager.DEFAULT_API_SERVER));
 		
-		apiServerField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		server.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		apiServerLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 		apply.setMaximumSize(new Dimension(60, 32));
 		
@@ -57,8 +58,8 @@ public class ApiServerTab extends JPanel {
         	layout.createSequentialGroup()
     		.addGap(7)
     		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-    			.addComponent(userServerCheckBox)
-				.addComponent(apiServerField)
+    			.addComponent(checkBox)
+				.addComponent(server)
 				.addComponent(apiServerLabel)
 				.addComponent(apply)
     		)
@@ -67,10 +68,10 @@ public class ApiServerTab extends JPanel {
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
     		.addGap(6)
-			.addComponent(userServerCheckBox)
+			.addComponent(checkBox)
     		.addGap(7)
     		.addComponent(apiServerLabel)
-			.addComponent(apiServerField)
+			.addComponent(server)
 			.addGap(7)
 			.addComponent(apply)
     		.addGap(7)
@@ -79,21 +80,21 @@ public class ApiServerTab extends JPanel {
     	final ValidationRule userDefinedApiServerEnabledRule = new ValidationRule() {			
 			@Override
 			public boolean isValid() {
-				return userServerCheckBox.isSelected();
+				return checkBox.isSelected();
 			}
 		};
 		
 		final ValidationRule userDefinedApiServerHostRule = new ValidationRule() {			
 			@Override
 			public boolean isValid() {
-				return ValidationRule.isNotEmpty(apiServerField.getText());
+				return ValidationRule.isNotEmpty(server.getText());
 			}
 		};
 		
 		new StateRule(userDefinedApiServerEnabledRule) {		
 			@Override
 			public void onValid(boolean isValid) {
-				apiServerField.setEnabled(isValid);
+				server.setEnabled(isValid);
 			}
 		};
 		
@@ -119,14 +120,14 @@ public class ApiServerTab extends JPanel {
 		
 		userDefinedApiServerEnabledRule.trigger();
 		
-		userServerCheckBox.addActionListener(new ValidationListener(userDefinedApiServerEnabledRule));
-		apiServerField.addKeyListener(new ValidationListener(userDefinedApiServerHostRule));
+		checkBox.addActionListener(new ValidationListener(userDefinedApiServerEnabledRule));
+		server.addKeyListener(new ValidationListener(userDefinedApiServerHostRule));
 		
 		apply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (userServerCheckBox.isSelected()) {
-					String apiServer = apiServerField.getText();
+				if (checkBox.isSelected()) {
+					String apiServer = server.getText();
 					apiServerManager.setApiServer(apiServer);
 				}
 				else {

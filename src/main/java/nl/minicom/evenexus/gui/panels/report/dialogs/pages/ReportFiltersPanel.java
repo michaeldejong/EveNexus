@@ -18,7 +18,8 @@ import javax.swing.SpinnerDateModel;
 
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportFilteringTitle;
 import nl.minicom.evenexus.gui.validation.StateRule;
 import nl.minicom.evenexus.gui.validation.ValidationListener;
 import nl.minicom.evenexus.gui.validation.ValidationRule;
@@ -264,7 +265,7 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 
 	@Override
 	public DialogTitle getTitle() {
-		return DialogTitle.REPORT_FILTER_TITLE;
+		return new ReportFilteringTitle();
 	}
 	
 }

@@ -22,6 +22,8 @@ import javax.swing.border.LineBorder;
 
 import nl.minicom.evenexus.bugreport.BugReporter;
 import nl.minicom.evenexus.gui.GuiConstants;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.BugReportTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class BugReportDialog extends CustomDialog {
 
 	@Inject
 	public BugReportDialog(BugReporter reporter) {
-		super(DialogTitle.BUG_REPORT, 400, 500);
+		super(new BugReportTitle(), 400, 500);
 		this.reporter = reporter;
 		
 		setModal(true);

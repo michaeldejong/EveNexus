@@ -26,13 +26,19 @@ public class ToolBarButton extends JButton {
         addMouseListener(new MouseListener() {
 			
 			@Override
-			public void mouseReleased(MouseEvent e) { }
+			public void mouseReleased(MouseEvent e) {
+				// Do nothing.
+			}
 			
 			@Override
-			public void mousePressed(MouseEvent e) { }
+			public void mousePressed(MouseEvent e) {
+				// Do nothing.
+			}
 			
 			@Override
-			public void mouseClicked(MouseEvent e) { }
+			public void mouseClicked(MouseEvent e) {
+				// Do nothing.
+			}
 			
 			@Override
 			public void mouseExited(MouseEvent e) {

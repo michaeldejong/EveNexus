@@ -20,6 +20,8 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import nl.minicom.evenexus.core.Application;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.AboutTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,7 @@ public class AboutDialog extends CustomDialog {
 	 */
 	@Inject
 	public AboutDialog(Application application, BugReportDialog dialog) {
-		super(DialogTitle.ABOUT_TITLE, 370, 384);
+		super(new AboutTitle(), 370, 384);
 		this.application = application;
 		this.dialog = dialog;
 	}

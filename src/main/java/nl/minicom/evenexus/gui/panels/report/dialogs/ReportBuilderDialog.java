@@ -6,7 +6,8 @@ import javax.swing.JPanel;
 
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
-import nl.minicom.evenexus.gui.utils.dialogs.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
 
 public class ReportBuilderDialog extends CustomDialog {
 
@@ -17,7 +18,7 @@ public class ReportBuilderDialog extends CustomDialog {
 
 	@Inject
 	public ReportBuilderDialog(ReportBuilderPagePanel reportBuilderPagePanel) {
-		super(DialogTitle.REPORT_ITEM_TITLE, 360, 420);
+		super(new ReportItemTitle(), 360, 420);
 
 		ReportModel model = new ReportModel();
 		

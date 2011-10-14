@@ -75,6 +75,8 @@ public class TableColumnSelectionTableModel implements TableModel {
 	}
 	
 	@Override
-	public void addTableModelListener(TableModelListener arg0) { }
+	public void addTableModelListener(TableModelListener arg0) {
+		// Do nothing.
+	}
 	
 }

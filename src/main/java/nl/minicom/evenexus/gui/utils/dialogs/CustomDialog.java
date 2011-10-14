@@ -17,6 +17,7 @@ import javax.swing.border.MatteBorder;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.utils.GradientPanel;
+import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 public abstract class CustomDialog extends JDialog {
 
@@ -34,7 +35,7 @@ public abstract class CustomDialog extends JDialog {
 		setResizable(false);
 		setTitle(dialogTitle.getTitle());
 		setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
-		setIconImage(Icon.getImage("img/other/logo.png"));
+		setIconImage(Icon.getImage("/img/other/logo.png"));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();

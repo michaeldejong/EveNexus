@@ -77,8 +77,11 @@ public class CharacterImporter {
 		
 		task.initialize(apiKey);
 		
-		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), task.getImporter(task.getApi().getImporterId()).getCooldown());
-		LOG.info("Scheduling " + task.getName() + " importer (characterID: " + apiKey.getCharacterId() + ") at: " + new Date(nextRun));
+		long cooldown = task.getImporter(task.getApi().getImporterId()).getCooldown();
+		importManager.scheduleAtFixedRate(task, nextRun - TimeUtils.getServerTime(), cooldown);
+		
+		LOG.info("Scheduling " + task.getName() + " importer (characterID: "
+				+ apiKey.getCharacterId() + ") at: " + new Date(nextRun));
 	}
 	
 }

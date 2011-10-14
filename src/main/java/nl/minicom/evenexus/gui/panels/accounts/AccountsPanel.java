@@ -73,8 +73,8 @@ public class AccountsPanel extends JPanel {
 		this.accountModel = accountModel;
 		this.table = table;
 		
-		addCharacter = new ToolBarButton("img/32/add.png", "Add new a character");
-		deleteCharacter = new ToolBarButton("img/32/remove.png", "Delete a character");
+		addCharacter = new ToolBarButton("/img/32/add.png", "Add new a character");
+		deleteCharacter = new ToolBarButton("/img/32/remove.png", "Delete a character");
 		
 		addCharacter.addActionListener(new ActionListener() {
 			@Override
