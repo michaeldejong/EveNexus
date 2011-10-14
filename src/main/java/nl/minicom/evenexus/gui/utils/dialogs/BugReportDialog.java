@@ -23,11 +23,15 @@ import javax.swing.border.LineBorder;
 import nl.minicom.evenexus.bugreport.BugReporter;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.BugReportTitle;
-import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This dialog allows the user to report a bug to the GitHub repo.
+ *
+ * @author michael
+ */
 public class BugReportDialog extends CustomDialog {
 
 	private static final long serialVersionUID = -5916859438472895593L;
@@ -39,9 +43,14 @@ public class BugReportDialog extends CustomDialog {
 	private JTextField submitterNameField;
 	private JTextField submitterMailField;
 	private JTextArea bugDescriptionArea;
-
 	private boolean fatal = false;
 
+	/**
+	 * This constructs a new {@link BugReportDialog} object.
+	 * 
+	 * @param reporter
+	 * 		The {@link BugReporter}.
+	 */
 	@Inject
 	public BugReportDialog(BugReporter reporter) {
 		super(new BugReportTitle(), 400, 500);
@@ -203,6 +212,12 @@ public class BugReportDialog extends CustomDialog {
 		component.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
 	}
 
+	/**
+	 * This method notifies this {@link BugReportDialog} that the encountered bug was fatal.
+	 * 
+	 * @param fatal
+	 * 		True if the encountered bug was fatal, or false if it was not.
+	 */
 	public void setFatal(boolean fatal) {
 		this.fatal  = fatal;
 	}

@@ -2,6 +2,7 @@ package nl.minicom.evenexus.gui.utils.toolbar;
 
 
 import java.awt.Dimension;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -24,15 +25,24 @@ import nl.minicom.evenexus.gui.tables.datamodel.ITypeNameFilter;
 import nl.minicom.evenexus.utils.SettingsManager;
 
 
+/**
+ * This class is responsible for everything related to the toolbar at the top of each tab.
+ * 
+ * @author michael
+ */
 public class ToolBar extends JPanel {
 
 	private static final long serialVersionUID = 8807977497143764318L;
 	
 	private final SettingsManager settingsManager;
 
+	/**
+	 * This contructs a new {@link ToolBar} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	public ToolBar(SettingsManager settingsManager) {
-		super();
-		
 		this.settingsManager = settingsManager;
 		
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, 51));
@@ -40,6 +50,15 @@ public class ToolBar extends JPanel {
 		setBackground(GuiConstants.getTabBackground());
 	}
 
+	/**
+	 * This method creates a {@link TextField} allowing the user to filter on a specific item name.
+	 * 
+	 * @param tables
+	 * 		The table to filter.
+	 * 
+	 * @return
+	 * 		A {@link JPanel} containing the {@link TextField}.
+	 */
 	public JPanel createTypeNameSearchField(final Table... tables) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
@@ -79,6 +98,18 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 	
+	/**
+	 * This method creates a new combobox which filters the specified table.
+	 * 
+	 * @param table
+	 * 		The table to filter.
+	 * 
+	 * @param selectedPeriodSetting
+	 * 		The setting describing the table's period filter.
+	 * 
+	 * @return
+	 * 		A {@link JPanel} containing the constructed combobox.
+	 */
 	public JPanel createPeriodField(final Table table, final String selectedPeriodSetting) {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
@@ -131,6 +162,10 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 	
+	/**
+	 * @return
+	 * 		A new {@link JPanel} object which acts as a spacer.
+	 */
 	public final JPanel createSpacer() {
 		JPanel panel = new JPanel();
 		panel.setMinimumSize(new Dimension(0, 51));
@@ -139,7 +174,24 @@ public class ToolBar extends JPanel {
 		return panel;
 	}
 	
-	public final JPanel createPeriodSelectionField(final LineGraphEngine chartPanel, final SettingsManager settingsManager, final String selectedPeriodSetting) {
+	/**
+	 * This method creates a combobox allowing the user to define a period of interest in the {@link LineGraphEngine}.
+	 * 
+	 * @param chartPanel
+	 * 		The {@link LineGraphEngine} to filter.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param selectedPeriodSetting
+	 * 		The setting name regarding period selection of the supplied chartPanel.
+	 * 
+	 * @return
+	 * 		A {@link JPanel} containing the combobox.
+	 */
+	public final JPanel createPeriodSelectionField(final LineGraphEngine chartPanel, 
+			final SettingsManager settingsManager, final String selectedPeriodSetting) {
+		
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBackground(GuiConstants.getTabBackground());
 		filterPanel.setMinimumSize(new Dimension(206, 51));
@@ -186,6 +238,15 @@ public class ToolBar extends JPanel {
 		return filterPanel;
 	}
 
+	/**
+	 * This method creates a new {@link ToolBarButton} which allows the user to filter columns on a table.
+	 * 
+	 * @param columnSelectionFrame
+	 * 		The {@link ColumnSelectionFrame} to display.
+	 * 
+	 * @return
+	 * 		A {@link ToolBarButton} which opens the specified {@link ColumnSelectionFrame}.
+	 */
 	public final ToolBarButton createTableSelectColumnsButton(final ColumnSelectionFrame columnSelectionFrame) {
 		ToolBarButton button = new ToolBarButton("/img/32/add_column.png", "Show / hide columns");
 		button.addActionListener(new ActionListener() {

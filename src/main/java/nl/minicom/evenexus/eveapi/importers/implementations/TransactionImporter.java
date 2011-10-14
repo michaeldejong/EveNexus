@@ -33,6 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * This class is responsible for importing transactions.
+ *
+ * @author michael
+ */
 public class TransactionImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionImporter.class);
@@ -40,6 +45,27 @@ public class TransactionImporter extends ImporterTask {
 	private final InventoryManager inventoryManager;
 	private final BugReportDialog dialog;
 	
+	/**
+	 * This constructs a new {@link TransactionImporter} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param apiParserProvider
+	 * 		A provider of {@link ApiParser}s.
+	 * 
+	 * @param importerThreadProvider
+	 * 		A provider of {@link ImporterThread} objects.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param inventoryManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public TransactionImporter(
 			Database database, 
@@ -81,8 +107,17 @@ public class TransactionImporter extends ImporterTask {
 		return level;
 	}
 	
+	/**
+	 * This method returns the level of the specified skill.
+	 * 
+	 * @param id
+	 * 		The identifier of the skill and character.
+	 * 
+	 * @return
+	 * 		The level of the specified skill.
+	 */
 	@Transactional
-	protected Skill getSkill(final SkillIdentifier id) {
+	Skill getSkill(final SkillIdentifier id) {
 		Session session = getDatabase().getCurrentSession();
 		return (Skill) session.get(Skill.class, id);
 	}
@@ -97,6 +132,24 @@ public class TransactionImporter extends ImporterTask {
 		return false;
 	}
 
+	/**
+	 * This method persists a new wallet transaction to the database.
+	 * 
+	 * @param row
+	 * 		The {@link Node} containing the transaction data.
+	 * 
+	 * @param apiKey
+	 * 		The apiKey used to retrieve this transaction from the API.
+	 * 
+	 * @param brokerRelation
+	 * 		The level of the broker relation skill.
+	 * 
+	 * @param accounting
+	 * 		The level of the accounting skill.
+	 * 
+	 * @return
+	 * 		True if the transaction was persisted, or false if it was not.
+	 */
 	@Transactional
 	boolean persistChangeData(Node row, ApiKey apiKey, int brokerRelation, int accounting) {
 		Session session = getDatabase().getCurrentSession();
@@ -118,9 +171,15 @@ public class TransactionImporter extends ImporterTask {
 			BigDecimal corporationStanding = getCorporationStanding(apiKey, stationId);
 			BigDecimal factionStanding = getFactionStanding(apiKey, stationId);
 			
-			BigDecimal taxes = (BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.0005).multiply(BigDecimal.valueOf(brokerRelation)))).divide(BigDecimal.valueOf(Math.exp(((BigDecimal.valueOf(0.1).multiply(factionStanding)).add(BigDecimal.valueOf(0.04).multiply(corporationStanding)).doubleValue()))), 3, RoundingMode.HALF_UP);
+			BigDecimal taxes = (BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.0005)
+					.multiply(BigDecimal.valueOf(brokerRelation))))
+					.divide(BigDecimal.valueOf(Math.exp(((BigDecimal.valueOf(0.1).multiply(factionStanding))
+					.add(BigDecimal.valueOf(0.04).multiply(corporationStanding)).doubleValue()
+					))), 3, RoundingMode.HALF_UP);
+			
 			if (!isBuy) {
-				taxes = taxes.add(BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.001).multiply(BigDecimal.valueOf(accounting))));
+				taxes = taxes.add(BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.001)
+						.multiply(BigDecimal.valueOf(accounting))));
 			}
 			
 			WalletTransaction transaction = (WalletTransaction) session.get(WalletTransaction.class, transactionID);
@@ -159,8 +218,20 @@ public class TransactionImporter extends ImporterTask {
 		return false;
 	}
 
+	/**
+	 * This method retrieves the corporation's standing of this character with a certain station's owner.
+	 * 
+	 * @param apiKey
+	 * 		The {@link ApiKey} containing the character id.
+	 * 
+	 * @param stationId
+	 * 		The station id.
+	 * 
+	 * @return
+	 * 		The corporation's standing of this character with a certain station's owner.
+	 */
 	@Transactional
-	protected BigDecimal getCorporationStanding(ApiKey apiKey, long stationId) {
+	BigDecimal getCorporationStanding(ApiKey apiKey, long stationId) {
 		Session session = getDatabase().getCurrentSession();
 		Station station = (Station) session.get(Station.class, stationId);
 		if (station != null) {
@@ -174,8 +245,20 @@ public class TransactionImporter extends ImporterTask {
 		return BigDecimal.ZERO;
 	}
 
+	/**
+	 * This method retrieves the faction standings for a certain region.
+	 * 
+	 * @param apiKey
+	 * 		The {@link ApiKey} containing the character id.
+	 * 
+	 * @param mapRegionId
+	 * 		The id of the region.
+	 * 
+	 * @return
+	 * 		The faction standing of this character with this region's empire.
+	 */
 	@Transactional
-	protected BigDecimal getFactionStanding(ApiKey apiKey, long mapRegionId) {
+	BigDecimal getFactionStanding(ApiKey apiKey, long mapRegionId) {
 		Session session = getDatabase().getCurrentSession();
 		MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
 		if (region != null) {

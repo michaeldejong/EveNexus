@@ -13,10 +13,24 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+/**
+ * This is the main class which starts the application.
+ * 
+ * @author michael
+ */
 public final class Main {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 	
+	/**
+	 * This method starts the application and is called when running the jar.
+	 * 
+	 * @param args
+	 * 		Mandatory args field (ignored).
+	 * 
+	 * @throws Exception
+	 * 		In case the application terminates unexpectedly.
+	 */
 	public static void main(String[] args) throws Exception {
 		LOG.info("");
 		SplashFrame frame = new SplashFrame();

@@ -24,7 +24,11 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This tab displays all the data associated with profits in the GUI.
+ * 
+ * @author michael
+ */
 public class ProfitPanel extends TabPanel implements InventoryListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;
@@ -36,6 +40,21 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 	private final SettingsManager settingsManager;
 	private final InventoryManager inventoryManager;
 	
+	/**
+	 * This constructs a new {@link ProfitPanel} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param inventoryManager
+	 * 		The {@link InventoryManager}.
+	 * 
+	 * @param profitData
+	 * 		The {@link ProfitTableDataModel} object.
+	 * 
+	 * @param table
+	 * 		The {@link Table} for the profits.
+	 */
 	@Inject
 	public ProfitPanel(SettingsManager settingsManager,
 			InventoryManager inventoryManager, 
@@ -49,6 +68,9 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 		this.table = table;
 	}	
 
+	/**
+	 * This method initializes this {@link ProfitPanel} object.
+	 */
 	public void initialize() {
 		columnModel.initialize();
 		profitData.initialize();
@@ -92,7 +114,8 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
 		ToolBar toolBar = new ToolBar(settingsManager);		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table);
 		JPanel periodSelectionField = toolBar.createPeriodField(table, SettingsManager.FILTER_PROFIT_PERIOD);
-		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table));
+		TableColumnSelectionFrame columnSelectionFrame = new TableColumnSelectionFrame(columnModel, table);
+		ToolBarButton button = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
 		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);

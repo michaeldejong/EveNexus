@@ -20,7 +20,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 public class TaxesGraphElement implements GraphElement {
 	
-	private static final String VISIBLE_SETTING = SettingsManager.DASHBOARD_GRAPH_TAXES_VISIBLE;
+	private static final String VISIBLE_SETTING = SettingsManager.DASHBOARD_GRAPH_VISIBLE;
 
 	private final SettingsManager settingsManager;
 	private final Database database;
@@ -46,6 +46,7 @@ public class TaxesGraphElement implements GraphElement {
 	@Override
 	public void reload() {
 		Session session = database.getCurrentSession();
+		String dateField = WalletTransaction.TRANSACTION_DATE_TIME;
 		
 		StringBuilder queryBuilder = new StringBuilder()
 		.append("SELECT ")
@@ -55,9 +56,9 @@ public class TaxesGraphElement implements GraphElement {
 		.append("	SELECT ")
 		.append("		" + WalletTransaction.QUANTITY + " AS quantity, ")
 		.append("		" + WalletTransaction.TAXES + " AS taxes, ")
-		.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + WalletTransaction.TRANSACTION_DATE_TIME + ") AS day ")
+		.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + dateField + ") AS day ")
 		.append("	FROM transactions ")
-		.append("	WHERE " + WalletTransaction.TRANSACTION_DATE_TIME + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
+		.append("	WHERE " + dateField + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP()) ")
 		.append(") ")
 		.append("GROUP BY day ")
 		.append("ORDER BY day ASC");

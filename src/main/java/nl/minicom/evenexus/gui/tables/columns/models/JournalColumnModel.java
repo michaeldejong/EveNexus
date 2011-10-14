@@ -23,9 +23,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Date", 
 				"date", 
-				SettingsManager.TABLE_JOURNAL_DATE_VISIBLE, 
+				SettingsManager.JOURNAL_DATE_VISIBLE, 
 				true, 
-				SettingsManager.TABLE_JOURNAL_DATE_WIDTH, 
+				SettingsManager.JOURNAL_DATE_WIDTH, 
 				147,
 				Timestamp.class,
 				ColumnModel.DATE_TIME
@@ -35,9 +35,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Type", 
 				"description", 
-				SettingsManager.TABLE_JOURNAL_TYPE_VISIBLE, 
+				SettingsManager.JOURNAL_TYPE_VISIBLE, 
 				true,
-				SettingsManager.TABLE_JOURNAL_TYPE_WIDTH,
+				SettingsManager.JOURNAL_TYPE_WIDTH,
 				196,
 				String.class
 		));
@@ -46,9 +46,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Sender", 
 				"ownerName1", 
-				SettingsManager.TABLE_JOURNAL_SENDER_VISIBLE, 
+				SettingsManager.JOURNAL_SENDER_VISIBLE, 
 				true,
-				SettingsManager.TABLE_JOURNAL_SENDER_WIDTH,
+				SettingsManager.JOURNAL_SENDER_WIDTH,
 				137,
 				String.class
 		));
@@ -57,9 +57,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Recipient", 
 				"ownerName2", 
-				SettingsManager.TABLE_JOURNAL_RECIPIENT_VISIBLE, 
+				SettingsManager.JOURNAL_RECIPIENT_VISIBLE, 
 				true,
-				SettingsManager.TABLE_JOURNAL_RECIPIENT_WIDTH,
+				SettingsManager.JOURNAL_RECIPIENT_WIDTH,
 				137,
 				String.class
 		));
@@ -68,9 +68,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Amount", 
 				"amount", 
-				SettingsManager.TABLE_JOURNAL_AMOUNT_VISIBLE, 
+				SettingsManager.JOURNAL_AMOUNT_VISIBLE, 
 				true,
-				SettingsManager.TABLE_JOURNAL_AMOUNT_WIDTH,
+				SettingsManager.JOURNAL_AMOUNT_WIDTH,
 				166,
 				Long.class, 
 				ColumnModel.CURRENCY
@@ -80,9 +80,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Balance", 
 				"balance", 
-				SettingsManager.TABLE_JOURNAL_BALANCE_VISIBLE, 
+				SettingsManager.JOURNAL_BALANCE_VISIBLE, 
 				false,
-				SettingsManager.TABLE_JOURNAL_BALANCE_WIDTH,
+				SettingsManager.JOURNAL_BALANCE_WIDTH,
 				100, 
 				BigDecimal.class,
 				ColumnModel.CURRENCY
@@ -92,9 +92,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Reason", 
 				"reason", 
-				SettingsManager.TABLE_JOURNAL_REASON_VISIBLE, 
+				SettingsManager.JOURNAL_REASON_VISIBLE, 
 				false,
-				SettingsManager.TABLE_JOURNAL_REASON_WIDTH,
+				SettingsManager.JOURNAL_REASON_WIDTH,
 				350,
 				String.class
 		));
@@ -103,9 +103,9 @@ public class JournalColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Taxed", 
 				"taxAmount", 
-				SettingsManager.TABLE_JOURNAL_TAXED_VISIBLE, 
+				SettingsManager.JOURNAL_TAXED_VISIBLE, 
 				false,
-				SettingsManager.TABLE_JOURNAL_TAXED_WIDTH,
+				SettingsManager.JOURNAL_TAXED_WIDTH,
 				100,
 				BigDecimal.class,
 				ColumnModel.CURRENCY

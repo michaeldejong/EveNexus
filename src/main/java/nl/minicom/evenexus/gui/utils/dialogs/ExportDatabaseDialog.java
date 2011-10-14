@@ -14,12 +14,23 @@ import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 
 
+/**
+ * This dialog allows the user to export the database to a file.
+ *
+ * @author michael
+ */
 public class ExportDatabaseDialog extends DatabaseFileChooser {
 
 	private static final long serialVersionUID = -2633245343435662634L;
 	
 	private final Database database;
 	
+	/**
+	 * This constructs a new {@link ExportDatabaseDialog} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public ExportDatabaseDialog(Database database) {
 		this.database = database;

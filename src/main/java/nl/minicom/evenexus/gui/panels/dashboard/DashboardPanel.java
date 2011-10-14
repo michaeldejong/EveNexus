@@ -115,8 +115,10 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 	
 	private ToolBar createTopMenu() {
 		ToolBar toolBar = new ToolBar(settingsManager);
-		JPanel periodSelectionField = toolBar.createPeriodSelectionField(chartPanel, settingsManager, SettingsManager.FILTER_DASHBOARD_PERIOD);
-		ToolBarButton lineSelectionButton = toolBar.createTableSelectColumnsButton(new GraphColumnSelectionFrame(chartPanel));
+		String settingName = SettingsManager.FILTER_DASHBOARD_PERIOD;
+		JPanel periodSelectionField = toolBar.createPeriodSelectionField(chartPanel, settingsManager, settingName);
+		GraphColumnSelectionFrame columnSelectionFrame = new GraphColumnSelectionFrame(chartPanel);
+		ToolBarButton lineSelectionButton = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
 		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);

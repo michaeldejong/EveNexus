@@ -56,8 +56,8 @@ public class ProfitGraphElement implements GraphElement {
 		queryBuilder.append("	day ");
 		queryBuilder.append("FROM (");
 		queryBuilder.append("	SELECT ");
-		queryBuilder.append(		Profit.TOTAL_NET_PROFIT + ", ");
-		queryBuilder.append(		Profit.DATE + ", ");
+		queryBuilder.append("		" + Profit.TOTAL_NET_PROFIT + ", ");
+		queryBuilder.append("		" + Profit.DATE + ", ");
 		queryBuilder.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + Profit.DATE + ") AS day ");
 		queryBuilder.append("	FROM profits ");
 		queryBuilder.append("	WHERE " + Profit.DATE + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP())");

@@ -27,6 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * This tab displays all the data on market orders.
+ *
+ * @author michael
+ */
 public class MarketOrdersPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;
@@ -39,6 +44,27 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	private final BuyOrdersTableDataModel buyOrderData;
 	private final SettingsManager settingsManager;
 
+	/**
+	 * This contructs a new {@link MarketOrdersPanel} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param sellOrderData
+	 * 		The {@link SellOrdersTableDataModel}.
+	 * 
+	 * @param buyOrderDate
+	 * 		The {@link BuyOrdersTableDataModel}.
+	 * 
+	 * @param tableProvider
+	 * 		A provider for {@link Table} objects.
+	 * 
+	 * @param columnModel
+	 * 		The {@link MarketOrdersColumnModel}.
+	 */
 	@Inject
 	public MarketOrdersPanel(SettingsManager settingsManager,
 			ImportManager importManager,
@@ -57,6 +83,9 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
     	importManager.addListener(Api.CHAR_MARKET_ORDERS, this);
 	}
 
+	/**
+	 * This method intializes this {@link MarketOrdersPanel} object.
+	 */
 	public void initialize() {
 		columnModel.initialize();
 		table1.initialize(sellOrderData, columnModel);
@@ -108,7 +137,8 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 	private ToolBar createTopMenu() {
 		ToolBar toolBar = new ToolBar(settingsManager);		
 		JPanel typeNameSearchField = toolBar.createTypeNameSearchField(table1, table2);
-		ToolBarButton button = toolBar.createTableSelectColumnsButton(new TableColumnSelectionFrame(columnModel, table1, table2));
+		TableColumnSelectionFrame columnSelectionFrame = new TableColumnSelectionFrame(columnModel, table1, table2);
+		ToolBarButton button = toolBar.createTableSelectColumnsButton(columnSelectionFrame);
 		JPanel spacer = toolBar.createSpacer();
 		
         GroupLayout layout = new GroupLayout(toolBar);

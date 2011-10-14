@@ -67,6 +67,9 @@ public class JournalsPanel extends TabPanel implements ImportListener {
     	importManager.addListener(Api.CHAR_WALLET_JOURNAL, this);
 	}
 
+	/**
+	 * This method initializes this {@link JournalsPanel} object.
+	 */
 	public void initialize() {
 		synchronized (this) {
 			columnModel.initialize();

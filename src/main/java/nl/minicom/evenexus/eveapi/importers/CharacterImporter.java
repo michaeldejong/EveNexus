@@ -22,6 +22,11 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 
+/**
+ * This class is responsible for scheduling all importers for a certain character.
+ * 
+ * @author michael
+ */
 public class CharacterImporter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CharacterImporter.class);
@@ -36,6 +41,27 @@ public class CharacterImporter {
 	
 	private ApiKey apiKey = null;
 	
+	/**
+	 * This constructs a new {@link CharacterImporter} object.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param journalImporterProvider
+	 * 		A provider for {@link JournalImporter}s.
+	 * 
+	 * @param marketOrderImporterProvider
+	 * 		A provider for {@link MarketOrderImporter}s.
+	 * 
+	 * @param skillImporterProvider
+	 * 		A provider for {@link SkillImporter}s.
+	 * 
+	 * @param standingImporterProvider
+	 * 		A provider for {@link StandingImporter}s.
+	 * 
+	 * @param transactionImporterProvider
+	 * 		A provider for {@link TransactionImporter}s.
+	 */
 	@Inject
 	public CharacterImporter(ImportManager importManager, 
 			Provider<JournalImporter> journalImporterProvider,
@@ -53,6 +79,12 @@ public class CharacterImporter {
 		this.importers = new TreeMap<Api, ImporterTask>();
 	}
 
+	/**
+	 * This method schedules new importers for a certain character.
+	 * 
+	 * @param apiKey
+	 * 		The character to schedule importers for.
+	 */
 	public void scheduleApiImporters(ApiKey apiKey) {
 		Preconditions.checkNotNull(apiKey);
 		if (this.apiKey != null) {

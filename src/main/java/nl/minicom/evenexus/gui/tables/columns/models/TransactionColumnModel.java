@@ -23,9 +23,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Date", 
 				"transactionDateTime",
-				SettingsManager.TABLE_TRANSACTION_DATE_VISIBLE,
+				SettingsManager.TRANSACTION_DATE_VISIBLE,
 				true,
-				SettingsManager.TABLE_TRANSACTION_DATE_WIDTH,
+				SettingsManager.TRANSACTION_DATE_WIDTH,
 				138, 
 				Timestamp.class, 
 				ColumnModel.DATE_TIME
@@ -35,9 +35,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Item", 
 				"typename", 
-				SettingsManager.TABLE_TRANSACTION_ITEM_VISIBLE,
+				SettingsManager.TRANSACTION_ITEM_VISIBLE,
 				true,
-				SettingsManager.TABLE_TRANSACTION_ITEM_WIDTH,
+				SettingsManager.TRANSACTION_ITEM_WIDTH,
 				302,
 				String.class
 		));
@@ -46,9 +46,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Station", 
 				"stationname", 
-				SettingsManager.TABLE_TRANSACTION_STATION_VISIBLE,
+				SettingsManager.TRANSACTION_STATION_VISIBLE,
 				false,
-				SettingsManager.TABLE_TRANSACTION_STATION_WIDTH,
+				SettingsManager.TRANSACTION_STATION_WIDTH,
 				300,
 				String.class
 		));
@@ -57,9 +57,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Client", 
 				"clientName", 
-				SettingsManager.TABLE_TRANSACTION_CLIENT_VISIBLE,
+				SettingsManager.TRANSACTION_CLIENT_VISIBLE,
 				false,
-				SettingsManager.TABLE_TRANSACTION_CLIENT_WIDTH,
+				SettingsManager.TRANSACTION_CLIENT_WIDTH,
 				200,
 				String.class
 		));
@@ -68,9 +68,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Quantity", 
 				"quantity", 
-				SettingsManager.TABLE_TRANSACTION_QUANTITY_VISIBLE,
+				SettingsManager.TRANSACTION_QUANTITY_VISIBLE,
 				true,
-				SettingsManager.TABLE_TRANSACTION_QUANTITY_WIDTH,
+				SettingsManager.TRANSACTION_QUANTITY_WIDTH,
 				80, 
 				Long.class, 
 				ColumnModel.INTEGER
@@ -80,9 +80,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Price", 
 				"price", 
-				SettingsManager.TABLE_TRANSACTION_PRICE_VISIBLE,
+				SettingsManager.TRANSACTION_PRICE_VISIBLE,
 				true,
-				SettingsManager.TABLE_TRANSACTION_PRICE_WIDTH,
+				SettingsManager.TRANSACTION_PRICE_WIDTH,
 				132, 
 				BigDecimal.class, 
 				ColumnModel.CURRENCY
@@ -92,9 +92,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Taxes", 
 				"totaltax", 
-				SettingsManager.TABLE_TRANSACTION_TAXES_VISIBLE,
+				SettingsManager.TRANSACTION_VISIBLE,
 				false,
-				SettingsManager.TABLE_TRANSACTION_TAXES_WIDTH,
+				SettingsManager.TRANSACTION_WIDTH,
 				100, 
 				BigDecimal.class, 
 				ColumnModel.CURRENCY
@@ -104,9 +104,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Total (exc. taxes)", 
 				"totalnotax", 
-				SettingsManager.TABLE_TRANSACTION_TOTAL_WITHOUT_TAXES_VISIBLE,
+				SettingsManager.TRANSACTION_TOTAL_EXC_VISIBLE,
 				false,
-				SettingsManager.TABLE_TRANSACTION_TOTAL_WITHOUT_TAXES_WIDTH,
+				SettingsManager.TRANSACTION_TOTAL_EXC_WIDTH,
 				100, 
 				BigDecimal.class, 
 				ColumnModel.CURRENCY
@@ -116,9 +116,9 @@ public class TransactionColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Total (inc. taxes)", 
 				"totalwithtax", 
-				SettingsManager.TABLE_TRANSACTION_TOTAL_WITH_TAXES_VISIBLE,
+				SettingsManager.TRANSACTION_TOTAL_INC_VISIBLE,
 				true,
-				SettingsManager.TABLE_TRANSACTION_TOTAL_WITH_TAXES_WIDTH,
+				SettingsManager.TRANSACTION_TOTAL_INC_WIDTH,
 				131, 
 				BigDecimal.class, 
 				ColumnModel.CURRENCY

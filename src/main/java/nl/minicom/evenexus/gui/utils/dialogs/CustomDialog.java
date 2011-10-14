@@ -19,6 +19,11 @@ import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.utils.GradientPanel;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
+/**
+ * This class represents a dialog which is drawn in the GUI.
+ *
+ * @author michael
+ */
 public abstract class CustomDialog extends JDialog {
 
 	private static final long serialVersionUID = 3922331594697041683L;
@@ -26,6 +31,18 @@ public abstract class CustomDialog extends JDialog {
 	private final JPanel guiPanel;
 	private final GradientPanel dialogPanel;
 	
+	/**
+	 * This constructs a new {@link CustomDialog} object.
+	 * 
+	 * @param dialogTitle
+	 * 		The title of this dialog.
+	 * 
+	 * @param width
+	 * 		The width of this dialog.
+	 * 
+	 * @param height
+	 * 		The height of this dialog.
+	 */
 	public CustomDialog(DialogTitle dialogTitle, int width, int height) {
 		super();
 		this.dialogPanel = new GradientPanel();
@@ -45,12 +62,18 @@ public abstract class CustomDialog extends JDialog {
 		Gui.setLookAndFeel();
 	}
 	
+	/**
+	 * This method removes all elements from this {@link CustomDialog}.
+	 */
 	protected void clearComponents() {
 		for (Component component : guiPanel.getComponents()) {
 			guiPanel.remove(component);
 		}
 	}
 
+	/**
+	 * This method builds the GUI.
+	 */
 	public void buildGui() {
 		clearComponents();
 		
@@ -78,13 +101,23 @@ public abstract class CustomDialog extends JDialog {
         setLayout(layout); 
 	}
 	
+	/**
+	 * This method sets the specified {@link DialogTitle} as this {@link CustomDialog}'s title.
+	 * 
+	 * @param title
+	 * 		The new {@link DialogTitle} of this {@link CustomDialog}.
+	 */
 	public final void createTitle(DialogTitle title) {
 		createTitle(title, dialogPanel);
 	}
 
 	private void createTitle(DialogTitle title, GradientPanel panel) {	
 		panel.removeAll();
-		panel.setBorder(new CompoundBorder(new MatteBorder(0, 0, 1, 0, Color.WHITE), new MatteBorder(0, 0, 1, 0, Color.GRAY)));
+
+		MatteBorder outsideBorder = new MatteBorder(0, 0, 1, 0, Color.WHITE);
+		MatteBorder insideBorder = new MatteBorder(0, 0, 1, 0, Color.GRAY);
+		panel.setBorder(new CompoundBorder(outsideBorder, insideBorder));
+		
 		panel.setMinimumSize(new Dimension(0, 70));
 		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
 		panel.setBackground(Color.WHITE);
@@ -105,13 +138,24 @@ public abstract class CustomDialog extends JDialog {
 			panel.add(icon);
 		}
 		
-		JLabel titleLabel = new JLabel(String.format("<html><b>%s</b><br>%s</html>", title.getTitle(), title.getDescription()));
+		String htmlTitle = String.format("<html><b>%s</b><br>%s</html>", title.getTitle(), title.getDescription());
+		JLabel titleLabel = new JLabel(htmlTitle);
 		titleLabel.setBounds(67, 0, 450, 70);
 		panel.add(titleLabel);
 	}
 	
+	/**
+	 * This method is called when creating the inner gui elements of the {@link CustomDialog}.
+	 * 
+	 * @param guiPanel
+	 * 		The {@link JPanel} to draw on.
+	 */
 	public abstract void createGui(JPanel guiPanel);
 	
+	/**
+	 * @return
+	 * 		The {@link JPanel} to draw on.
+	 */
 	public JPanel getGuiPanel() {
 		return guiPanel;
 	}

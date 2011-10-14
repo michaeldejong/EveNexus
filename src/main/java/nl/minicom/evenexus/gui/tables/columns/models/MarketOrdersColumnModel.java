@@ -23,9 +23,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Item",
 				"typeName",
-				SettingsManager.TABLE_MARKETORDER_ITEM_VISIBLE,
+				SettingsManager.MARKETORDER_ITEM_VISIBLE,
 				true,
-				SettingsManager.TABLE_MARKETORDER_ITEM_WIDTH,
+				SettingsManager.MARKETORDER_ITEM_WIDTH,
 				237,
 				String.class
 		));
@@ -34,9 +34,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Volume entered",
 				"volEntered",
-				SettingsManager.TABLE_MARKETORDER_VOLENTERED_VISIBLE,
+				SettingsManager.MARKETORDER_VOLENTERED_VISIBLE,
 				true,
-				SettingsManager.TABLE_MARKETORDER_VOLENTERED_WIDTH,
+				SettingsManager.MARKETORDER_VOLENTERED_WIDTH,
 				87,
 				Long.class,
 				ColumnModel.INTEGER
@@ -46,9 +46,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Volume remaining",
 				"volRemaining",
-				SettingsManager.TABLE_MARKETORDER_VOLREMAINING_VISIBLE,
+				SettingsManager.MARKETORDER_VOLREMAINING_VISIBLE,
 				true,
-				SettingsManager.TABLE_MARKETORDER_VOLREMAINING_WIDTH,
+				SettingsManager.MARKETORDER_VOLREMAINING_WIDTH,
 				86,
 				Long.class,
 				ColumnModel.INTEGER
@@ -58,9 +58,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Minimum volume",
 				"minVolume",
-				SettingsManager.TABLE_MARKETORDER_MINVOLUME_VISIBLE,
+				SettingsManager.MARKETORDER_MINVOLUME_VISIBLE,
 				false,
-				SettingsManager.TABLE_MARKETORDER_MINVOLUME_WIDTH,
+				SettingsManager.MARKETORDER_MINVOLUME_WIDTH,
 				50,
 				Long.class,
 				ColumnModel.INTEGER
@@ -70,9 +70,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Station",
 				"stationName",
-				SettingsManager.TABLE_MARKETORDER_STATION_VISIBLE,
+				SettingsManager.MARKETORDER_STATION_VISIBLE,
 				true,
-				SettingsManager.TABLE_MARKETORDER_STATION_WIDTH,
+				SettingsManager.MARKETORDER_STATION_WIDTH,
 				236,
 				String.class
 		));
@@ -81,9 +81,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Price",
 				"price",
-				SettingsManager.TABLE_MARKETORDER_PRICE_VISIBLE,
+				SettingsManager.MARKETORDER_PRICE_VISIBLE,
 				true,
-				SettingsManager.TABLE_MARKETORDER_PRICE_WIDTH,
+				SettingsManager.MARKETORDER_PRICE_WIDTH,
 				137,
 				BigDecimal.class,
 				ColumnModel.CURRENCY
@@ -93,9 +93,9 @@ public class MarketOrdersColumnModel extends ColumnModel {
 				getSettingsManager(),
 				"Issued", 
 				"issued",
-				SettingsManager.TABLE_MARKETORDER_ISSUED_VISIBLE,
+				SettingsManager.MARKETORDER_ISSUED_VISIBLE,
 				false,
-				SettingsManager.TABLE_MARKETORDER_ISSUED_WIDTH,
+				SettingsManager.MARKETORDER_ISSUED_WIDTH,
 				100, 
 				Timestamp.class,
 				ColumnModel.DATE_TIME

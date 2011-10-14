@@ -17,6 +17,11 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 
+/**
+ * This class holds all the explicit Guice bindings for this application.
+ * 
+ * @author michael
+ */
 public class ApplicationModule extends AbstractModule {
 
 	@Override

@@ -31,23 +31,39 @@ import nl.minicom.evenexus.persistence.interceptor.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
+/**
+ * This class represents the filter dialog when creating a report.
+ * 
+ * @author michael
+ */
 public class ReportFiltersPanel extends ReportBuilderPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final Database database;
 	
-//	private ReportModel model; 
-
+	/**
+	 * This constructs a new {@link ReportFiltersPanel} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public ReportFiltersPanel(Database database) {
 		this.database = database;
 	}
 
+	/**
+	 * This method initializes this {@link ReportFiltersPanel} object.
+	 * 
+	 * @param model
+	 * 		The {@link ReportModel} to use.
+	 * 
+	 * @return
+	 * 		this.
+	 */
 	public ReportBuilderPage initialize(ReportModel model) {
-//		this.model = model;
 		buildGui();
-
 		return this;
 	}
 
@@ -149,18 +165,26 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		return comboBox;
 	}
 
+	/**
+	 * @return
+	 * 		All {@link MapRegion} objects.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
-	protected List<MapRegion> listMapRegions() {
+	List<MapRegion> listMapRegions() {
 		Session session = database.getCurrentSession();
 		return session.createCriteria(MapRegion.class)
 				.addOrder(Order.asc("regionName"))
 				.list();
 	}
 
+	/**
+	 * @return
+	 * 		All {@link ApiKey} objects.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
-	protected List<ApiKey> listCharacters() {
+	List<ApiKey> listCharacters() {
 		Session session = database.getCurrentSession();
 		return session.createCriteria(ApiKey.class)
 				.addOrder(Order.asc("name"))
@@ -230,8 +254,9 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		return checkBox;
 	}
 
-	private JSpinner createDateSpinner(Date bottomLimit, Date currentBottomLimit, Date upperLimit) {
-		JSpinner spinner = new JSpinner(new SpinnerDateModel(currentBottomLimit, bottomLimit, upperLimit, Calendar.DAY_OF_YEAR));
+	private JSpinner createDateSpinner(Date bottomLimit, Date currentBottom, Date upperLimit) {
+		SpinnerDateModel model = new SpinnerDateModel(currentBottom, bottomLimit, upperLimit, Calendar.DAY_OF_YEAR);
+		JSpinner spinner = new JSpinner(model);
 		spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss dd/MM/yyyy "));
 		spinner.setMinimumSize(new Dimension(120, GuiConstants.SPINNER_HEIGHT));
 		spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.SPINNER_HEIGHT));

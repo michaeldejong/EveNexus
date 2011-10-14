@@ -9,12 +9,20 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+/**
+ * This class is responsible for pooling a {@link Session} for every {@link Thread}.
+ * 
+ * @author michael
+ */
 @Singleton
 public class Database {
 
 	private final Map<Thread, Session> sessionMapping;
 	private SessionFactory sessionFactory = null;
 	
+	/**
+	 * This contructs a new {@link Database} object.
+	 */
 	public Database() {
 		this.sessionMapping = new HashMap<Thread, Session>();
 	}
@@ -27,6 +35,11 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * @return
+	 * 		The current open {@link Session} of the calling {@link Thread}. 
+	 * 		If no (open) {@link Session} has been associated with this {@link Thread}, a new one is openend.
+	 */
 	public Session getCurrentSession() {
 		synchronized (this) {
 			ensureInitialized();
@@ -40,6 +53,9 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * This method closes the calling {@link Thread}'s {@link Session}.
+	 */
 	public void closeCurrentSession() {
 		synchronized (this) {
 			Session session = sessionMapping.get(Thread.currentThread());

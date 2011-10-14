@@ -1,5 +1,7 @@
 package nl.minicom.evenexus.core.report.engine;
 
+import nl.minicom.evenexus.gui.icons.Icon;
+
 /**
  * A {@link DisplayType} represents how we can format data in order
  * to present it in a graphic way to the user.
@@ -8,16 +10,16 @@ package nl.minicom.evenexus.core.report.engine;
  */
 public enum DisplayType {
 
-	TABLE(1, "img/48/table.png", "Table", "Selecting this option will format your report in the form of a table."), 
-	GRAPH(2, "img/48/chart.png", "Graph", "Selecting this option will format your report in the form of a graph."), 
-	PIE(3, "img/48/pie_chart.png", "Pie chart", "Selecting this option will format your report in the form of a pie chart.");
+	TABLE(1, Icon.TABLE_48, "Table", "Selecting this option will format your report in the form of a table."), 
+	GRAPH(2, Icon.GRAPH_48, "Graph", "Selecting this option will format your report in the form of a graph."), 
+	PIE(3, Icon.PIE_CHART_48, "Pie chart", "Selecting this option will format your report in the form of a pie chart.");
 	
 	private final int id;
-	private final String icon;
+	private final Icon icon;
 	private final String title;
 	private final String description;
 	
-	private DisplayType(int id, String icon, String title, String description) {
+	private DisplayType(int id, Icon icon, String title, String description) {
 		this.id = id;
 		this.icon = icon;
 		this.title = title;
@@ -32,9 +34,9 @@ public enum DisplayType {
 	}
 
 	/**
-	 * @return 	Returns a {@link String} containing the path to an icon.
+	 * @return 	Returns an {@link Icon} containing the path to an icon.
 	 */
-	public String getIcon() {
+	public Icon getIcon() {
 		return icon;
 	}
 

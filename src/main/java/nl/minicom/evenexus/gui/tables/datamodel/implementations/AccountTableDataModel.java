@@ -14,10 +14,21 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
 
+/**
+ * This class represents the table data model for data on accounts.
+ *
+ * @author michael
+ */
 public class AccountTableDataModel implements ITableDataModel {
 
 	private final Database database;
 	
+	/**
+	 * This constructs a new {@link AccountTableDataModel} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public AccountTableDataModel(Database database) {
 		this.database = database;

@@ -30,9 +30,9 @@ public class AccountColumnModel extends ColumnModel {
 				getSettingsManager(), 
 				"KeyID", 
 				"keyid", 
-				SettingsManager.TABLE_ACCOUNT_KEYID_VISIBLE,
+				SettingsManager.ACCOUNT_KEYID_VISIBLE,
 				true,
-				SettingsManager.TABLE_ACCOUNT_KEYID_WIDTH,
+				SettingsManager.ACCOUNT_KEYID_WIDTH,
 				88,
 				Long.class,
 				ColumnModel.ALIGN_RIGHT
@@ -42,9 +42,9 @@ public class AccountColumnModel extends ColumnModel {
 				getSettingsManager(), 
 				"Verification Code", 
 				"verificationcode", 
-				SettingsManager.TABLE_ACCOUNT_VCODE_VISIBLE,
+				SettingsManager.ACCOUNT_VCODE_VISIBLE,
 				true,
-				SettingsManager.TABLE_ACCOUNT_VCODE_WIDTH,
+				SettingsManager.ACCOUNT_VCODE_WIDTH,
 				450,
 				String.class
 		));
@@ -53,9 +53,9 @@ public class AccountColumnModel extends ColumnModel {
 				getSettingsManager(), 
 				"Character ID", 
 				"characterid", 
-				SettingsManager.TABLE_ACCOUNT_CHARID_VISIBLE,
+				SettingsManager.ACCOUNT_CHARID_VISIBLE,
 				false,
-				SettingsManager.TABLE_ACCOUNT_CHARID_WIDTH,
+				SettingsManager.ACCOUNT_CHARID_WIDTH,
 				88,
 				Long.class,
 				ColumnModel.ALIGN_RIGHT
@@ -65,9 +65,9 @@ public class AccountColumnModel extends ColumnModel {
 				getSettingsManager(), 
 				"Character", 
 				"charactername", 
-				SettingsManager.TABLE_ACCOUNT_CHARNAME_VISIBLE,
+				SettingsManager.ACCOUNT_CHARNAME_VISIBLE,
 				true,
-				SettingsManager.TABLE_ACCOUNT_CHARNAME_WIDTH,
+				SettingsManager.ACCOUNT_CHARNAME_WIDTH,
 				174,
 				String.class
 		));
@@ -76,9 +76,9 @@ public class AccountColumnModel extends ColumnModel {
 				getSettingsManager(), 
 				"Corporation ID", 
 				"corporationid", 
-				SettingsManager.TABLE_ACCOUNT_CORPID_VISIBLE,
+				SettingsManager.ACCOUNT_CORPID_VISIBLE,
 				false,
-				SettingsManager.TABLE_ACCOUNT_CORPID_WIDTH,
+				SettingsManager.ACCOUNT_CORPID_WIDTH,
 				88,
 				Long.class,
 				ColumnModel.ALIGN_RIGHT
@@ -88,9 +88,9 @@ public class AccountColumnModel extends ColumnModel {
 				getSettingsManager(), 
 				"Corporation", 
 				"corporationname", 
-				SettingsManager.TABLE_ACCOUNT_CORPNAME_VISIBLE,
+				SettingsManager.ACCOUNT_CORPNAME_VISIBLE,
 				true,
-				SettingsManager.TABLE_ACCOUNT_CORPNAME_WIDTH,
+				SettingsManager.ACCOUNT_CORPNAME_WIDTH,
 				174,
 				String.class
 		));

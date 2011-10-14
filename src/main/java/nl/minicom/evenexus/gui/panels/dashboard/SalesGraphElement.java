@@ -48,6 +48,7 @@ public class SalesGraphElement implements GraphElement {
 	@Override
 	public void reload() throws SQLException {
 		Session session = database.getCurrentSession();
+		String dateField = WalletTransaction.TRANSACTION_DATE_TIME;
 		
 		StringBuilder queryBuilder = new StringBuilder();
 		queryBuilder.append("SELECT ");
@@ -58,10 +59,10 @@ public class SalesGraphElement implements GraphElement {
 		queryBuilder.append("		" + WalletTransaction.QUANTITY + " AS quantity, ");
 		queryBuilder.append("		" + WalletTransaction.PRICE + " AS price, ");
 		queryBuilder.append("		" + WalletTransaction.TAXES + " AS taxes, ");
-		queryBuilder.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + WalletTransaction.TRANSACTION_DATE_TIME + ") AS dayValue ");
+		queryBuilder.append("		DAY_OF_YEAR(CURRENT_TIMESTAMP()) - DAY_OF_YEAR(" + dateField + ") AS dayValue ");
 		queryBuilder.append("	FROM transactions ");
 		queryBuilder.append("	WHERE " + WalletTransaction.PRICE + " > 0.00 ");
-		queryBuilder.append("		AND " + WalletTransaction.TRANSACTION_DATE_TIME + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP())");
+		queryBuilder.append("		AND " + dateField + " > DATEADD('DAY', ?, CURRENT_TIMESTAMP())");
 		queryBuilder.append(") ");
 		queryBuilder.append("GROUP BY dayValue ");
 		queryBuilder.append("ORDER BY dayValue ASC");
