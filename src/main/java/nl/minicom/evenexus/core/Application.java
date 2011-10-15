@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * This class can be used to start the application.
+ * 
+ * @author michael
+ */
 @Singleton
 public class Application {
 	
@@ -41,6 +46,33 @@ public class Application {
 	
 	private boolean initialized = false;
 	
+	/**
+	 * This constructs a new {@link Application} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param inventoryManager
+	 * 		The {@link InventoryManager}.
+	 * 
+	 * @param revisionExecutor
+	 * 		The {@link RevisionExecutor}.
+	 * 
+	 * @param translator
+	 * 		The {@link Translator}.
+	 * 
+	 * @param proxyManager
+	 * 		The {@link ProxyManager}.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param gui
+	 * 		The {@link Gui}.
+	 */
 	@Inject
 	public Application(Database database, SettingsManager settingsManager, InventoryManager inventoryManager,
 			RevisionExecutor revisionExecutor, Translator translator, ProxyManager proxyManager, 
@@ -56,6 +88,18 @@ public class Application {
 		this.gui = gui;
 	}
 	
+	/**
+	 * This method initializes the {@link Application} object.
+	 * 
+	 * @param progressManager
+	 * 		A {@link ProgressManager} to keep track of the progress while initializing.
+	 * 
+	 * @param args
+	 * 		Additional arguments if required.
+	 * 
+	 * @throws Exception
+	 * 		If the {@link Application} could not be initialized.
+	 */
 	public void initialize(final ProgressManager progressManager, String[] args) throws Exception {
 		synchronized (this) {
 			Preconditions.checkArgument(!initialized, "This class has already been initialized!");
@@ -106,24 +150,40 @@ public class Application {
 		}
 	}
 
+	/**
+	 * This method initializes the GUI.
+	 */
 	public void initializeGui() {
 		gui.initialize();
 	}
-	
-	public void disposeGui() {
-		gui.dispose();
-	}
-	
+
+	/**
+	 * @return
+	 * 		The version of the database structure.
+	 */
 	public String getDatabaseVersion() {
 		return getVersion("database");
 	}
 	
+	/**
+	 * @return
+	 * 		The version of the content in the database.
+	 */
 	public String getContentVersion() {
 		return getVersion("content");
 	}
 	
+	/**
+	 * This method returns the current version of the specified type.
+	 * 
+	 * @param type
+	 * 		The type of resource to look for.
+	 * 
+	 * @return
+	 * 		The version of the resource, or "unknown" if no version is known.
+	 */
 	@Transactional
-	protected String getVersion(String type) {
+	String getVersion(String type) {
 		Preconditions.checkArgument(initialized, "This class has not yet been initialized!");
 		
 		Session session = database.getCurrentSession();

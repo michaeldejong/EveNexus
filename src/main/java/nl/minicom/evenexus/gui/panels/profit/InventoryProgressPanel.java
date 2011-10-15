@@ -15,6 +15,12 @@ import nl.minicom.evenexus.inventory.InventoryEvent;
 import nl.minicom.evenexus.inventory.InventoryListener;
 import nl.minicom.evenexus.inventory.InventoryManager;
 
+/**
+ * This {@link JPanel} displays a progress bar when there are threads busy in the background 
+ * with matching transactions.
+ * 
+ * @author michael
+ */
 public class InventoryProgressPanel extends JPanel implements InventoryListener {
 
 	private static final long serialVersionUID = -7958393732480777576L;
@@ -23,6 +29,12 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 	private final JLabel label;
 	private final JLabel image;
 	
+	/**
+	 * This constructs a new {@link InventoryProgressPanel} object.
+	 * 
+	 * @param inventoryManager
+	 * 		The {@link InventoryManager}.
+	 */
 	@Inject
 	public InventoryProgressPanel(InventoryManager inventoryManager) {
 		setLayout(null);
@@ -30,13 +42,9 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.FOLDED_STATUS_BAR));
 		setBackground(GuiConstants.APPLICATION_BACKGROUND_COLOR);
 		
-		JPanel spacer = new JPanel();
-		spacer.setMinimumSize(new Dimension(0, 0));
-		spacer.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.FOLDED_STATUS_BAR));
-		
 		label = new JLabel();
-		label.setMinimumSize(new Dimension(256, GuiConstants.PROGRESS_BAR_HEIGHT));
-		label.setMaximumSize(new Dimension(256, GuiConstants.PROGRESS_BAR_HEIGHT));
+		label.setMinimumSize(new Dimension(0, GuiConstants.PROGRESS_BAR_HEIGHT));
+		label.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.PROGRESS_BAR_HEIGHT));
 		add(label);
 		
 		progress = new JProgressBar();
@@ -49,14 +57,14 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		image = new JLabel();
 		image.setMinimumSize(new Dimension(GuiConstants.PROGRESS_BAR_HEIGHT, GuiConstants.PROGRESS_BAR_HEIGHT));
 		image.setMaximumSize(new Dimension(GuiConstants.PROGRESS_BAR_HEIGHT, GuiConstants.PROGRESS_BAR_HEIGHT));
-		image.setIcon(Icon.getIcon("/img/16/clock.png"));
+		image.setIcon(Icon.getIcon(Icon.CLOCK_16));
 		add(image);
 		
 		GroupLayout layout = new GroupLayout(this);
         setLayout(layout);        
         layout.setHorizontalGroup(
         	layout.createSequentialGroup()
-	        	.addComponent(spacer)
+        		.addGap(5)
         		.addComponent(label)
         		.addGap(5)
         		.addComponent(progress)
@@ -67,7 +75,6 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
 	    		.addGroup(layout.createParallelGroup()
-	    				.addComponent(spacer)
 	            		.addComponent(label)
 	            		.addComponent(progress)
 	            		.addComponent(image)

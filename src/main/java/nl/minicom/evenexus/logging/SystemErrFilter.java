@@ -8,6 +8,12 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.filter.AbstractMatcherFilter;
 import ch.qos.logback.core.spi.FilterReply;
 
+
+/**
+ * This class is responsible for filtering {@link LoggingEvent}s according to their {@link Level}.
+ *
+ * @author michael
+ */
 public class SystemErrFilter extends AbstractMatcherFilter<Object> {
 
 	@Override

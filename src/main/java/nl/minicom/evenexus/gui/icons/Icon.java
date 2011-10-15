@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
  */
 public enum Icon {
 	
+	CLOCK_16				("/img/16/clock.png"),
+	
 	ADD_32					("/img/32/plus.png"),
 	DISPLAY_32				("/img/32/display.png"),
 	PACKAGE_32				("/img/32/box.png"),
