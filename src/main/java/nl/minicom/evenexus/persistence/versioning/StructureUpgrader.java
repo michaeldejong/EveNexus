@@ -802,6 +802,83 @@ public class StructureUpgrader extends RevisionCollection {
 			}
 		});
 		
+		super.registerRevision(new Revision(195) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN groupId").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(196) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN description").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(197) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN graphicId").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(198) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN radius").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(199) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN mass").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(200) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN capacity").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(201) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN basePrice").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(202) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN published").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(203) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN raceId").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(204) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN portionSize").executeUpdate();
+			}
+		});
+		
+		super.registerRevision(new Revision(205) {
+			@Override
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN chanceOfDuplicating").executeUpdate();
+			}
+		});
+		
 	}
 	
 	@Override

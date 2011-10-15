@@ -2,6 +2,7 @@ package nl.minicom.evenexus.persistence.versioning;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -35,7 +36,13 @@ public class ContentCreator {
 		addStations(c);
 		addItems(c);
 		
-		new Gson().toJson(c, new FileWriter("content.json"));
+		StringWriter writer = new StringWriter();
+		new Gson().toJson(c, writer);
+		
+		FileWriter fileWriter = new FileWriter("content.json");
+		fileWriter.write(writer.toString());
+		fileWriter.flush();
+		fileWriter.close();
 		
 		close();
 	}
@@ -70,23 +77,12 @@ public class ContentCreator {
 	}
 	
 	private void addItems(Container c) throws SQLException {
-		PreparedStatement statement = conn.prepareStatement("SELECT * FROM invtypes");
+		PreparedStatement statement = conn.prepareStatement("SELECT * FROM invtypes WHERE published = 1");
 		ResultSet result = statement.executeQuery();
 		
 		while (result.next()) {
 			Item item = new Item();
-			item.setBasePrice(result.getDouble("basePrice"));
-			item.setCapacity(result.getDouble("capacity"));
-			item.setChanceOfDuplicating(result.getDouble("chanceOfDuplicating"));
-			item.setDescription(result.getString("description"));
-			item.setGraphicId(result.getLong("graphicId"));
-			item.setGroupId(result.getLong("groupId"));
 			item.setMarketGroupId(result.getLong("marketGroupId"));
-			item.setMass(result.getDouble("mass"));
-			item.setPortionSize(result.getLong("portionSize"));
-			item.setPublished(result.getBoolean("published"));
-			item.setRaceId(result.getInt("raceId"));
-			item.setRadius(result.getDouble("radius"));
 			item.setTypeId(result.getLong("typeId"));
 			item.setTypeName(result.getString("typeName"));
 			item.setVolume(result.getDouble("volume"));

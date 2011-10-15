@@ -33,5 +33,6 @@
 	</root>
 
 	<logger name="nl.minicom" level="INFO" />
+	<logger name="org.hibernate" level="WARN" />
 
 </configuration>

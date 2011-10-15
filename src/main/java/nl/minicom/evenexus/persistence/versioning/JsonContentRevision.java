@@ -17,7 +17,7 @@ public class JsonContentRevision implements IRevision {
 	
 	public JsonContentRevision(String fileName) throws Exception {
 		Gson gson = new Gson();
-		InputStream in = new FileInputStream(fileName);
+		InputStream in = JsonContentRevision.class.getResourceAsStream(fileName);
 		container = gson.fromJson(new InputStreamReader(in), Container.class);
 	}
 	
