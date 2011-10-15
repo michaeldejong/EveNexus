@@ -31,7 +31,10 @@ public enum Icon {
 	PIE_CHART_48			("/img/48/pie_chart.png"),
 	SETTINGS_48				("/img/48/process.png"),
 	TABLE_48				("/img/48/table.png"),
-	WARNING_48				("/img/48/warning.png");
+	WARNING_48				("/img/48/warning.png"), 
+	
+	LOGO					("/img/other/logo.png"), 
+	SPLASH					("/img/other/splash.png");
 	
 	private final String path;
 	

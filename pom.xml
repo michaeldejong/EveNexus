@@ -46,6 +46,17 @@
 	</properties>
 
 	<build>
+		<resources>
+			<resource>
+				<directory></directory>
+				<includes>
+					<include>content.json</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -57,24 +68,6 @@
 				<version>2.3.2</version>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<revisionOnScmFailure>0</revisionOnScmFailure>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-				</configuration>
-			</plugin>
-			<!--plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.2</version>
@@ -90,7 +83,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin-->
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -104,9 +97,6 @@
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 							<mainClass>nl.minicom.evenexus.Main</mainClass>
 						</manifest>
-						<manifestEntries>
-							<Implementation-Version>${buildNumber}</Implementation-Version>
-						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>

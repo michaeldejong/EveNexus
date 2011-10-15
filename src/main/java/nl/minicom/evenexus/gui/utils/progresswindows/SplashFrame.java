@@ -20,7 +20,7 @@ public class SplashFrame extends ProgressManager {
 	@Override
 	public final void buildGui() {
 		setTitle(getClass().getPackage().getSpecificationTitle());
-		setIconImage(Icon.getImage("/img/other/logo.png"));
+		setIconImage(Icon.getImage(Icon.LOGO));
 		setUndecorated(true);
 		setResizable(false);
 		
@@ -36,7 +36,7 @@ public class SplashFrame extends ProgressManager {
 		panel.setLayout(null);
 		getContentPane().add(panel);
 		
-		JLabel logo = new JLabel(Icon.getIcon("/img/other/splash.png"));
+		JLabel logo = new JLabel(Icon.getIcon(Icon.SPLASH));
 		logo.setBounds(0, 0, 487, 223);
 		panel.add(logo);
 		

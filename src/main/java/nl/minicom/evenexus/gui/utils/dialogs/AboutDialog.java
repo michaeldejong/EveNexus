@@ -117,11 +117,6 @@ public class AboutDialog extends CustomDialog {
 		String applicationVersion = getClass().getPackage().getSpecificationVersion();
 		String databaseVersion = application.getDatabaseVersion();
 		String contentVersion = application.getContentVersion();
-		String buildNumber = getClass().getPackage().getImplementationVersion();
-		
-		if (buildNumber == null || buildNumber.trim().isEmpty()) {
-			buildNumber = "unknown";
-		}
 
 		Font font = UIManager.getFont("Label.font");
         font = font.deriveFont(12.0f);
@@ -134,8 +129,7 @@ public class AboutDialog extends CustomDialog {
 		builder.append("</style>");
 		builder.append("</head>");
 		builder.append("<body>");
-		builder.append("Application version: " + applicationVersion);
-		builder.append(" (build: " + buildNumber + ")<br>");
+		builder.append("Application version: " + applicationVersion + "<br>");
 		builder.append("Database version: " + databaseVersion + "<br>");
 		builder.append("Content version: " + contentVersion);
 		builder.append("</body>");
