@@ -5,6 +5,11 @@ import javax.inject.Singleton;
 
 import nl.minicom.evenexus.utils.SettingsManager;
 
+/**
+ * The {@link ApiServerManager} allows the developer to set and request API server related settings.
+ *
+ * @author michael
+ */
 @Singleton
 public class ApiServerManager {
 
@@ -12,11 +17,21 @@ public class ApiServerManager {
 	
 	private final SettingsManager settingsManager;
 	
+	/**
+	 * This constructs a new {@link ApiServerManager} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public ApiServerManager(SettingsManager settingsManager) {
 		this.settingsManager = settingsManager;
 	}
 	
+	/**
+	 * @return
+	 * 		The currently set API server host.
+	 */
 	public String getApiServer() {
 		if (settingsManager.loadBoolean(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false)) {
 			return settingsManager.loadString(SettingsManager.USER_DEFINED_API_SERVER_HOST, DEFAULT_API_SERVER);
@@ -24,10 +39,20 @@ public class ApiServerManager {
 		return DEFAULT_API_SERVER;
 	}
 	
+	/**
+	 * This method disables the custom API server settings. After calling this method the {@link ApiServerManager}
+	 * will redirect the developer to the default API server.
+	 */
 	public void disableUserApiServer() {
 		settingsManager.saveObject(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, false);
 	}
 	
+	/**
+	 * This method sets the API server path.
+	 * 
+	 * @param serverPath
+	 * 		The new API server path.
+	 */
 	public void setApiServer(String serverPath) {
 		settingsManager.saveObject(SettingsManager.USER_DEFINED_API_SERVER_ENABLED, true);
 		

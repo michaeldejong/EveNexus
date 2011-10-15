@@ -21,7 +21,6 @@ import javax.swing.event.HyperlinkListener;
 
 import nl.minicom.evenexus.core.Application;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.AboutTitle;
-import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
