@@ -167,7 +167,9 @@ public class Gui extends JFrame {
     		layout.createSequentialGroup()
 	    		.addGap(7)
 	    		.addComponent(pane)
+	    		.addGap(4)
 	    		.addComponent(state)
+	    		.addGap(3)
     	);
 	}
 
