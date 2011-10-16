@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 
 import javax.inject.Provider;
 
@@ -26,14 +27,14 @@ public class InventoryWorkerTest {
 	private InventoryTestCasePreparer preparer;
 	
 	@Before
-	public void setup() {
+	public void setup() throws SQLException {
 		Injector injector = Guice.createInjector(new TestModule());
 		RevisionExecutor executor = injector.getInstance(RevisionExecutor.class);
 		workerProvider = injector.getProvider(InventoryWorker.class);
 		preparer = injector.getInstance(InventoryTestCasePreparer.class);
 
 		preparer.dropDatabase();
-		executor.execute(new StructureUpgrader());
+		executor.execute(new StructureUpgrader(), true);
 	}
 	
 	@After

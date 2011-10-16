@@ -26,6 +26,7 @@ public class InventoryTestCasePreparer {
 	@Transactional
 	public void prepare(InventoryTestCase testCase) {
 		Session session = database.getCurrentSession();
+		
 		for (WalletTransaction walletTransaction : testCase.getInitialTransactions()) {
 			session.save(walletTransaction);
 			session.flush();

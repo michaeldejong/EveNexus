@@ -52,7 +52,12 @@ public class ImportDatabaseDialog extends DatabaseFileChooser {
 		session.createSQLQuery("DROP ALL OBJECTS").executeUpdate();
 		session.doWork(work);
 		
-		executor.execute(new StructureUpgrader());
+		try {
+			executor.execute(new StructureUpgrader(), false);
+		}
+		catch (SQLException e) {
+			throw new RuntimeException("Could not run the database structure upgrader", e);
+		}
 		
 		gui.reload();
 	}

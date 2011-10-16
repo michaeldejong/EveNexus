@@ -70,7 +70,7 @@ public class StructureUpgraderTest {
 	@Test
 	public void testFinalStructure() throws SQLException {
 		// Upgrade structure
-		Version version = executor.execute(instance);
+		Version version = executor.execute(instance, true);
 		
 		// Assert versioning
 		Assert.assertEquals(version.getType(), "database");

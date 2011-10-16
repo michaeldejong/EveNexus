@@ -1,31 +1,25 @@
 package nl.minicom.evenexus.persistence.versioning;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.Version;
-import nl.minicom.evenexus.persistence.interceptor.Transactional;
-
-import org.hibernate.Session;
 
 import com.google.common.base.Preconditions;
 
 public class RevisionExecutor {
 	
-	private final Database database;
-	
-	@Inject
-	public RevisionExecutor(Database database) {
-		this.database = database;
-	}
-	
-	@Transactional
-	public Version execute(RevisionCollection revisions) {
+	public Version execute(RevisionCollection revisions, boolean isTest) throws SQLException {
 		Preconditions.checkNotNull(revisions);
-		Session session = database.getCurrentSession();
-		Version dbVersion = getCurrentVersion(revisions, session);
+		
+		Connection conn = connect(isTest);
+
+		Version dbVersion = getCurrentVersion(revisions, conn);
 		List<IRevision> revisionList = revisions.getRevisions();
 		IRevision lastRevision = revisionList.get(revisionList.size() - 1);
 		if (dbVersion.getRevision() > lastRevision.getRevisionNumber()) {
@@ -34,24 +28,52 @@ public class RevisionExecutor {
 		}
 		for (IRevision revision : revisionList) {
 			if (revision.getRevisionNumber() > dbVersion.getRevision()) {
-				revision.execute(session);
+				revision.execute(conn);
 				dbVersion.setRevision(revision.getRevisionNumber());
-				session.saveOrUpdate(dbVersion);
+				updateVersion(conn, dbVersion);
 			}
 		}
+		
+		close(conn);
+		
 		return dbVersion;
 	}
+	
+	private Connection connect(boolean isTest) {
+		try {
+			Class.forName("org.h2.Driver");
+			if (isTest) {
+				return DriverManager.getConnection("jdbc:h2:database/test", "root", "");
+			}
+			return DriverManager.getConnection("jdbc:h2:database/database", "root", "");
+		} 
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-	private Version getCurrentVersion(RevisionCollection revisions, Session session) {
+	private void close(Connection conn) {
+		try {
+			conn.close();
+		} 
+		catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Version getCurrentVersion(RevisionCollection revisions, Connection conn) throws SQLException {
 		String query = "SHOW TABLES";
-
-		@SuppressWarnings("unchecked")
-		List<Object[]> tables = (List<Object[]>) session.createSQLQuery(query).list();
+		
+		ResultSet s = conn.createStatement().executeQuery(query);
+		List<String> tables = new ArrayList<String>();
+		
+		while (s.next()) {
+			tables.add(s.getString(1));
+		}
 		
 		boolean tableExists = false;
-		for (Object[] table : tables) {
-			String tableName = table[0].toString().toLowerCase();
-			if ("versioning".equals(tableName)) {
+		for (String table : tables) {
+			if ("versioning".equalsIgnoreCase(table)) {
 				tableExists = true;
 			}
 		}
@@ -65,18 +87,58 @@ public class RevisionExecutor {
 			.append("PRIMARY KEY(`type`))")
 			.toString();
 			
-			session.createSQLQuery(sql).executeUpdate();
+			conn.createStatement().execute(sql);
 		}
 		
-		Version version = (Version) session.get(Version.class, revisions.getRevisionType());
+		Version version = getVersion(conn, revisions.getRevisionType());
 		if (version == null) {
 			version = new Version();
 			version.setType(revisions.getRevisionType());
 			version.setRevision(-1);
-			session.saveOrUpdate(version);
+			updateVersion(conn, version);
 		}
 		
 		return version;
+	}
+	
+	private void updateVersion(Connection conn, final Version version) throws SQLException {
+		String query = "MERGE INTO versioning (type, revision, version) VALUES (?, ?, ?)";
+		PreparedStatement statement = conn.prepareStatement(query);
+		statement.setString(1, version.getType());
+		statement.setInt(2, version.getRevision());
+		statement.setInt(3, version.getVersion());
+		statement.execute();
+	}
+
+	
+	private Version getVersion(Connection conn, final String revisionType) throws SQLException {
+		final Version dbVersion = new Version();
+		dbVersion.setRevision(-1);
+		dbVersion.setVersion(-1);
+		dbVersion.setType(revisionType);
+		
+		new Query(conn) {
+			@Override
+			public PreparedStatement createStatement(Connection conn) throws SQLException {
+				PreparedStatement statement = conn.prepareStatement("SELECT * FROM versioning WHERE type = ? LIMIT 1");
+				statement.setString(1, revisionType);
+				return statement;
+			}
+			
+			@Override
+			public void processResultSet(ResultSet resultSet) throws SQLException {
+				if (resultSet.next()) {
+					dbVersion.setRevision(resultSet.getInt("revision"));
+					dbVersion.setVersion(resultSet.getInt("version"));
+				}
+			}
+		};
+		
+		if (dbVersion.getVersion() >= 0) {
+			return dbVersion;
+		}
+		
+		return null;
 	}
 	
 }
