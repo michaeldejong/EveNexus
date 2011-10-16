@@ -1,7 +1,6 @@
 package nl.minicom.evenexus.persistence.versioning;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.hibernate.Session;
 
 
 public class StructureUpgrader extends RevisionCollection {
@@ -10,7 +9,7 @@ public class StructureUpgrader extends RevisionCollection {
 		super("database");
 		
 		super.registerRevision(new Revision(3) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS transactions (");
 				builder.append("transactionID BIGINT unsigned NOT NULL,");
@@ -27,42 +26,42 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("stationName VARCHAR(255) NOT NULL,");
 				builder.append("isPersonal INT(1) unsigned NOT NULL,");
 				builder.append("PRIMARY KEY (`transactionID`))");				
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(4) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("DROP INDEX IF EXISTS `transactions_typeName`");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(5) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX ");
 				builder.append("IF NOT EXISTS transactions_IX_typeName ");
 				builder.append("ON `transactions` (`typeName`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(6) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS apilogger (");
 				builder.append("type VARCHAR(255) NOT NULL,");
 				builder.append("charID BIGINT NOT NULL,");
 				builder.append("lastRun TIMESTAMP NOT NULL,");
 				builder.append("PRIMARY KEY (`type`, `charID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(7) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS journal (");
 				builder.append("refID BIGINT unsigned NOT NULL,");
@@ -80,46 +79,46 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("taxReceiverID BIGINT DEFAULT NULL,");
 				builder.append("taxAmount DECIMAL(20,2) DEFAULT NULL,");
 				builder.append("PRIMARY KEY (`refID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(8) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("DROP INDEX IF EXISTS `journal_date`");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(9) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("DROP INDEX IF EXISTS `journal_journalTypeID`");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(10) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS journal_IX_journalTypeID ");
 				builder.append("ON `journal` (`journalTypeID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(11) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS journal_IX_date ");
 				builder.append("ON `journal` (`date`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(12) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS profit (");
 				builder.append("transactionID BIGINT unsigned NOT NULL,");
@@ -130,46 +129,46 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("value DECIMAL(20,2) NOT NULL,");
 				builder.append("taxes DECIMAL(20,2) NOT NULL,");
 				builder.append("PRIMARY KEY (`transactionID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(13) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("DROP INDEX IF EXISTS `profit_date`");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(14) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("DROP INDEX IF EXISTS `profit_typeID`");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(15) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS profit_IX_typeID ");
 				builder.append("ON `profit` (`typeID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(16) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS profit_IX_date ");
 				builder.append("ON `profit` (`date`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(17) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS apisettings (");
 				builder.append("name VARCHAR(64) NOT NULL,");
@@ -177,24 +176,24 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("apiKey VARCHAR(64) NOT NULL,");
 				builder.append("charID BIGINT unsigned NOT NULL,");
 				builder.append("PRIMARY KEY (`charID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(18) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS skills (");
 				builder.append("characterID BIGINT unsigned NOT NULL,");
 				builder.append("typeID BIGINT unsigned NOT NULL,");
 				builder.append("level INT unsigned NOT NULL,");
 				builder.append("PRIMARY KEY (`characterID`, `typeID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(19) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS standings (");
 				builder.append("characterID BIGINT unsigned NOT NULL,");
@@ -202,12 +201,12 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("fromName VARCHAR(255) NULL,");
 				builder.append("standing DECIMAL(4, 2) NOT NULL,");
 				builder.append("PRIMARY KEY (`characterID`, `fromID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(20) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS marketorders (");
 				builder.append("orderID BIGINT unsigned NOT NULL,");
@@ -226,24 +225,24 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("bid TINYINT NOT NULL,");
 				builder.append("issued TIMESTAMP NOT NULL,");
 				builder.append("PRIMARY KEY (`orderID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(21) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS importlogger (");
 				builder.append("importer BIGINT NOT NULL,");
 				builder.append("characterID VARCHAR(255) NOT NULL,");
 				builder.append("lastrun TIMESTAMP NULL,");
 				builder.append("PRIMARY KEY (`importer`, `characterID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 				
 		super.registerRevision(new Revision(22) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS importers (");
 				builder.append("id BIGINT NOT NULL,");
@@ -251,12 +250,12 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("cooldown BIGINT NOT NULL,");
 				builder.append("path VARCHAR(255) NOT NULL,");
 				builder.append("PRIMARY KEY (`id`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(23) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("MERGE INTO `importers` (`id`, `name`, `cooldown`, `path`) VALUES ");
 				builder.append("(1, 'Character list', 0, '/account/Characters.xml.aspx'), ");
@@ -266,26 +265,26 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("(5, 'Character wallet transactions', 3660000, '/char/WalletTransactions.xml.aspx'),");
 				builder.append("(6, 'Character journal entries', 3660000, '/char/WalletJournal.xml.aspx'),");
 				builder.append("(7, 'Character market orders', 3660000, '/char/MarketOrders.xml.aspx')");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(25) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("DROP TABLE IF EXISTS apilogger");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(26) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS reftypes (");
 				builder.append("refTypeID INT(10) unsigned NOT NULL,");
 				builder.append("description VARCHAR(255) NOT NULL,");
 				builder.append("PRIMARY KEY (`refTypeID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
@@ -295,7 +294,7 @@ public class StructureUpgrader extends RevisionCollection {
 		 */
 		
 		super.registerRevision(new Revision(28) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS invtypes (");
 				builder.append("typeID BIGINT NOT NULL,");
@@ -314,43 +313,43 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("marketGroupID BIGINT DEFAULT NULL,");
 				builder.append("chanceOfDuplicating DOUBLE DEFAULT NULL,");
 				builder.append("PRIMARY KEY (`typeID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(29) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS invtypes_IX_groupID ");
 				builder.append("ON `invtypes` (`groupID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(30) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS invtypes_IX_graphicID ");
 				builder.append("ON `invtypes` (`graphicID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(31) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS invtypes_IX_raceID ");
 				builder.append("ON `invtypes` (`raceID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(32) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS invtypes_IX_marketGroupID ");
 				builder.append("ON `invtypes` (`marketGroupID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
@@ -360,7 +359,7 @@ public class StructureUpgrader extends RevisionCollection {
 		 */
 		
 		super.registerRevision(new Revision(127) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS mapregions (");
 				builder.append("regionID BIGINT NOT NULL,");
@@ -377,21 +376,21 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("factionID BIGINT DEFAULT NULL,");
 				builder.append("radius DOUBLE DEFAULT NULL,");
 				builder.append("PRIMARY KEY (`regionID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(128) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS mapregions_IX_factionID ");
 				builder.append("ON `mapregions` (`factionID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(130) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS stastations (");
 				builder.append("stationID BIGINT NOT NULL,");
@@ -413,70 +412,70 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("reprocessingStationsTake DOUBLE DEFAULT NULL,");
 				builder.append("reprocessingHangarFlag INT DEFAULT NULL,");
 				builder.append("PRIMARY KEY (`stationID`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(131) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_constellation ");
 				builder.append("ON `stastations` (`constellationID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(132) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_corporation ");
 				builder.append("ON `stastations` (`corporationID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(133) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_operation ");
 				builder.append("ON `stastations` (`operationID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(134) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_region ");
 				builder.append("ON `stastations` (`regionID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(135) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_system ");
 				builder.append("ON `stastations` (`solarSystemID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(136) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_type ");
 				builder.append("ON `stastations` (`stationTypeID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(137) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE INDEX IF NOT EXISTS staStations_IX_solarSystemID ");
 				builder.append("ON `stastations` (`solarSystemID`,`constellationID`,`regionID`)");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
@@ -486,243 +485,243 @@ public class StructureUpgrader extends RevisionCollection {
 		 */
 		
 		super.registerRevision(new Revision(159) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE MARKETORDERS ALTER COLUMN ");
 				builder.append("CHARID BIGINT(19) UNSIGNED NOT NULL");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(160) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("TRUNCATE TABLE PROFIT");
+			public void execute(Session session) {
+				session.createSQLQuery("TRUNCATE TABLE PROFIT").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(161) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE profit DROP COLUMN transactionID");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(162) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE profit ADD COLUMN ");
 				builder.append("buyTransactionID BIGINT unsigned NOT NULL");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 
 		super.registerRevision(new Revision(163) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE profit ADD COLUMN ");
 				builder.append("sellTransactionID BIGINT unsigned NOT NULL");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(164) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE transactions ADD COLUMN ");
 				builder.append("remaining BIGINT unsigned DEFAULT 0 NOT NULL BEFORE typename");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(165) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("UPDATE transactions SET remaining = quantity");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(166) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE importlogger ALTER COLUMN ");
 				builder.append("characterid BIGINT unsigned NOT NULL");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(167) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN security");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN security").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(168) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN dockingcostpervolume");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN dockingcostpervolume").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(169) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN maxshipvolumedockable");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN maxshipvolumedockable").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(170) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN officerentalcost");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN officerentalcost").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(171) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN operationid");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN operationid").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(172) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN x");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN x").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(173) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN y");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN y").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(174) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN z");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN z").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(175) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN reprocessingefficiency");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN reprocessingefficiency").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(176) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN reprocessingstationstake");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN reprocessingstationstake").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(177) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE stastations DROP COLUMN reprocessinghangarflag");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE stastations DROP COLUMN reprocessinghangarflag").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(178) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN x");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN x").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(179) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN y");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN y").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(180) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN z");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN z").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(181) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN xmin");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN xmin").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(182) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN ymin");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN ymin").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(183) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN zmin");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN zmin").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(184) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN xmax");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN xmax").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(185) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN ymax");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN ymax").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(186) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN zmax");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN zmax").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(187) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE mapregions DROP COLUMN radius");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE mapregions DROP COLUMN radius").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(188) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("MERGE INTO `importers` (`id`, `name`, `cooldown`, `path`) VALUES ");
 				builder.append("(8, 'Journal reference types', 3600000, '/eve/RefTypes.xml.aspx')");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(189) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS bugreports (");
 				builder.append("issueNumber BIGINT NOT NULL, ");
 				builder.append("PRIMARY KEY (`issueNumber`))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
@@ -732,27 +731,27 @@ public class StructureUpgrader extends RevisionCollection {
 
 		// remove table profit
 		super.registerRevision(new Revision(190) {
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("DROP TABLE profit");
+			public void execute(Session session) {
+				session.createSQLQuery("DROP TABLE profit").executeUpdate();
 			}
 		});
 		
 		// new table transaction_matches (substitutes former profit table)
 		super.registerRevision(new Revision(191) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS transactionMatches (");
 				builder.append("quantity BIGINT NOT NULL,");
 				builder.append("buyTransactionId BIGINT NOT NULL,");
 				builder.append("sellTransactionId BIGINT NOT NULL,");
 				builder.append("PRIMARY KEY (buyTransactionId, sellTransactionId))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 
 		// new view for profits
 		super.registerRevision(new Revision(192) {
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				String sql = new StringBuilder()
 				.append("CREATE OR REPLACE VIEW profits (buyTransactionId, sellTransactionId, typeId, ")
 				.append("	typeName, date, quantity, buyPrice, sellPrice, taxes, grossProfit, netProfit, ")
@@ -773,13 +772,13 @@ public class StructureUpgrader extends RevisionCollection {
 				.append("	INNER JOIN transactions s ON tm.sellTransactionId = s.transactionId ")
 				.toString();
 				
-				conn.createStatement().execute(sql);
+				session.createSQLQuery(sql).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(193) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE IF NOT EXISTS apikeys (");
 				builder.append("keyId BIGINT NOT NULL,");
@@ -789,94 +788,94 @@ public class StructureUpgrader extends RevisionCollection {
 				builder.append("corporationId BIGINT NOT NULL,");
 				builder.append("corporationName VARCHAR(128) NOT NULL,");
 				builder.append("PRIMARY KEY (characterId))");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(194) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("MERGE INTO `importers` (`id`, `name`, `cooldown`, `path`) VALUES ");
 				builder.append("(9, 'Key Info', 300000, '/account/APIKeyInfo.xml.aspx')");
-				conn.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(195) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN groupId");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN groupId").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(196) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN description");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN description").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(197) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN graphicId");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN graphicId").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(198) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN radius");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN radius").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(199) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN mass");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN mass").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(200) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN capacity");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN capacity").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(201) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN basePrice");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN basePrice").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(202) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN published");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN published").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(203) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN raceId");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN raceId").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(204) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN portionSize");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN portionSize").executeUpdate();
 			}
 		});
 		
 		super.registerRevision(new Revision(205) {
 			@Override
-			public void execute(Connection conn) throws SQLException {
-				conn.createStatement().execute("ALTER TABLE invtypes DROP COLUMN chanceOfDuplicating");
+			public void execute(Session session) {
+				session.createSQLQuery("ALTER TABLE invtypes DROP COLUMN chanceOfDuplicating").executeUpdate();
 			}
 		});
 		

@@ -122,8 +122,8 @@ public class Application {
 			// 3. Check database structure & upgrade.
 			LOG.info("Checking database structure consistency...");
 			progressManager.update(9, 4, "Checking database structure consistency");
-			revisionExecutor.execute(new StructureUpgrader(), false);
-			revisionExecutor.execute(new ContentUpgrader(), false);
+			revisionExecutor.execute(new StructureUpgrader());
+			revisionExecutor.execute(new ContentUpgrader());
 			
 			progressManager.update(9, 4, "Initializing ResourceBundles");
 			translator.initialize(Locale.ENGLISH);

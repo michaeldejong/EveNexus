@@ -1,13 +1,12 @@
 package nl.minicom.evenexus.persistence.versioning;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import junit.framework.Assert;
 import nl.minicom.evenexus.TestModule;
 import nl.minicom.evenexus.persistence.dao.Version;
 
+import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class RevisionExecutorTest {
 	
 	@Before
 	public void setup() {
-		databaseType = "database";
+		databaseType = "test";
 
 		Injector injector = Guice.createInjector(new TestModule());
 		executor = injector.getInstance(RevisionExecutor.class);
@@ -34,13 +33,13 @@ public class RevisionExecutorTest {
 		invalidCollection = new RevisionCollection(databaseType);
 		
 		Revision firstRevision = new Revision(1) {
-			public void execute(Connection connection) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE TABLE testtable (");
 				builder.append("id INT NOT NULL, ");
 				builder.append("value VARCHAR(255) NOT NULL, ");
 				builder.append("PRIMARY KEY (id))");
-				connection.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		};
 
@@ -48,10 +47,10 @@ public class RevisionExecutorTest {
 		
 		collection.registerRevision(firstRevision);
 		collection.registerRevision(new Revision(2) {
-			public void execute(Connection connection) throws SQLException {
+			public void execute(Session session) {
 				StringBuilder builder = new StringBuilder();
 				builder.append("INSERT INTO testtable VALUES (1, 'Hello World!')");
-				connection.createStatement().execute(builder.toString());
+				session.createSQLQuery(builder.toString()).executeUpdate();
 			}
 		});
 		
@@ -64,38 +63,38 @@ public class RevisionExecutorTest {
 	}
 	
 	@Test(expected = java.lang.NullPointerException.class)
-	public void testExecutorWithNull() throws SQLException {
-		executor.execute(null, true);
+	public void testExecutorWithNull() {
+		executor.execute(null);
 	}
 	
 	@Test
-	public void testExecution() throws SQLException {
-		Version dbVersion = executor.execute(collection, true);
+	public void testExecution() {
+		Version dbVersion = executor.execute(collection);
 		checkDatabaseAndCleanup(dbVersion);
 	}
 	
 	@Test
-	public void testDoubleExecution() throws SQLException {
+	public void testDoubleExecution() {
 		// Execute once.
-		Version dbVersion = executor.execute(collection, true);
+		Version dbVersion = executor.execute(collection);
 		
 		// Execute twice.
-		dbVersion = executor.execute(collection, true);
+		dbVersion = executor.execute(collection);
 		
 		checkDatabaseAndCleanup(dbVersion);
 	}
 	
 	@Test(expected = java.lang.IllegalStateException.class)
-	public void testInvalidVersioning() throws SQLException {
+	public void testInvalidVersioning() {
 		// Execute the complete list of revision.
-		executor.execute(collection, true);
+		executor.execute(collection);
 		
 		/*
 		 * Execute only the first revision.
 		 * This should fail because this executor has only one revision while we already
 		 * have executed two upon the database. This cannot be a valid executor.
 		 */
-		executor.execute(invalidCollection, true);
+		executor.execute(invalidCollection);
 	}
 
 	private void checkDatabaseAndCleanup(Version dbVersion) {

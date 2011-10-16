@@ -1,11 +1,10 @@
 package nl.minicom.evenexus.persistence.versioning;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.hibernate.Session;
 
 public interface IRevision {
 
-	void execute(Connection conn) throws SQLException;
+	void execute(Session session);
 	
 	int getRevisionNumber();
 	

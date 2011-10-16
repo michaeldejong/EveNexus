@@ -1,8 +1,6 @@
 package nl.minicom.evenexus.persistence.versioning;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
+import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +29,7 @@ public class RevisionTest {
 	 */
 	private Revision createRevision(int number) {
 		return new Revision(number) {
-			@Override
-			public void execute(Connection conn) throws SQLException {
+			public void execute(Session session) {
 				hasRun = true;
 			}
 		};
@@ -40,12 +37,9 @@ public class RevisionTest {
 	
 	/**
 	 * Test that we the execute() method actually executes when called.
-	 * 
-	 * @throws SQLException
-	 * 		If the upgrade could not be executed. 
 	 */
 	@Test
-	public void testRunning() throws SQLException {
+	public void testRunning() {
 		Assert.assertFalse("hasRun should be false!", hasRun);
 		testRevision.execute(null);
 		Assert.assertTrue("hasRun should be true!", hasRun);

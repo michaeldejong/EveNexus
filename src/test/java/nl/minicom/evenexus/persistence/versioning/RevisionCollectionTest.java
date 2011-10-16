@@ -1,9 +1,8 @@
 package nl.minicom.evenexus.persistence.versioning;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +27,7 @@ public class RevisionCollectionTest {
 	
 	private Revision createRevision(int revisionNumber) {
 		return new Revision(revisionNumber) {
-			public void execute(Connection connection) throws SQLException {
+			public void execute(Session session) {
 				LOG.debug("Executing revision: " + getRevisionNumber());
 			}
 		};
