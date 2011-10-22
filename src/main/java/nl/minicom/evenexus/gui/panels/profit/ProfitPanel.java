@@ -103,9 +103,8 @@ public class ProfitPanel extends TabPanel implements InventoryListener {
     	
     	inventoryManager.addListener(this);
 	}
-
-	@Override
-	public void reloadTab() {
+	
+	protected void reloadContent() {
 		table.reload();
 		LOG.info("Profit panel reloaded!");
 	}

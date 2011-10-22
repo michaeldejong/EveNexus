@@ -76,8 +76,7 @@ public class ReportPanel extends TabPanel {
     	);
 	}
 
-	@Override
-	public void reloadTab() {
+	protected void reloadContent() {
 		LOG.info("Report panel reloaded!");
 	}
 	

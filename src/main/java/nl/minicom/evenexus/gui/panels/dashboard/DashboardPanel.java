@@ -108,7 +108,7 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 		reloadTab();
 	}
 
-	public void reloadTab() {
+	protected void reloadContent() {
 		chartPanel.reload();
 		LOG.info("Dashboard panel reloaded!");
 	}
