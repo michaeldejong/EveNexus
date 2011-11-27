@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory;
 public enum Icon {
 	
 	CLOCK_16				("/img/16/clock.png"),
+	DATABASE_EXPORT_16		("/img/16/database_next.png"),
+	DATABASE_IMPORT_16		("/img/16/database_down.png"),
+	EXIT_16					("/img/16/remove.png"),
+	INFO_16					("/img/16/info.png"),
+	SETTINGS_16				("/img/16/process.png"),
 	
 	ADD_32					("/img/32/plus.png"),
 	DISPLAY_32				("/img/32/display.png"),

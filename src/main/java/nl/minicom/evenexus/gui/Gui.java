@@ -24,6 +24,7 @@ import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
 import nl.minicom.evenexus.gui.panels.profit.InventoryProgressPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
+import nl.minicom.evenexus.gui.panels.report.dialogs.ReportPanel;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;
@@ -49,7 +50,7 @@ public class Gui extends JFrame {
 	
 	private final SettingsManager settingsManager;
 	
-	private final DashboardPanel dashboardPanel;
+	private final ReportPanel reportPanel;
 	private final JournalsPanel journalsPanel;
 	private final TransactionsPanel transactionPanel;
 	private final MarketOrdersPanel marketOrderPanel;
@@ -65,9 +66,51 @@ public class Gui extends JFrame {
 	private final Provider<SettingsDialog> settingsDialogProvider;
 	private final Provider<AboutDialog> aboutDialogProvider;
 
+	/**
+	 * This constructs a new GUI object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param reportPanel
+	 * 		The {@link ReportPanel}.
+	 * 
+	 * @param journalsPanel
+	 * 		The {@link JournalsPanel}.
+	 * 
+	 * @param transactionPanel
+	 * 		The {@link TransactionsPanel}.
+	 * 
+	 * @param marketOrderPanel
+	 * 		The {@link MarketOrdersPanel}.
+	 * 
+	 * @param profitPanel
+	 * 		The {@link ProfitPanel}.
+	 * 
+	 * @param accountsPanel
+	 * 		The {@link AccountsPanel}.
+	 * 
+	 * @param state
+	 * 		The {@link InventoryProgressPanel}.
+	 * 
+	 * @param guiListener
+	 * 		The {@link GuiListener}.
+	 * 
+	 * @param importDatabaseDialogProvider
+	 * 		The {@link Provider} which provides {@link ImportDatabaseDialog}s.
+	 * 
+	 * @param exportDatabaseDialogProvider
+	 * 		The {@link Provider} which provides {@link ExportDatabaseDialog}s.
+	 * 
+	 * @param settingsDialogProvider
+	 * 		The {@link Provider} which provides {@link SettingsDialog}s.
+	 * 
+	 * @param aboutDialogProvider
+	 * 		The {@link Provider} which provides {@link AboutDialog}s.
+	 */
 	@Inject
 	public Gui(SettingsManager settingsManager,
-			DashboardPanel dashboardPanel,
+			ReportPanel reportPanel,
 			JournalsPanel journalsPanel,
 			TransactionsPanel transactionPanel,
 			MarketOrdersPanel marketOrderPanel,
@@ -81,7 +124,7 @@ public class Gui extends JFrame {
 			Provider<AboutDialog> aboutDialogProvider) {
 		
 		this.settingsManager = settingsManager;
-		this.dashboardPanel = dashboardPanel;
+		this.reportPanel = reportPanel;
 		this.journalsPanel = journalsPanel;
 		this.transactionPanel = transactionPanel;
 		this.marketOrderPanel = marketOrderPanel;
@@ -98,8 +141,11 @@ public class Gui extends JFrame {
 		this.aboutDialogProvider = aboutDialogProvider;
 	}
 	
+	/**
+	 * This method initializes the GUI.
+	 */
 	public void initialize() {
-		dashboardPanel.initialize();
+		reportPanel.initialize();
 		journalsPanel.initialize();
 		transactionPanel.initialize();
 		marketOrderPanel.initialize();
@@ -108,7 +154,7 @@ public class Gui extends JFrame {
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle(getClass().getPackage().getSpecificationTitle() + " - EVE Online trading overview");
-		setIconImage(Icon.getImage("/img/other/logo.png"));
+		setIconImage(Icon.getImage(Icon.LOGO));
 		setSizeAndPosition();
 		setLookAndFeel();
 		
@@ -125,6 +171,9 @@ public class Gui extends JFrame {
 		setVisible(true);
 	}
 
+	/**
+	 * This method sets the size and position of the GUI.
+	 */
 	public void setSizeAndPosition() {
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		int xPos = (int) (env.getMaximumWindowBounds().getWidth() - WIDTH) / 2;
@@ -145,7 +194,7 @@ public class Gui extends JFrame {
 		JTabbedPane pane = new JTabbedPane();
 		pane.setFocusable(false);
 		
-		pane.addTab("Dashboard", dashboardPanel);
+		pane.addTab("Dashboard", reportPanel);
 		pane.addTab("Journals", journalsPanel);
 		pane.addTab("Transactions", transactionPanel);
 		pane.addTab("Market orders", marketOrderPanel);
@@ -177,7 +226,7 @@ public class Gui extends JFrame {
 		JMenuBar bar = new JMenuBar();
 		JMenu applicationMenu = new JMenu("Application");
 		
-		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon("/img/16/database_down.png"));
+		JMenuItem importMenu = new JMenuItem("Import database", Icon.getIcon(Icon.DATABASE_IMPORT_16));
 		applicationMenu.add(importMenu);
 		importMenu.addActionListener(new ActionListener() {
 			@Override
@@ -186,7 +235,7 @@ public class Gui extends JFrame {
 			}
 		});
 		
-		JMenuItem exportMenu = new JMenuItem("Export database", Icon.getIcon("/img/16/database_next.png"));
+		JMenuItem exportMenu = new JMenuItem("Export database", Icon.getIcon(Icon.DATABASE_EXPORT_16));
 		applicationMenu.add(exportMenu);
 		exportMenu.addActionListener(new ActionListener() {
 			@Override
@@ -197,7 +246,7 @@ public class Gui extends JFrame {
 		
 		applicationMenu.addSeparator();
 		
-		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon("/img/16/process.png"));
+		JMenuItem proxyMenu = new JMenuItem("Settings", Icon.getIcon(Icon.SETTINGS_16));
 		applicationMenu.add(proxyMenu);
 		proxyMenu.addActionListener(new ActionListener() {
 			@Override
@@ -208,7 +257,7 @@ public class Gui extends JFrame {
 		
 		applicationMenu.addSeparator();
 		
-		JMenuItem exitMenu = new JMenuItem("Exit", Icon.getIcon("/img/16/remove.png"));
+		JMenuItem exitMenu = new JMenuItem("Exit", Icon.getIcon(Icon.EXIT_16));
 		applicationMenu.add(exitMenu);
 		exitMenu.addActionListener(new ActionListener() {
 			@Override
@@ -221,7 +270,7 @@ public class Gui extends JFrame {
 		
 		JMenu helpMenu = new JMenu("Help");
 		
-		JMenuItem aboutMenu = new JMenuItem("About", Icon.getIcon("/img/16/info.png"));
+		JMenuItem aboutMenu = new JMenuItem("About", Icon.getIcon(Icon.INFO_16));
 		helpMenu.add(aboutMenu);
 		aboutMenu.addActionListener(new ActionListener() {
 			@Override
@@ -235,6 +284,9 @@ public class Gui extends JFrame {
 		return bar;
 	}
 
+	/**
+	 * This method sets the look and feel of the GUI.
+	 */
 	public static void setLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -244,8 +296,11 @@ public class Gui extends JFrame {
 		}
 	}
 
+	/**
+	 * This method reloads all the panels in the GUI.
+	 */
 	public void reload() {
-		dashboardPanel.reloadTab();
+		reportPanel.reloadTab();
 		journalsPanel.reloadTab();
 		transactionPanel.reloadTab();
 		marketOrderPanel.reloadTab();
