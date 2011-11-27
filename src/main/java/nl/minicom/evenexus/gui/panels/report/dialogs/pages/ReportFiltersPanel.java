@@ -26,6 +26,7 @@ import nl.minicom.evenexus.gui.validation.ValidationRule;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
+import nl.minicom.evenexus.persistence.dao.SolarSystem;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.Session;
@@ -174,7 +175,20 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 	List<MapRegion> listMapRegions() {
 		Session session = database.getCurrentSession();
 		return session.createCriteria(MapRegion.class)
-				.addOrder(Order.asc("regionName"))
+				.addOrder(Order.asc(MapRegion.REGION_NAME))
+				.list();
+	}
+
+	/**
+	 * @return
+	 * 		All {@link SolarSystem} objects.
+	 */
+	@Transactional
+	@SuppressWarnings("unchecked")
+	List<SolarSystem> listSolarSystems() {
+		Session session = database.getCurrentSession();
+		return session.createCriteria(SolarSystem.class)
+				.addOrder(Order.asc(SolarSystem.SOLAR_SYSTEM_NAME))
 				.list();
 	}
 
@@ -187,7 +201,7 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 	List<ApiKey> listCharacters() {
 		Session session = database.getCurrentSession();
 		return session.createCriteria(ApiKey.class)
-				.addOrder(Order.asc("name"))
+				.addOrder(Order.asc(ApiKey.CHARACTER_NAME))
 				.list();
 	}
 
@@ -196,11 +210,11 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		comboBox.setMinimumSize(new Dimension(120, GuiConstants.COMBO_BOX_HEIGHT));
 		comboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.COMBO_BOX_HEIGHT));
 		
-		List<MapRegion> regions = listMapRegions();
+		List<SolarSystem> solarSystems = listSolarSystems();
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
-		for (MapRegion region : regions) {
-			if (!region.getRegionName().equalsIgnoreCase("unknown")) {
-				model.addElement(" " + region.getRegionName());
+		for (SolarSystem solarSystem : solarSystems) {
+			if (!solarSystem.getSolarSystemName().equalsIgnoreCase("unknown")) {
+				model.addElement(" " + solarSystem.getSolarSystemName());
 			}
 		}
 		

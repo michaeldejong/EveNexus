@@ -30,6 +30,7 @@
 		<mapping class="nl.minicom.evenexus.persistence.dao.Profit" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.RefType" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.Skill" />
+		<mapping class="nl.minicom.evenexus.persistence.dao.SolarSystem" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.Standing" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.Station" />
 		<mapping class="nl.minicom.evenexus.persistence.dao.TransactionMatch" />

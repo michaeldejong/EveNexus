@@ -25,18 +25,30 @@ public class MapRegion implements Serializable {
 	private String regionName;
 
 	@Column(name = FACTION_ID)
-	private long factionId;
+	private Long factionId;
 
 	public long getRegionId() {
 		return regionId;
+	}
+	
+	public void setRegionId(long regionId) {
+		this.regionId = regionId;
 	}
 
 	public String getRegionName() {
 		return regionName;
 	}
+	
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
 
-	public long getFactionId() {
+	public Long getFactionId() {
 		return factionId;
+	}
+	
+	public void setFactionId(Long factionId) {
+		this.factionId = factionId;
 	}
 
 }

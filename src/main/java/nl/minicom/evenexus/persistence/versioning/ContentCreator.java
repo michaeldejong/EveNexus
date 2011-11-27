@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import nl.minicom.evenexus.persistence.dao.Item;
+import nl.minicom.evenexus.persistence.dao.MapRegion;
+import nl.minicom.evenexus.persistence.dao.SolarSystem;
 import nl.minicom.evenexus.persistence.dao.Station;
 
 import org.sqlite.SQLiteConfig;
@@ -35,6 +37,8 @@ public class ContentCreator {
 		c.setVersion(1);
 		addStations(c);
 		addItems(c);
+		addRegions(c);
+		addSolarSystems(c);
 		
 		StringWriter writer = new StringWriter();
 		new Gson().toJson(c, writer);
@@ -87,6 +91,32 @@ public class ContentCreator {
 			item.setTypeName(result.getString("typeName"));
 			item.setVolume(result.getDouble("volume"));
 			c.addItem(item);
+		}
+	}
+	
+	private void addRegions(Container c) throws SQLException {
+		PreparedStatement statement = conn.prepareStatement("SELECT * FROM mapregions");
+		ResultSet result = statement.executeQuery();
+		
+		while (result.next()) {
+			MapRegion region = new MapRegion();
+			region.setRegionId(result.getLong("regionId"));
+			region.setRegionName(result.getString("regionName"));
+			region.setFactionId(result.getLong("factionId"));
+			c.addRegion(region);
+		}
+	}
+	
+	private void addSolarSystems(Container c) throws SQLException {
+		PreparedStatement statement = conn.prepareStatement("SELECT * FROM mapsolarsystems");
+		ResultSet result = statement.executeQuery();
+		
+		while (result.next()) {
+			SolarSystem solarSystem = new SolarSystem();
+			solarSystem.setSolarSystemId(result.getLong("solarSystemId"));
+			solarSystem.setSolarSystemName(result.getString("solarSystemName"));
+			solarSystem.setRegionId(result.getLong("regionId"));
+			c.addSolarSystem(solarSystem);
 		}
 	}
 
