@@ -17,22 +17,47 @@ import org.sqlite.SQLiteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 
-public class ContentCreator {
+/**
+ * The {@link ContentCreator} class is responsible for building a serialized text file,
+ * which EveNexus can parse on the user's computer, and persist to the database.
+ *
+ * @author michael
+ */
+public final class ContentCreator {
 
 	private static final String DRIVER = "org.sqlite.JDBC";
-	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/inca10-sqlite3-v1.db";
+	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/cruc10-sqlite3-v.1.db";
 	
+	/**
+	 * This creates a new serialized text file using data from the specified SQLite database.
+	 * 
+	 * @param args
+	 * 		None.
+	 * 
+	 * @throws JsonIOException
+	 * 		If the data could not be serialized by GSON.
+	 * 
+	 * @throws SQLException
+	 * 		If we had problems contacting the database.
+	 * 
+	 * @throws IOException
+	 * 		If we had problems writing the serialized file.
+	 */
 	public static void main(String[] args) throws JsonIOException, SQLException, IOException {
 		new ContentCreator().execute();
 	}
 	
 	private Connection conn = null;
 	
+	private ContentCreator() {
+		// Prevent instantiation.
+	}
+	
 	private void execute() throws SQLException, JsonIOException, IOException {
 		connect();
 		
 		Container c = new Container();
-		c.setVersion(1);
+		c.setVersion(2);
 		addStations(c);
 		addItems(c);
 		
