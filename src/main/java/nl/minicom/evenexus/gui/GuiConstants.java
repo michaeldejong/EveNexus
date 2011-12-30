@@ -1,6 +1,10 @@
 package nl.minicom.evenexus.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.JLabel;
 
 public final class GuiConstants {
 
@@ -23,6 +27,15 @@ public final class GuiConstants {
 			return new Color(228, 228, 228);
 		}
 		return Color.WHITE;
+	}
+	
+	public static JLabel createBoldLabel(String value) {
+		JLabel label = new JLabel(value);
+		label.setFont(label.getFont().deriveFont(Font.BOLD));
+		label.setForeground(Color.BLACK);
+		label.setMinimumSize(new Dimension(0, GuiConstants.COMBO_BOX_HEIGHT));
+		label.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.COMBO_BOX_HEIGHT));
+		return label;
 	}
 	
 	private GuiConstants() {

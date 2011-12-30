@@ -21,7 +21,12 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link StandingImporter} is responsible for importing standings
+ * from the EVE API server.
+ *
+ * @author michael
+ */
 public class StandingImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(StandingImporter.class);
@@ -30,6 +35,24 @@ public class StandingImporter extends ImporterTask {
 
 	private volatile boolean isReady = true;
 	
+	/**
+	 * This constructs a new {@link StandingImporter} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param apiParserProvider
+	 * 		The {@link Provider} which provides {@link ApiParser}s.
+	 * 
+	 * @param importerThreadProvider
+	 * 		The {@link Provider} which provides {@link ImporterThread}s.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public StandingImporter(
 			Database database, 
@@ -70,9 +93,18 @@ public class StandingImporter extends ImporterTask {
 			}
 		}
 	}
-
+	
+	/**
+	 * This method writes the journal entry to the database.
+	 * 
+	 * @param row
+	 * 		The {@link Node} containing all the standing information.
+	 * 
+	 * @param characterId
+	 * 		The id of the character.
+	 */
 	@Transactional
-	void persistChangeData(Node row, long characterId) {
+	protected void persistChangeData(Node row, long characterId) {
 		try {			
 			long fromId = Long.parseLong(row.getAttribute("fromID"));
 			String fromName = row.getAttribute("fromName");

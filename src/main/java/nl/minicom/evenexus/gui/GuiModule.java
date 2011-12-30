@@ -8,7 +8,6 @@ import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
 import nl.minicom.evenexus.gui.panels.profit.InventoryProgressPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
-import nl.minicom.evenexus.gui.panels.report.dialogs.ReportModule;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.ApiServerTab;
 import nl.minicom.evenexus.gui.settings.ProxyTab;
@@ -51,8 +50,6 @@ public class GuiModule extends AbstractModule {
 		
 		// Utils
 		requestStaticInjection(ColumnModel.class);
-		
-		install(new ReportModule());
 	}
 
 }

@@ -17,7 +17,7 @@ public class TableColumnSelectionTableModel implements TableModel {
 	}
 
 	public void setValueAt(Object value, int row, int column) {
-		model.get(row).setVisible((Boolean) value);
+		model.getColumnAtIndex(row).setVisible((Boolean) value);
 		model.synchronize();
 		for (Table table : tables) {
 			table.reload();
@@ -40,10 +40,10 @@ public class TableColumnSelectionTableModel implements TableModel {
 	@Override
 	public Object getValueAt(int row, int column) {
 		if (column == 0) {
-			return " " + model.get(row).getName() + " ";
+			return " " + model.getColumnAtIndex(row).getName() + " ";
 		}
 		else if (column == 1) {
-			return (Boolean) model.get(row).isVisible();
+			return (Boolean) model.getColumnAtIndex(row).isVisible();
 		}
 		return null;
 	}

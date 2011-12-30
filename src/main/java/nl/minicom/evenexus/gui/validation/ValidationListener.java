@@ -11,9 +11,9 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import nl.minicom.evenexus.core.report.engine.ReportModelListener;
+import nl.minicom.evenexus.core.report.engine.ModelListener;
 
-public class ValidationListener implements KeyListener, ActionListener, ChangeListener, ReportModelListener {
+public class ValidationListener implements KeyListener, ActionListener, ChangeListener, ModelListener {
 
 	private final List<ValidationRule> rules = new ArrayList<ValidationRule>();
 	
@@ -50,6 +50,11 @@ public class ValidationListener implements KeyListener, ActionListener, ChangeLi
 
 	@Override
 	public void onValueChanged() {
+		trigger();
+	}
+
+	@Override
+	public void onStateChanged() {
 		trigger();
 	}
 	

@@ -3,7 +3,6 @@ package nl.minicom.evenexus.gui.panels.report.dialogs.pages;
 import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,7 +14,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+import nl.minicom.evenexus.core.report.engine.Model;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
@@ -26,7 +28,6 @@ import nl.minicom.evenexus.gui.validation.ValidationRule;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
-import nl.minicom.evenexus.persistence.dao.SolarSystem;
 import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.Session;
@@ -37,60 +38,52 @@ import org.hibernate.criterion.Order;
  * 
  * @author michael
  */
-public class ReportFiltersPanel extends ReportBuilderPage {
+public class ReportFiltersPage extends ReportWizardPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final Database database;
+	private final ReportModel model;
 	
 	/**
-	 * This constructs a new {@link ReportFiltersPanel} object.
+	 * This constructs a new {@link ReportFiltersPage} object.
 	 * 
 	 * @param database
 	 * 		The {@link Database}.
+	 * 
+	 * @param model
+	 * 		The {@link ReportModel}.
 	 */
 	@Inject
-	public ReportFiltersPanel(Database database) {
+	public ReportFiltersPage(Database database, ReportModel model) {
 		this.database = database;
+		this.model = model;
 	}
 
 	/**
-	 * This method initializes this {@link ReportFiltersPanel} object.
-	 * 
-	 * @param model
-	 * 		The {@link ReportModel} to use.
-	 * 
-	 * @return
-	 * 		this.
+	 * This method builds the gui, allowing the user to define the filters.
 	 */
-	public ReportBuilderPage initialize(ReportModel model) {
-		buildGui();
-		return this;
-	}
-
-	private void buildGui() {
-		JLabel timeLabel = createBoldLabel("Time filters");
-		JLabel locationLabel = createBoldLabel("Location filters");
-		JLabel characterLabel = createBoldLabel("Character filters");
+	@Override
+	public void buildGui() {
+		JLabel timeLabel = GuiConstants.createBoldLabel("Time filters");
+		JLabel locationLabel = GuiConstants.createBoldLabel("Location filters");
+		JLabel characterLabel = GuiConstants.createBoldLabel("Character filters");
 		
-		Date bottomLimit = createLowerLimitCalendar();
-		Date currentBottomLimit = createCurrentLowerLimitCalendar();
-		Date upperLimit = createUpperLimitCalendar();
-		
-		JSpinner fromDateSpinner = createDateSpinner(bottomLimit, currentBottomLimit, upperLimit);
+		JSpinner fromDateSpinner = createDateSpinner(model.getStartDate());
 		JCheckBox fromBox = createCheckBox("From: ", fromDateSpinner);
 
-		JSpinner toSpinner = createDateSpinner(bottomLimit, upperLimit, upperLimit);
+		JSpinner toSpinner = createDateSpinner(model.getEndDate());
 		JCheckBox toBox = createCheckBox("To: ", toSpinner);
 		
 		JComboBox regionComboBox = createRegionComboBox();
 		JCheckBox regionBox = createCheckBox("Region: ", regionComboBox);
 		
-		JComboBox systemComboBox = createSystemComboBox();
-		JCheckBox systemBox = createCheckBox("System: ", systemComboBox);
-		
 		JComboBox characterComboBox = createCharacterComboBox();
 		JCheckBox characterBox = createCheckBox("Character: ", characterComboBox);
+		if (characterComboBox.getModel().getSize() == 0) {
+			characterBox.setEnabled(false);
+			characterComboBox.setEnabled(false);
+		}
 		
 		GroupLayout layout = new GroupLayout(this);
 		setLayout(layout);        
@@ -102,7 +95,6 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		      					.addComponent(toBox)
 		      					.addComponent(locationLabel)
 		      					.addComponent(regionBox)
-		      					.addComponent(systemBox)
 		      					.addComponent(characterLabel)
 		      					.addComponent(characterBox)
 		      			)
@@ -110,7 +102,6 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		      					.addComponent(fromDateSpinner)
 		      					.addComponent(toSpinner)
 		      					.addComponent(regionComboBox)
-		      					.addComponent(systemComboBox)
 		      					.addComponent(characterComboBox)
 		      			)
     	);
@@ -133,11 +124,6 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 	    				.addGroup(layout.createParallelGroup()
 	    						.addComponent(regionBox)
 	    						.addComponent(regionComboBox)
-	    				)
-	    				.addGap(4)
-	    				.addGroup(layout.createParallelGroup()
-	    						.addComponent(systemBox)
-	    						.addComponent(systemComboBox)
 	    				)
 	    				.addGap(4)
 						.addComponent(characterLabel)
@@ -181,19 +167,6 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 
 	/**
 	 * @return
-	 * 		All {@link SolarSystem} objects.
-	 */
-	@Transactional
-	@SuppressWarnings("unchecked")
-	List<SolarSystem> listSolarSystems() {
-		Session session = database.getCurrentSession();
-		return session.createCriteria(SolarSystem.class)
-				.addOrder(Order.asc(SolarSystem.SOLAR_SYSTEM_NAME))
-				.list();
-	}
-
-	/**
-	 * @return
 	 * 		All {@link ApiKey} objects.
 	 */
 	@Transactional
@@ -203,23 +176,6 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		return session.createCriteria(ApiKey.class)
 				.addOrder(Order.asc(ApiKey.CHARACTER_NAME))
 				.list();
-	}
-
-	private JComboBox createSystemComboBox() {
-		JComboBox comboBox = new JComboBox();
-		comboBox.setMinimumSize(new Dimension(120, GuiConstants.COMBO_BOX_HEIGHT));
-		comboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.COMBO_BOX_HEIGHT));
-		
-		List<SolarSystem> solarSystems = listSolarSystems();
-		DefaultComboBoxModel model = new DefaultComboBoxModel();
-		for (SolarSystem solarSystem : solarSystems) {
-			if (!solarSystem.getSolarSystemName().equalsIgnoreCase("unknown")) {
-				model.addElement(" " + solarSystem.getSolarSystemName());
-			}
-		}
-		
-		comboBox.setModel(model);
-		return comboBox;
 	}
 
 	private JComboBox createCharacterComboBox() {
@@ -268,38 +224,21 @@ public class ReportFiltersPanel extends ReportBuilderPage {
 		return checkBox;
 	}
 
-	private JSpinner createDateSpinner(Date bottomLimit, Date currentBottom, Date upperLimit) {
-		SpinnerDateModel model = new SpinnerDateModel(currentBottom, bottomLimit, upperLimit, Calendar.DAY_OF_YEAR);
+	private JSpinner createDateSpinner(final Model<Date> dateValue) {
+		final SpinnerDateModel model = new SpinnerDateModel(dateValue.getValue(), null, null, Calendar.DAY_OF_YEAR);
 		JSpinner spinner = new JSpinner(model);
 		spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss dd/MM/yyyy "));
 		spinner.setMinimumSize(new Dimension(120, GuiConstants.SPINNER_HEIGHT));
 		spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.SPINNER_HEIGHT));
+		
+		spinner.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				dateValue.setValue(model.getDate());
+			}
+		});
+		
 		return spinner;
-	}
-
-	private Date createLowerLimitCalendar() {
-		return new Date(0L);
-	}
-
-	private Date createCurrentLowerLimitCalendar() {
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendar.add(Calendar.MONTH, -1);
-		return calendar.getTime();
-	}
-
-	private Date createUpperLimitCalendar() {
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendar.add(Calendar.DAY_OF_MONTH, 1);
-		calendar.add(Calendar.MILLISECOND, -1);
-		return calendar.getTime();
 	}
 
 	@Override

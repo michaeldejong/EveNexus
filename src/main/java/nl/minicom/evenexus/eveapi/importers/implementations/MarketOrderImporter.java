@@ -22,7 +22,12 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link MarketOrderImporter} is responsible for importing MarketOrder entries
+ * from the EVE API server.
+ *
+ * @author michael
+ */
 public class MarketOrderImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MarketOrderImporter.class);
@@ -31,6 +36,24 @@ public class MarketOrderImporter extends ImporterTask {
 	
 	private volatile boolean isReady = true;
 	
+	/**
+	 * This constructs a new {@link MarketOrderImporter} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param apiParserProvider
+	 * 		The {@link Provider} which provides {@link ApiParser}s.
+	 * 
+	 * @param importerThreadProvider
+	 * 		The {@link Provider} which provides {@link ImporterThread}s.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public MarketOrderImporter(
 			Database database, 
@@ -48,7 +71,6 @@ public class MarketOrderImporter extends ImporterTask {
 		synchronized (this) {
 			isReady = false;
 			final Node root = node.get("result").get("rowset");
-			MarketOrder.markAllActiveAsExpired(apiKey.getCharacterId());
 			for (int i = root.size() - 1; i >= 0; i--) {
 				processRow(root, i);
 			}
@@ -64,9 +86,15 @@ public class MarketOrderImporter extends ImporterTask {
 			}
 		}
 	}
-
+	
+	/**
+	 * This method writes the journal entry to the database.
+	 * 
+	 * @param row
+	 * 		The {@link Node} containing all the market order information.
+	 */
 	@Transactional
-	void persistChangeData(Node row) {
+	protected void persistChangeData(Node row) {
 		try {
 			long orderId = Long.parseLong(row.getAttribute("orderID"));
 			

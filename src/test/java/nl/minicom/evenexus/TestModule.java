@@ -9,6 +9,11 @@ import org.junit.Ignore;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 
+/**
+ * This class is an {@link AbstractModule} which can be used in JUnit tests.
+ * 
+ * @author michael
+ */
 @Ignore
 public class TestModule extends AbstractModule {
 

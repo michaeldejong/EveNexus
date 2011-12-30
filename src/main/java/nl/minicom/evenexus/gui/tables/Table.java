@@ -73,7 +73,7 @@ public class Table extends JTable {
 	
 	private void updateColumns() {		
 		for (int i = 0; i < columnModel.getSize(); i++) {
-			Column column = columnModel.get(i);
+			Column column = columnModel.getColumnAtIndex(i);
 			if (column.isVisible() && isRemoved(column)) {
 				int newIndex = columnModel.getVisibleIndex(column);
 				
@@ -138,7 +138,7 @@ public class Table extends JTable {
 				for (Object[] value : values) {
 					Map<String, Object> row = new TreeMap<String, Object>();
 					for (int i = 0; i < columnModel.getSize(); i++) {
-						Column column = columnModel.get(i);
+						Column column = columnModel.getColumnAtIndex(i);
 						int index = indexOf(fields, column.getColumn());
 						if (index >= 0) {
 							row.put(column.getName(), value[index]);

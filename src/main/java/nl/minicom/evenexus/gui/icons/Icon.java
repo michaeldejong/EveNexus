@@ -23,8 +23,11 @@ public enum Icon {
 	SETTINGS_16				("/img/16/process.png"),
 	
 	ADD_32					("/img/32/plus.png"),
+	ADD_COLUMN_32			("/img/32/add_column.png"),
 	DISPLAY_32				("/img/32/display.png"),
 	PACKAGE_32				("/img/32/box.png"),
+	PIE_CHART_32			("/img/32/pie_chart.png"),
+	REMOVE_32				("/img/32/remove.png"),
 	SEARCH_32				("/img/32/search.png"),
 	
 	ADD_USER_48 			("/img/48/user_add.png"),

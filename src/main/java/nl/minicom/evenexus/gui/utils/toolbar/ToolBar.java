@@ -2,7 +2,6 @@ package nl.minicom.evenexus.gui.utils.toolbar;
 
 
 import java.awt.Dimension;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -17,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import nl.minicom.evenexus.gui.GuiConstants;
+import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.dashboard.LineGraphEngine;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.ColumnSelectionFrame;
@@ -51,13 +51,13 @@ public class ToolBar extends JPanel {
 	}
 
 	/**
-	 * This method creates a {@link TextField} allowing the user to filter on a specific item name.
+	 * This method creates a {@link JTextField} allowing the user to filter on a specific item name.
 	 * 
 	 * @param tables
 	 * 		The table to filter.
 	 * 
 	 * @return
-	 * 		A {@link JPanel} containing the {@link TextField}.
+	 * 		A {@link JPanel} containing the {@link JTextField}.
 	 */
 	public JPanel createTypeNameSearchField(final Table... tables) {
 		JPanel filterPanel = new JPanel();
@@ -248,7 +248,7 @@ public class ToolBar extends JPanel {
 	 * 		A {@link ToolBarButton} which opens the specified {@link ColumnSelectionFrame}.
 	 */
 	public final ToolBarButton createTableSelectColumnsButton(final ColumnSelectionFrame columnSelectionFrame) {
-		ToolBarButton button = new ToolBarButton("/img/32/add_column.png", "Show / hide columns");
+		ToolBarButton button = new ToolBarButton(Icon.ADD_COLUMN_32, "Show / hide columns");
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

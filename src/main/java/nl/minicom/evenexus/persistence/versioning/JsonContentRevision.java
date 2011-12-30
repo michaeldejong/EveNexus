@@ -4,10 +4,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import nl.minicom.evenexus.persistence.dao.Item;
-import nl.minicom.evenexus.persistence.dao.MapRegion;
-import nl.minicom.evenexus.persistence.dao.Station;
-
 import org.hibernate.Session;
 
 import com.google.gson.Gson;
@@ -27,7 +23,6 @@ public class JsonContentRevision implements IRevision {
 		putData(session, "stastations", container.getStations());
 		putData(session, "invtypes", container.getItems());
 		putData(session, "mapregions", container.getRegions());
-		putData(session, "solarsystems", container.getSolarSystems());
 	}
 	
 	private <T> void putData(Session session, String tableName, List<T> entities) {

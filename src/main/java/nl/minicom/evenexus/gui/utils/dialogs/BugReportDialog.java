@@ -92,21 +92,7 @@ public class BugReportDialog extends CustomDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				reportButton.setEnabled(false);
-				new Thread() {
-					@Override
-					public void run() {
-						try {
-							createReport();
-							
-							if (fatal) {
-								System.exit(1);
-							}
-						} 
-						catch (Exception e1) {
-							LOG.warn(e1.getLocalizedMessage(), e1);
-						}
-					}
-				}.start();
+				new Thread(new CreateReportRunnable()).start();
 				setVisible(false);
 				reportButton.setEnabled(true);
 			}
@@ -220,6 +206,28 @@ public class BugReportDialog extends CustomDialog {
 	 */
 	public void setFatal(boolean fatal) {
 		this.fatal  = fatal;
+	}
+	
+	/**
+	 * This {@link Runnable} creates and submits a bug report to the GitHub repo, 
+	 * and then terminates the application if the bug proved to be fatal.
+	 *
+	 * @author michael
+	 */
+	private class CreateReportRunnable implements Runnable {
+		
+		@Override
+		public void run() {
+			try {
+				createReport();
+				if (fatal) {
+					System.exit(1);
+				}
+			} 
+			catch (Exception e1) {
+				LOG.warn(e1.getLocalizedMessage(), e1);
+			}
+		}
 	}
 
 }

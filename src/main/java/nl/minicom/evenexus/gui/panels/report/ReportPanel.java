@@ -1,4 +1,4 @@
-package nl.minicom.evenexus.gui.panels.report.dialogs;
+package nl.minicom.evenexus.gui.panels.report;
 
 
 import java.awt.event.ActionEvent;
@@ -6,10 +6,13 @@ import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.swing.GroupLayout;
 
 import nl.minicom.evenexus.gui.GuiConstants;
+import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.TabPanel;
+import nl.minicom.evenexus.gui.panels.report.dialogs.ReportWizardDialog;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -17,27 +20,30 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@Singleton
 public class ReportPanel extends TabPanel {
 
 	private static final long serialVersionUID = -4187071888216622511L;
 	private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
 	
 	private final SettingsManager settingsManager;
-	private final Provider<ReportBuilderDialog> dialogProvider;
+	private final ReportChartPanel chartPanel;
+	private final Provider<ReportWizardDialog> dialogProvider;
 	
 	@Inject
 	public ReportPanel(SettingsManager settingsManager, 
-			Provider<ReportBuilderDialog> dialogProvider) {
+			Provider<ReportWizardDialog> dialogProvider,
+			ReportChartPanel chartPanel) {
 		
 		this.settingsManager = settingsManager;
+		this.chartPanel = chartPanel;
 		this.dialogProvider = dialogProvider;
 	}
-	
+
 	public void initialize() {
 		setBackground(GuiConstants.getTabBackground());
 		
-		ToolBarButton createReport = new ToolBarButton("/img/32/pie_chart.png", "Create a new report");
+		ToolBarButton createReport = new ToolBarButton(Icon.PIE_CHART_32, "Create a new report");
         createReport.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -65,7 +71,9 @@ public class ReportPanel extends TabPanel {
         	layout.createSequentialGroup()
         		.addGap(7)
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-					.addComponent(toolBar))
+					.addComponent(toolBar)
+					.addComponent(chartPanel)
+				)
 				.addGap(7)
     	);
     	layout.setVerticalGroup(
@@ -73,9 +81,12 @@ public class ReportPanel extends TabPanel {
 	    		.addGap(5)
 	    		.addComponent(toolBar)
 	    		.addGap(7)
+	    		.addComponent(chartPanel)
+	    		.addGap(7)
     	);
 	}
 
+	@Override
 	protected void reloadContent() {
 		LOG.info("Report panel reloaded!");
 	}

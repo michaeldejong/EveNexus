@@ -5,7 +5,6 @@ import java.util.List;
 
 import nl.minicom.evenexus.persistence.dao.Item;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
-import nl.minicom.evenexus.persistence.dao.SolarSystem;
 import nl.minicom.evenexus.persistence.dao.Station;
 
 /**
@@ -19,7 +18,6 @@ public class Container {
 	private final List<Station> stations;
 	private final List<Item> items;
 	private final List<MapRegion> regions;
-	private final List<SolarSystem> solarSystems;
 	
 	/**
 	 * This constructs a new {@link Container} object.
@@ -28,7 +26,6 @@ public class Container {
 		this.stations = new ArrayList<Station>();
 		this.items = new ArrayList<Item>();
 		this.regions = new ArrayList<MapRegion>();
-		this.solarSystems = new ArrayList<SolarSystem>();
 	}
 	
 	/**
@@ -103,22 +100,4 @@ public class Container {
 		regions.add(region);
 	}
 
-	/**
-	 * @return
-	 * 		A {@link List} of {@link SolarSystem}s in this container.
-	 */
-	public List<SolarSystem> getSolarSystems() {
-		return solarSystems;
-	}
-	
-	/**
-	 * This method adds a {@link SolarSystem} to the container.
-	 * 
-	 * @param solarSystem
-	 * 		The {@link SolarSystem} to add to the container.
-	 */
-	public void addSolarSystem(SolarSystem solarSystem) {
-		solarSystems.add(solarSystem);
-	}
-	
 }

@@ -23,7 +23,12 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link JournalImporter} is responsible for importing Journal entries
+ * from the EVE API server.
+ *
+ * @author michael
+ */
 public class JournalImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JournalImporter.class);
@@ -32,6 +37,24 @@ public class JournalImporter extends ImporterTask {
 	
 	private volatile boolean isReady = true; 
 	
+	/**
+	 * This constructs a new {@link JournalImporter}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param apiParserProvider
+	 * 		The {@link Provider} which provides {@link ApiParser}s.
+	 * 
+	 * @param importerThreadProvider
+	 * 		The {@link Provider} which provides {@link ImporterThread}s.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public JournalImporter(
 			Database database, 
@@ -69,12 +92,20 @@ public class JournalImporter extends ImporterTask {
 				return persistChangeData(row);
 			}
 		}
-		
 		return false;
 	}
 
+	/**
+	 * This method writes the journal entry to the database.
+	 * 
+	 * @param row
+	 * 		The {@link Node} containing all the journal entry information.
+	 * 
+	 * @return
+	 * 		True if the entry was successfully persisted.
+	 */
 	@Transactional
-	boolean persistChangeData(Node row) {
+	protected boolean persistChangeData(Node row) {
 		Session session = getDatabase().getCurrentSession();
 		
 		try {			

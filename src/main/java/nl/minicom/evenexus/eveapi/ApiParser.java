@@ -20,6 +20,7 @@ import nl.minicom.evenexus.eveapi.exceptions.JournalsExhaustedException;
 import nl.minicom.evenexus.eveapi.exceptions.MarketOrdersExhaustedException;
 import nl.minicom.evenexus.eveapi.exceptions.SecurityNotHighEnoughException;
 import nl.minicom.evenexus.eveapi.exceptions.TransactionsExhaustedException;
+import nl.minicom.evenexus.eveapi.exceptions.WarnableException;
 import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import nl.minicom.evenexus.persistence.Database;
 import nl.minicom.evenexus.persistence.dao.ApiKey;
@@ -35,12 +36,30 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link ApiParser} class is responsible for connecting to the EVE API server, 
+ * and reading its output.
+ * 
+ * @author michael
+ */
 public class ApiParser {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ApiParser.class);
 
-	public static boolean isAvailable(Node node) throws Exception {
+	/**
+	 * This method returns true if the specified {@link Node} is a valid node with no
+	 * error messages.
+	 * 
+	 * @param node
+	 * 		The XML {@link Node} to read.
+	 * 
+	 * @return
+	 * 		True if the Node contains no error messages.
+	 * 
+	 * @throws WarnableException
+	 * 		If an API {@link Exception} occurred.
+	 */
+	public static boolean isAvailable(Node node) throws WarnableException {
 		boolean hasErrors = false;
 		boolean hasRoot = node != null;
 		Node errorNode = null;
@@ -67,7 +86,6 @@ public class ApiParser {
 	 * (where to send the request to) and a cooldownMinutes (how many minutes
 	 * have to be between requests)
 	 */
-	
 	public enum Api {
 		CHAR_LIST(1),
 		CHAR_BALANCE(2),
@@ -85,6 +103,10 @@ public class ApiParser {
 			this.importerID = importerID;
 		}
 		
+		/**
+		 * @return
+		 * 		The id of the associated Importer.
+		 */
 		public long getImporterId() {
 			return importerID;
 		}
@@ -94,6 +116,18 @@ public class ApiParser {
 	private final ApiServerManager apiServerManager;
 	private final Database database;
 	
+	/**
+	 * This constructs a new {@link ApiParser} object.
+	 * 
+	 * @param apiServerManager
+	 * 		The {@link ApiServerManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public ApiParser(ApiServerManager apiServerManager, Database database, BugReportDialog dialog) {
 		this.dialog = dialog;
@@ -101,10 +135,38 @@ public class ApiParser {
 		this.database = database;
 	}
 	
+	/**
+	 * This method parses the API for the specified {@link ApiKey}.
+	 * 
+	 * @param api
+	 * 		The {@link Api} to connect to.
+	 * 
+	 * @param apiKey
+	 * 		The {@link ApiKey} to use.
+	 * 
+	 * @return
+	 * 		The resulting XML {@link Node}.
+	 */
 	public Node parseApi(Api api, ApiKey apiKey) {
 		return parseApi(api, apiKey, null);
 	}
 	
+	/**
+	 * This method parses the API for the specified {@link ApiKey}.
+	 * 
+	 * @param api
+	 * 		The {@link Api} to connect to.
+	 * 
+	 * @param apiKey
+	 * 		The {@link ApiKey} to use.
+	 * 
+	 * @param additionalArguments
+	 * 		A {@link Map} containing any additional arguments to be 
+	 * 		added to the API request.
+	 * 
+	 * @return
+	 * 		The resulting XML {@link Node}.
+	 */
 	public Node parseApi(Api api, ApiKey apiKey, Map<String, String> additionalArguments) {
 		Map<String, String> arguments = new TreeMap<String, String>();
 		if (apiKey != null) {
@@ -134,6 +196,18 @@ public class ApiParser {
 		return null;
 	}
 	
+	/**
+	 * This method checks if it needs to import, and updates the cooldown.
+	 * 
+	 * @param importer
+	 * 		The {@link Importer} to run.
+	 * 
+	 * @param characterId
+	 * 		The id of the character.
+	 * 
+	 * @return
+	 * 		True if we successfully updated the cooldown.
+	 */
 	@Transactional
 	protected boolean checkIfWeNeedToImportAndIfSoUpdateCooldown(Importer importer, long characterId) {
 		Session session = database.getCurrentSession();
@@ -156,6 +230,15 @@ public class ApiParser {
 		return false;
 	}
 	
+	/**
+	 * Gets the {@link Importer}.
+	 * 
+	 * @param importerId
+	 * 		The id of the {@link Importer}.
+	 * 
+	 * @return
+	 * 		The {@link Importer}.
+	 */
 	@Transactional
 	protected Importer getImporter(final long importerId) {
 		Session session = database.getCurrentSession();
@@ -204,6 +287,15 @@ public class ApiParser {
 		return root;
 	}
 
+	/**
+	 * This method updates the cooldown.
+	 * 
+	 * @param root
+	 * 		The XML node of the request.
+	 * 
+	 * @param importerId
+	 * 		The id of the {@link Importer}.
+	 */
 	@Transactional
 	protected void updateCooldown(Node root, long importerId) {
 		try {
@@ -225,7 +317,7 @@ public class ApiParser {
 		} 
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
-			// TODO: show bug reporter.
+			dialog.setVisible(true);
 		}
 	}
 

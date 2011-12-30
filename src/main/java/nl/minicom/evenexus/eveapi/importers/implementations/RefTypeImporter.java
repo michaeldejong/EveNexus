@@ -18,7 +18,12 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link RefTypeImporter} is responsible for importing ref types
+ * from the EVE API server.
+ *
+ * @author michael
+ */
 public class RefTypeImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(RefTypeImporter.class);
@@ -27,6 +32,24 @@ public class RefTypeImporter extends ImporterTask {
 	
 	private volatile boolean isReady = true;
 
+	/**
+	 * This constructs a new {@link RefTypeImporter} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param apiParserProvider
+	 * 		The {@link Provider} which provides {@link ApiParser}s.
+	 * 
+	 * @param importerThreadProvider
+	 * 		The {@link Provider} which provides {@link ImporterThread}s.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public RefTypeImporter(
 			Database database, 
@@ -59,9 +82,15 @@ public class RefTypeImporter extends ImporterTask {
 			}
 		}
 	}
-
+	
+	/**
+	 * This method writes the journal entry to the database.
+	 * 
+	 * @param row
+	 * 		The {@link Node} containing all the ref type information.
+	 */
 	@Transactional
-	void persistChangeData(Node row) {
+	protected void persistChangeData(Node row) {
 		try {			
 			long refTypeId = Long.parseLong(row.getAttribute("refTypeID"));
 			String refTypeName = row.getAttribute("refTypeName");	

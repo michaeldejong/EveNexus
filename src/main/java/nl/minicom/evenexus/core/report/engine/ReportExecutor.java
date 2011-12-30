@@ -3,6 +3,8 @@ package nl.minicom.evenexus.core.report.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.persistence.QueryBuilder;
@@ -26,8 +28,9 @@ import org.hibernate.Session;
  */
 public class ReportExecutor {
 	
-	private final ReportModel model;
 	private final Session session;
+
+	private ReportModel model;
 	private Table table;
 
 	/**
@@ -35,11 +38,20 @@ public class ReportExecutor {
 	 * provided {@link ReportModel}.
 	 * 
 	 * @param session	A reference to the {@link Session} connection.
-	 * @param model		The {@link ReportModel} to base this executor on.
 	 */
-	public ReportExecutor(Session session, ReportModel model) {
-		this.model = model;
+	@Inject
+	public ReportExecutor(Session session) {
 		this.session = session;
+	}
+	
+	/**
+	 * This method initializes the {@link ReportExecutor}.
+	 * 
+	 * @param reportModel
+	 * 		The {@link ReportModel} to execute.
+	 */
+	public void initialize(ReportModel reportModel) {
+		this.model = reportModel;
 		this.table = null;
 	}
 

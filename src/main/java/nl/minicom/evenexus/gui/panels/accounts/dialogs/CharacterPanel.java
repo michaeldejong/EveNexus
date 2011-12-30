@@ -22,6 +22,12 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 
 import org.hibernate.Session;
 
+/**
+ * The {@link CharacterPanel} is responsible for displaying zero or more
+ * characters, on the {@link CharacterPanel}.
+ * 
+ * @author michael
+ */
 public class CharacterPanel extends JPanel {
 	
 	private static final long serialVersionUID = 2461165378577113441L;
@@ -29,18 +35,33 @@ public class CharacterPanel extends JPanel {
 	private final Map<EveCharacter, JCheckBox> characterMap;
 	private final Database database;
 	
-	private StateRule addRule;
+	private StateRule addRule = null;
 	
+	/**
+	 * This constructs a new {@link CharacterPanel}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public CharacterPanel(Database database) {
-		super();
 		this.database = database;
 		this.characterMap = new TreeMap<EveCharacter, JCheckBox>();
 		setBorder(new LineBorder(Color.GRAY, 1));
 		setLayout(null);
 	}
 	
-	public void initialize(final JButton add) {
+	/**
+	 * This method initializes the {@link CharacterPanel}.
+	 * 
+	 * @param add
+	 * 		The add {@link JButton}.
+	 */
+	protected void initialize(final JButton add) {
+		if (addRule != null) {
+			throw new IllegalStateException("CharacterPanel has already been initialized!");
+		}
+		
 		addRule = new StateRule() {
 			@Override
 			public void onValid(boolean isValid) {
@@ -49,9 +70,15 @@ public class CharacterPanel extends JPanel {
 		};
 	}
 	
-	public void addCharacter(EveCharacter c) {
-		if (!characterExists(c.getCharacterId())) {
-			characterMap.put(c, new JCheckBox(c.getCharacterName()));
+	/**
+	 * This method adds an {@link EveCharacter} to the {@link CharacterPanel}.
+	 * 
+	 * @param eveCharacter
+	 * 		The {@link EveCharacter} to add.
+	 */
+	protected void addCharacter(EveCharacter eveCharacter) {
+		if (!characterExists(eveCharacter.getCharacterId())) {
+			characterMap.put(eveCharacter, new JCheckBox(eveCharacter.getCharacterName()));
 		}
 		reload();
 	}
@@ -61,7 +88,11 @@ public class CharacterPanel extends JPanel {
 		return session.get(ApiKey.class, characterId) != null;
 	}
 	
-	public List<EveCharacter> getSelectedCharacters() {
+	/**
+	 * @return
+	 * 		The {@link EveCharacter} objects which have been selected.
+	 */
+	protected List<EveCharacter> getSelectedCharacters() {
 		List<EveCharacter> characters = new ArrayList<EveCharacter>();
 		for (Entry<EveCharacter, JCheckBox> entry : characterMap.entrySet()) {
 			if (entry.getValue().isSelected()) {
@@ -100,7 +131,10 @@ public class CharacterPanel extends JPanel {
 		repaint();		
 	}
 
-	public void clear() {
+	/**
+	 * This method clears the {@link CharacterPanel}.
+	 */
+	protected void clear() {
 		characterMap.clear();
 		reload();
 	}	

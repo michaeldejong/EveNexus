@@ -14,7 +14,7 @@ public class ToolBarButton extends JButton {
 
 	private static final long serialVersionUID = -7696380876971354114L;
 	
-	public ToolBarButton(String icon, String tooltip) {
+	public ToolBarButton(Icon icon, String tooltip) {
 		super(Icon.getIcon(icon));
 		setToolTipText(tooltip);
         setFocusable(false);

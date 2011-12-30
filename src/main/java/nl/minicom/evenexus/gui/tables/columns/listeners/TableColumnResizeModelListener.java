@@ -24,7 +24,7 @@ public class TableColumnResizeModelListener implements TableColumnModelListener 
 		TableColumnModel tableColumnModel = (TableColumnModel) e.getSource();
 		for (int i = 0; i < tableColumnModel.getColumnCount(); i++) {
 			TableColumn c = tableColumnModel.getColumn(i);
-			Column column = model.getVisible((String) c.getHeaderValue());
+			Column column = model.getColumnWithName((String) c.getHeaderValue());
 			column.setWidth(c.getWidth());
 		}
 	}

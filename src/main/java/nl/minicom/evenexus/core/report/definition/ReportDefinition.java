@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
 import nl.minicom.evenexus.core.report.definition.components.GroupTranslator;
 import nl.minicom.evenexus.core.report.definition.components.ReportFilter;
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
@@ -39,6 +41,7 @@ import nl.minicom.evenexus.persistence.dao.WalletTransaction;
  *
  * @author Michael
  */
+@Singleton
 public class ReportDefinition {
 	
 	// Filter keys

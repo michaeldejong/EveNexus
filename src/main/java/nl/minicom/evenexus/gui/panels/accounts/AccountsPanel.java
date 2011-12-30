@@ -8,10 +8,12 @@ import javax.inject.Provider;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import nl.minicom.evenexus.gui.GuiConstants;
+import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.accounts.dialogs.AddCharacterFrame;
 import nl.minicom.evenexus.gui.tables.Table;
 import nl.minicom.evenexus.gui.tables.columns.TableColumnSelectionFrame;
@@ -73,8 +75,8 @@ public class AccountsPanel extends JPanel {
 		this.accountModel = accountModel;
 		this.table = table;
 		
-		addCharacter = new ToolBarButton("/img/32/add.png", "Add new a character");
-		deleteCharacter = new ToolBarButton("/img/32/remove.png", "Delete a character");
+		addCharacter = new ToolBarButton(Icon.ADD_32, "Add new a character");
+		deleteCharacter = new ToolBarButton(Icon.REMOVE_32, "Delete a character");
 		
 		addCharacter.addActionListener(new ActionListener() {
 			@Override
@@ -169,9 +171,22 @@ public class AccountsPanel extends JPanel {
 	 * This method reloads the data on this tab.
 	 */
 	public void reloadTab() {
-		table.getSelectionModel().clearSelection();
-		deleteCharacter.setEnabled(false);
-		table.reload();
-		LOG.info("Account panel reloaded!");
+		SwingUtilities.invokeLater(new Reload());
 	}
+
+	/**
+	 * This {@link Runnable} reloads this {@link AccountsPanel}.
+	 * 
+	 * @author michael
+	 */
+	private class Reload implements Runnable {
+		@Override
+		public void run() {
+			table.getSelectionModel().clearSelection();
+			deleteCharacter.setEnabled(false);
+			table.reload();
+			LOG.info("Account panel reloaded!");
+		}
+	}
+	
 }

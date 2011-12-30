@@ -10,7 +10,11 @@ import nl.minicom.evenexus.persistence.dao.ApiKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This {@link Thread} is responsible for running an {@link ImporterTask}.
+ *
+ * @author michael
+ */
 public class ImporterThread extends Thread {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ImporterThread.class);
@@ -20,11 +24,26 @@ public class ImporterThread extends Thread {
 	private ImporterTask importer;
 	private ApiKey apiKey;
 	
+	/**
+	 * This constructs a new {@link ImporterThread} object.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public ImporterThread(BugReportDialog dialog) {
 		this.dialog = dialog;
 	}
 	
+	/**
+	 * This method initializes the {@link ImporterThread}.
+	 * 
+	 * @param importer
+	 * 		The {@link ImporterTask} to run.
+	 * 
+	 * @param apiKey
+	 * 		The {@link ApiKey} to run the import on.
+	 */
 	public void initialize(ImporterTask importer, ApiKey apiKey) {
 		this.importer = importer;
 		this.apiKey = apiKey;
@@ -46,6 +65,11 @@ public class ImporterThread extends Thread {
 		}
 	}
 	
+	/**
+	 * @return 
+	 * 		The description of this {@link Thread}.
+	 */
+	@Override
 	public String toString() {
 		return "Import thread: " + importer.getName();
 	}

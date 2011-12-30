@@ -19,7 +19,12 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link SkillImporter} is responsible for importing skills
+ * from the EVE API server.
+ *
+ * @author michael
+ */
 public class SkillImporter extends ImporterTask {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SkillImporter.class);
@@ -28,6 +33,24 @@ public class SkillImporter extends ImporterTask {
 	
 	private volatile boolean isReady = true;
 
+	/**
+	 * This constructs a new {@link SkillImporter} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param apiParserProvider
+	 * 		The {@link Provider} which provides {@link ApiParser}s.
+	 * 
+	 * @param importerThreadProvider
+	 * 		The {@link Provider} which provides {@link ImporterThread}s.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public SkillImporter(
 			Database database, 
@@ -67,9 +90,18 @@ public class SkillImporter extends ImporterTask {
 			}
 		}
 	}
-
+	
+	/**
+	 * This method writes the journal entry to the database.
+	 * 
+	 * @param row
+	 * 		The {@link Node} containing all the skill information.
+	 * 
+	 * @param apiKey
+	 * 		The {@link ApiKey} associated with the request.
+	 */
 	@Transactional
-	void persistChangeData(Node row, ApiKey apiKey) {
+	protected void persistChangeData(Node row, ApiKey apiKey) {
 		try {			
 			long typeId = Long.parseLong(row.getAttribute("typeID"));
 			int level = Integer.parseInt(row.getAttribute("level")); 

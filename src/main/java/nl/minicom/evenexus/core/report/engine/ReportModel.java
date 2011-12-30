@@ -1,14 +1,23 @@
 package nl.minicom.evenexus.core.report.engine;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
+
+import com.google.common.collect.Lists;
 
 /**
  * The {@link ReportModel} object is responsible for describing a certain
@@ -16,7 +25,10 @@ import nl.minicom.evenexus.core.report.definition.components.ReportItem;
  *
  * @author Michael
  */
-public class ReportModel {
+@Singleton
+public class ReportModel implements ModelListener {
+	
+	private final List<WeakReference<ModelListener>> listeners;
 
 	// Report items
 	private final Map<String, ReportItem> reportItems;
@@ -24,17 +36,22 @@ public class ReportModel {
 	// Report groupings
 	private final List<Model<ReportGroup>> reportGroups;
 	
+	// Report filters
+	private final Model<Date> startDate;
+	private final Model<Date> endDate;
+	
 	// Display type
 	private final Model<DisplayType> displayType;
-	
-	// Listeners
-	private final List<ReportModelListener> listeners;
 	
 	/**
 	 * This constructor creates a new {@link ReportModel} object.
 	 */
+	@Inject
 	public ReportModel() {
-		this.displayType = new Model<DisplayType>(this, DisplayType.TABLE);
+		this.listeners = Lists.newArrayList();
+		
+		// Display type
+		this.displayType = createModel(DisplayType.TABLE);
 		
 		// Report items
 		this.reportItems = new LinkedHashMap<String, ReportItem>();
@@ -42,16 +59,25 @@ public class ReportModel {
 		// Report groupings
 		this.reportGroups = new ArrayList<Model<ReportGroup>>();
 		for (int i = 0; i < 3; i++) {
-			this.reportGroups.add(new Model<ReportGroup>(this));
+			Model<ReportGroup> groupModel = createModel(null);
+			this.reportGroups.add(groupModel);
 		}
 		
-		this.listeners = new ArrayList<ReportModelListener>();
+		// Report filters
+		this.endDate = createModel(endOfToday());
+		this.startDate = createModel(oneMonthAgo());
 	}
 	
-	public void addListener(ReportModelListener listener) {
-		listeners.add(listener);
+	private <T> Model<T> createModel(T value) {
+		Model<T> model = new Model<T>(value);
+		model.addListener(this);
+		return model;
 	}
 	
+	/**
+	 * @return
+	 * 		The {@link Model} containing the {@link DisplayType} of this {@link ReportModel}.
+	 */
 	public Model<DisplayType> getDisplayType() {
 		return displayType;
 	}
@@ -99,6 +125,22 @@ public class ReportModel {
 	}
 
 	/**
+	 * @return
+	 * 		The {@link Model} managing the start date of the {@link ReportModel}.
+	 */
+	public Model<Date> getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @return
+	 * 		The {@link Model} managing the end date of the {@link ReportModel}.
+	 */
+	public Model<Date> getEndDate() {
+		return endDate;
+	}
+
+	/**
 	 * @return a {@link List} of {@link ReportItem} objects in this {@link ReportModel}.
 	 */
 	public Collection<ReportItem> getReportItems() {
@@ -111,7 +153,9 @@ public class ReportModel {
 	public List<ReportGroup> getReportGroups() {
 		List<ReportGroup> groups = new ArrayList<ReportGroup>();
 		for (Model<ReportGroup> model : reportGroups) {
-			groups.add(model.getValue());
+			if (model.isSet()) {
+				groups.add(model.getValue());
+			}
 		}
 		return groups;
 	}
@@ -136,14 +180,91 @@ public class ReportModel {
 		return reportGroups.get(2);
 	}
 
-	public void onValueChanged() {
-		for (ReportModelListener listener : listeners) {
-			listener.onValueChanged();
+	public boolean isValid() {
+		if (reportItems.isEmpty()) {
+			return false;
+		}
+		
+		for (Model<ReportGroup> group : reportGroups) {
+			if (group.isEnabled() && group.isSet()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private Date oneMonthAgo() {
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.add(Calendar.MONTH, -1);
+		return calendar.getTime();
+	}
+
+	private Date endOfToday() {
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
+		calendar.add(Calendar.MILLISECOND, -1);
+		return calendar.getTime();
+	}
+	
+	/**
+	 * Adds a {@link ModelListener} to notify when changes occur to any {@link Model} in the {@link ReportModel}.
+	 * 
+	 * @param listener
+	 * 		The {@link ModelListener} to add.
+	 */
+	public void addListener(ModelListener listener) {
+		if (listener == this) {
+			throw new IllegalStateException();
+		}
+		
+		synchronized (listeners) {
+			listeners.add(new WeakReference<ModelListener>(listener));
 		}
 	}
 
-	public boolean isValid() {
-		return !reportItems.isEmpty();
+	@Override
+	public void onValueChanged() {
+		synchronized (listeners) {
+			int index = 0;
+			while (index < listeners.size()) {
+				WeakReference<ModelListener> reference = listeners.get(index);
+				ModelListener listener = reference.get();
+				if (listener == null) {
+					listeners.remove(index);
+				}
+				else {
+					listener.onValueChanged();
+					index++;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onStateChanged() {
+		synchronized (listeners) {
+			int index = 0;
+			while (index < listeners.size()) {
+				WeakReference<ModelListener> reference = listeners.get(index);
+				ModelListener listener = reference.get();
+				if (listener == null) {
+					listeners.remove(index);
+				}
+				else {
+					listener.onStateChanged();
+					index++;
+				}
+			}
+		}
 	}
 	
 }

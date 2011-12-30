@@ -19,12 +19,11 @@ import javax.swing.UIManager;
 
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.accounts.AccountsPanel;
-import nl.minicom.evenexus.gui.panels.dashboard.DashboardPanel;
 import nl.minicom.evenexus.gui.panels.journals.JournalsPanel;
 import nl.minicom.evenexus.gui.panels.marketorders.MarketOrdersPanel;
 import nl.minicom.evenexus.gui.panels.profit.InventoryProgressPanel;
 import nl.minicom.evenexus.gui.panels.profit.ProfitPanel;
-import nl.minicom.evenexus.gui.panels.report.dialogs.ReportPanel;
+import nl.minicom.evenexus.gui.panels.report.ReportPanel;
 import nl.minicom.evenexus.gui.panels.transactions.TransactionsPanel;
 import nl.minicom.evenexus.gui.settings.SettingsDialog;
 import nl.minicom.evenexus.gui.utils.GuiListener;

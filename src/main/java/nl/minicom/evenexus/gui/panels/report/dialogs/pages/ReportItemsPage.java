@@ -18,29 +18,43 @@ import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
 import nl.minicom.evenexus.i18n.Translator;
 
-public class ReportItemsPanel extends ReportBuilderPage {
+/**
+ * This page allows the user to define on what report items he or she wishes to report.
+ *
+ * @author michael
+ */
+public class ReportItemsPage extends ReportWizardPage {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
 	private final ReportDefinition definition;
 	private final Translator translator;
-	
-	private ReportModel model;
+	private final ReportModel model;
 
+	/**
+	 * This constructs a new {@link ReportItemsPage}.
+	 * 
+	 * @param definition
+	 * 		The {@link ReportDefinition} containing all available items.
+	 * 
+	 * @param model
+	 * 		The {@link ReportModel} describing the report the uses wishes to execute.
+	 * 
+	 * @param translator
+	 * 		The {@link Translator}, which translates the items to the user's language.
+	 */
 	@Inject
-	public ReportItemsPanel(ReportDefinition definition, Translator translator) {
+	public ReportItemsPage(ReportDefinition definition, ReportModel model, Translator translator) {
 		this.definition = definition;
 		this.translator = translator;
-	}
-
-	public ReportBuilderPage initialize(ReportModel model) {
 		this.model = model;
-		buildGui();
-
-		return this;
 	}
 
-	private void buildGui() {		
+	/**
+	 * This method builds the items panel.
+	 */
+	@Override
+	public void buildGui() {
 		JPanel itemPanel = new JPanel();
 		itemPanel.setLayout(null);
 		itemPanel.setBackground(Color.WHITE);
@@ -85,6 +99,14 @@ public class ReportItemsPanel extends ReportBuilderPage {
 	@Override
 	public DialogTitle getTitle() {
 		return new ReportItemTitle();
+	}
+	
+	/**
+	 * @return
+	 *		This method returns true if the user is allowed to go to the next page.
+	 */
+	public boolean allowNext() {
+		return !model.getReportItems().isEmpty();
 	}
 	
 }

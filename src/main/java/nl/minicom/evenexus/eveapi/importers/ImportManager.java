@@ -23,6 +23,11 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+/**
+ * This class is responsible for scheduling all importers.
+ *
+ * @author michael
+ */
 @Singleton
 public class ImportManager extends Timer {
 	
@@ -33,6 +38,18 @@ public class ImportManager extends Timer {
 	private final Provider<CharacterImporter> characterImporterProvider;
 	private final Multimap<Api, ImportListener> listeners;
 	
+	/**
+	 * This constructs a new {@link ImportManager} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param refTypeImporterProvider
+	 * 		The {@link Provider} providing {@link RefTypeImporter}s.
+	 * 
+	 * @param characterImporterProvider
+	 * 		The {@link Provider} providing {@link CharacterImporter}s.
+	 */
 	@Inject
 	public ImportManager(Database database,
 			Provider<RefTypeImporter> refTypeImporterProvider, 
@@ -44,6 +61,9 @@ public class ImportManager extends Timer {
 		this.listeners = HashMultimap.create();
 	}
 	
+	/**
+	 * This method initializes the {@link ImportManager}.
+	 */
 	public void initialize() {
 		synchronized (this) {
 			createCharacterImporters();
@@ -66,6 +86,9 @@ public class ImportManager extends Timer {
 		LOG.info("Scheduling " + task.getImporter(importerId).getName() + " importer at: " + new Date(nextRun));
 	}
 
+	/**
+	 * This method creates the character importers.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	protected void createCharacterImporters() {
@@ -79,20 +102,41 @@ public class ImportManager extends Timer {
 		}
 	}
 
+	/**
+	 * This method adds a new character importer for a specified {@link ApiKey}.
+	 * 
+	 * @param apiKey
+	 * 		THe {@link ApiKey} to use.
+	 */
 	public void addCharacterImporter(ApiKey apiKey) {
 		synchronized (this) {
-			LOG.info("Scheduling importers for character: " + apiKey.getCharacterName());
 			CharacterImporter importer = characterImporterProvider.get();
 			importer.scheduleApiImporters(apiKey);
 		}
 	}
 
+	/**
+	 * This method adds a new {@link ImportListener}.
+	 * 
+	 * @param api
+	 * 		The {@link Api} to listen to.
+	 * 
+	 * @param listener
+	 * 		The {@link ImportListener} to notify.
+	 */
 	public void addListener(Api api, ImportListener listener) {
 		synchronized (this) {
 			listeners.put(api, listener);
 		}
 	}
 
+	/**
+	 * This method notifies the {@link ImportListener}s that a certain {@link Api} importer
+	 * has finished its import.
+	 * 
+	 * @param api
+	 * 		The {@link Api} to which finished.
+	 */
 	protected void triggerImportCompleteEvent(Api api) {
 		synchronized (this) {
 			for (final ImportListener listener : listeners.get(api)) {

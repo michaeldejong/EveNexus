@@ -28,27 +28,57 @@ public class ProfitIdentifier implements Serializable, Comparable<ProfitIdentifi
 	@Column(name = SELL_TRANSACTION_ID, nullable = false)
 	private long sellTransactionId;
 	
-	public ProfitIdentifier() {
-		// Do nothing.
+	@SuppressWarnings("unused")
+	private ProfitIdentifier() {
+		// Private no-args constructor for serialization.
 	}
 	
+	/**
+	 * This constructs a new {@link ProfitIdentifier}.
+	 * 
+	 * @param buyTransactionId
+	 * 		The id of the buy {@link WalletTransaction}.
+	 * 
+	 * @param sellTransactionId
+	 * 		The id of the sell {@link WalletTransaction}.
+	 */
 	public ProfitIdentifier(long buyTransactionId, long sellTransactionId) {
 		this.buyTransactionId = buyTransactionId;
 		this.sellTransactionId = sellTransactionId;
 	}
 	
+	/**
+	 * @return
+	 * 		The id of the buy {@link WalletTransaction}.
+	 */
 	public long getBuyTransactionId() {
 		return buyTransactionId;
 	}
 
+	/**
+	 * This method sets the id of the buy {@link WalletTransaction}.
+	 * 
+	 * @param transactionId
+	 * 		The id of the {@link WalletTransaction}.
+	 */
 	public void setBuyTransactionId(long transactionId) {
 		this.buyTransactionId = transactionId;
 	}
 	
+	/**
+	 * @return
+	 * 		The id of the sell {@link WalletTransaction}.
+	 */
 	public long getSellTransactionId() {
 		return sellTransactionId;
 	}
 
+	/**
+	 * This method sets the id of the sell {@link WalletTransaction}.
+	 * 
+	 * @param transactionId
+	 * 		The id of the sell {@link WalletTransaction}.
+	 */
 	public void setSellTransactionId(long transactionId) {
 		this.sellTransactionId = transactionId;
 	}

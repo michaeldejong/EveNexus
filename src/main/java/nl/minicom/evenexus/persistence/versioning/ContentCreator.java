@@ -11,7 +11,6 @@ import java.sql.SQLException;
 
 import nl.minicom.evenexus.persistence.dao.Item;
 import nl.minicom.evenexus.persistence.dao.MapRegion;
-import nl.minicom.evenexus.persistence.dao.SolarSystem;
 import nl.minicom.evenexus.persistence.dao.Station;
 
 import org.sqlite.SQLiteConfig;
@@ -19,13 +18,37 @@ import org.sqlite.SQLiteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 
-public class ContentCreator {
+/**
+ * This class is responsible for creating a serialized form of the eve source database.
+ *
+ * @author michael
+ */
+public final class ContentCreator {
 
 	private static final String DRIVER = "org.sqlite.JDBC";
 	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/inca10-sqlite3-v1.db";
 	
+	/**
+	 * This main() method creates a serialized database dump of the eve source database.
+	 * 
+	 * @param args
+	 * 		Any additional arguments. 
+	 * 
+	 * @throws JsonIOException
+	 * 		If some object could not be serialized.
+	 * 
+	 * @throws SQLException
+	 * 		If we had problems querying the database.
+	 * 
+	 * @throws IOException
+	 * 		If we could not access the file system.
+	 */
 	public static void main(String[] args) throws JsonIOException, SQLException, IOException {
 		new ContentCreator().execute();
+	}
+	
+	private ContentCreator() {
+		// Prevent instantiation.
 	}
 	
 	private Connection conn = null;
@@ -38,7 +61,6 @@ public class ContentCreator {
 		addStations(c);
 		addItems(c);
 		addRegions(c);
-		addSolarSystems(c);
 		
 		StringWriter writer = new StringWriter();
 		new Gson().toJson(c, writer);
@@ -104,19 +126,6 @@ public class ContentCreator {
 			region.setRegionName(result.getString("regionName"));
 			region.setFactionId(result.getLong("factionId"));
 			c.addRegion(region);
-		}
-	}
-	
-	private void addSolarSystems(Container c) throws SQLException {
-		PreparedStatement statement = conn.prepareStatement("SELECT * FROM mapsolarsystems");
-		ResultSet result = statement.executeQuery();
-		
-		while (result.next()) {
-			SolarSystem solarSystem = new SolarSystem();
-			solarSystem.setSolarSystemId(result.getLong("solarSystemId"));
-			solarSystem.setSolarSystemName(result.getString("solarSystemName"));
-			solarSystem.setRegionId(result.getLong("regionId"));
-			c.addSolarSystem(solarSystem);
 		}
 	}
 

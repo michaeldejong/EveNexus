@@ -179,7 +179,7 @@ public class InventoryWorker implements Runnable {
 			return true;
 		}
 		
-		if (buyTransaction.beforeOrEquals(sellTransaction)) {
+		if (buyTransaction.beforeOrSimultaniously(sellTransaction)) {
 			long buyRemaining = buyTransaction.getRemaining();
 			long sellRemaining = sellTransaction.getRemaining();
 			

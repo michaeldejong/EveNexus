@@ -879,27 +879,6 @@ public class StructureUpgrader extends RevisionCollection {
 			}
 		});
 		
-		super.registerRevision(new Revision(206) {
-			public void execute(Session session) {
-				StringBuilder builder = new StringBuilder();
-				builder.append("CREATE TABLE IF NOT EXISTS solarsystems (");
-				builder.append("solarSystemId BIGINT NOT NULL,");
-				builder.append("solarSystemName VARCHAR(255) DEFAULT NULL,");
-				builder.append("regionId BIGINT DEFAULT NULL,");
-				builder.append("PRIMARY KEY (`solarSystemId`))");
-				session.createSQLQuery(builder.toString()).executeUpdate();
-			}
-		});
-		
-		super.registerRevision(new Revision(207) {
-			public void execute(Session session) {
-				StringBuilder builder = new StringBuilder();
-				builder.append("CREATE INDEX IF NOT EXISTS solarsystems_IX_solarSystemName ");
-				builder.append("ON `solarsystems` (`solarSystemName`)");
-				session.createSQLQuery(builder.toString()).executeUpdate();
-			}
-		});
-		
 	}
 	
 	@Override

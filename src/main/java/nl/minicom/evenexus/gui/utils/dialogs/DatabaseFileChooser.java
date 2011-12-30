@@ -27,7 +27,7 @@ public abstract class DatabaseFileChooser extends JDialog {
 	public void initialize() {
 		setResizable(false);
 		setTitle("Select file");
-		setIconImage(Icon.getImage("/img/other/logo.png"));
+		setIconImage(Icon.getImage(Icon.LOGO));
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -59,12 +59,7 @@ public abstract class DatabaseFileChooser extends JDialog {
 		chooser.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new Thread() {
-					@Override
-					public void run() {
-						onFileSelect(chooser.getSelectedFile());
-					}
-				}.start();
+				new Thread(new OnFileSelected(chooser)).start();
 				dispose();
 			}
 		});
@@ -99,5 +94,23 @@ public abstract class DatabaseFileChooser extends JDialog {
 	public abstract void setAdditionalParameters(JFileChooser chooser);
 
 	public abstract void onFileSelect(File file);
+	
+	/**
+	 * This {@link Runnable}, runs the overridable onFileSelect method
+	 * with the chosen file.
+	 *
+	 * @author michael
+	 */
+	private class OnFileSelected implements Runnable {
+		private final JFileChooser chooser;
+		public OnFileSelected(JFileChooser chooser) {
+			this.chooser = chooser;
+		}
+		
+		@Override
+		public void run() {
+			onFileSelect(chooser.getSelectedFile());
+		}
+	}
 	
 }
