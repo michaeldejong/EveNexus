@@ -24,6 +24,11 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is responsible for keeping track of the items which have been bought, but not yet have been sold.
+ * 
+ * @author michael
+ */
 @Singleton
 public class InventoryManager {
 	
@@ -36,6 +41,18 @@ public class InventoryManager {
 	
 	private State state = State.IDLE;
 	
+	/**
+	 * This constructs a new {@link InventoryManager} object.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param workerProvider
+	 * 		A {@link Provider} which spawns {@link InventoryWorker} objects.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public InventoryManager(ImportManager importManager, 
 			Provider<InventoryWorker> workerProvider, 
@@ -61,6 +78,9 @@ public class InventoryManager {
 		});
 	}
 	
+	/**
+	 * This method processes all WalletTransactions which have remaining items in stock.
+	 */
 	public void processUnprocessedTransactions() {
 		synchronized (state) {
 			state = State.RUNNING;
@@ -98,6 +118,12 @@ public class InventoryManager {
 		state = State.IDLE;
 	}
 	
+	/**
+	 * This method queries unprocessed type ids.
+	 * 
+	 * @return
+	 * 		A {@link List} of item identifiers which are still present in WalletTransactions.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	List<Number> queryUnprocessedTypeIds() {
@@ -112,25 +138,44 @@ public class InventoryManager {
 		}
 	}
 
+	/**
+	 * This method adds a new {@link InventoryListener} to this {@link InventoryManager}.
+	 * 
+	 * @param listener
+	 * 		The {@link InventoryListener} to add.
+	 */
 	public void addListener(InventoryListener listener) {
 		synchronized (state) {
 			listeners.add(listener);
 		}
 	}
 	
+	/**
+	 * @return
+	 * 		True if the {@link InventoryManager} is currently running.
+	 */
 	public final boolean isRunning() {
 		synchronized (state) {
 			return state == State.RUNNING;
 		}
 	}
 	
+	/**
+	 * @return
+	 * 		True if the {@link InventoryManager} is currently idling.
+	 */
 	public final boolean isIdle() {
 		synchronized (state) {
 			return state == State.IDLE;
 		}
 	}
 
-	public enum State {
+	/**
+	 * This enum represents the states in which the {@link InventoryManager} can be.
+	 * 
+	 * @author michael
+	 */
+	private enum State {
 		IDLE,
 		RUNNING;
 	}

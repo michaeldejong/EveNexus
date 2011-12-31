@@ -21,6 +21,12 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is responsible for quering the {@link Database} for all {@link WalletTransaction}s 
+ * related to a specific item.
+ * 
+ * @author michael
+ */
 public class InventoryWorker implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryWorker.class);
@@ -29,11 +35,23 @@ public class InventoryWorker implements Runnable {
 	
 	private long typeId = -1;
 	
+	/**
+	 * This constructs a new {@link InventoryWorker} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public InventoryWorker(Database database) {
 		this.database = database;
 	}
 	
+	/**
+	 * This method initializes the {@link InventoryWorker} to only work on a specific item.
+	 * 
+	 * @param typeId
+	 * 		The id of the item to look for.
+	 */
 	public void initialize(long typeId) {
 		this.typeId = typeId;
 	}
@@ -57,6 +75,11 @@ public class InventoryWorker implements Runnable {
 		}
 	}
 	
+	/**
+	 * This method reverts recent {@link WalletTransaction}s if required.
+	 * This could be required if new {@link WalletTransaction}s are imported via the API, but took place before 
+	 * other {@link WalletTransaction}s which are already in the database.
+	 */
 	@Transactional
 	void revertMostRecentTransactionsIfRequired() {
 		Session session = database.getCurrentSession();
@@ -161,6 +184,18 @@ public class InventoryWorker implements Runnable {
 		return result;
 	}
 
+	/**
+	 * This method tries to match two {@link Queue}s of {@link WalletTransaction}s.
+	 * 
+	 * @param buys
+	 * 		A {@link Queue} of buy {@link WalletTransaction}s.
+	 * 
+	 * @param sales
+	 * 		A {@link Queue} of sell {@link WalletTransaction}s.
+	 * 
+	 * @return
+	 * 		True if a match was made and processed.
+	 */
 	@Transactional
 	boolean match(Queue<WalletTransaction> buys, Queue<WalletTransaction> sales) {
 		WalletTransaction buyTransaction = buys.peek();
@@ -220,6 +255,18 @@ public class InventoryWorker implements Runnable {
 		return false;
 	}
 
+	/**
+	 * This method persists a transaction match to the database.
+	 * 
+	 * @param buy
+	 * 		The buy {@link WalletTransaction}.
+	 * 
+	 * @param sell
+	 * 		The sell {@link WalletTransaction}.
+	 * 
+	 * @param amount
+	 * 		The amount of items which were matched.
+	 */
 	@Transactional
 	void persistTransactionMatch(WalletTransaction buy, WalletTransaction sell, long amount) {
 		TransactionMatch match = new TransactionMatch();
@@ -229,6 +276,13 @@ public class InventoryWorker implements Runnable {
 		database.getCurrentSession().saveOrUpdate(match);
 	}
 
+	/**
+	 * This method queries the buy {@link WalletTransaction}s for the specific item we're looking for, and
+	 * which has remaining items.
+	 * 
+	 * @return
+	 * 		A {@link Queue} of the specified {@link WalletTransaction}s.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	Queue<WalletTransaction> queryRemainingBuyTransactions() {
@@ -242,7 +296,14 @@ public class InventoryWorker implements Runnable {
 				.list()
 		);
 	}
-	
+
+	/**
+	 * This method queries the sell {@link WalletTransaction}s for the specific item we're looking for, and
+	 * which has remaining items.
+	 * 
+	 * @return
+	 * 		A {@link Queue} of the specified {@link WalletTransaction}s.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	Queue<WalletTransaction> queryRemainingSellTransactions() {

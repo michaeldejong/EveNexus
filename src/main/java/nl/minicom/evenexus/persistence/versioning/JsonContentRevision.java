@@ -8,10 +8,25 @@ import org.hibernate.Session;
 
 import com.google.gson.Gson;
 
+/**
+ * The {@link JsonContentRevision} class is a special type of {@link IRevision},
+ * which persists data to the database.
+ * 
+ * @author michael
+ */
 public class JsonContentRevision implements IRevision {
 	
 	private final Container container;
 	
+	/**
+	 * This constructs a new {@link JsonContentRevision} object.
+	 * 
+	 * @param fileName
+	 * 		The name of the file containing the JSON serialized data.
+	 * 
+	 * @throws Exception
+	 * 		If something went wrong while executing.
+	 */
 	public JsonContentRevision(String fileName) throws Exception {
 		Gson gson = new Gson();
 		InputStream in = JsonContentRevision.class.getResourceAsStream(fileName);

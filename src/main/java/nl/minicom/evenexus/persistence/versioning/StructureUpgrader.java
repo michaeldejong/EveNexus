@@ -2,9 +2,17 @@ package nl.minicom.evenexus.persistence.versioning;
 
 import org.hibernate.Session;
 
-
+/**
+ * This class implements the {@link RevisionCollection} class, and is responsible for registering all revisions
+ * which upgrade the structure of the database.
+ * 
+ * @author michael
+ */
 public class StructureUpgrader extends RevisionCollection {
 
+	/**
+	 * This constructs a new {@link StructureUpgrader} object.
+	 */
 	public StructureUpgrader() {
 		super("database");
 		

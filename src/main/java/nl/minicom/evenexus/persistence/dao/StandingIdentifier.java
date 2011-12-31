@@ -5,6 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+/**
+ * This identifies the standing between two entities.
+ * 
+ * @author michael
+ */
 @Embeddable
 public class StandingIdentifier implements Serializable {
 
@@ -19,27 +24,60 @@ public class StandingIdentifier implements Serializable {
 	@Column(name = FROM_ID)
 	private long fromId;
 	
-	protected StandingIdentifier() {
+	/*
+	 * Private no-args contructor for serialization.
+	 */
+	@SuppressWarnings("unused")
+	private StandingIdentifier() {
 		this (0, 0);
 	}
 	
+	/**
+	 * This constructs a new {@link StandingIdentifier} object.
+	 * 
+	 * @param characterId
+	 * 		The id of the character.
+	 * 
+	 * @param fromId
+	 * 		The id of the entity.
+	 */
 	public StandingIdentifier(long characterId, long fromId) {
 		this.characterId = characterId;
 		this.fromId = fromId;
 	}
 	
+	/**
+	 * @return
+	 * 		The id of the character.
+	 */
 	public long getCharacterId() {
 		return characterId;
 	}
 
+	/**
+	 * This method sets the id of the character.
+	 * 
+	 * @param characterId
+	 * 		The id of the character.
+	 */
 	public void setCharacterId(long characterId) {
 		this.characterId = characterId;
 	}
 	
+	/**
+	 * @return
+	 * 		The id of the entity giving the standing.
+	 */
 	public long getFromId() {
 		return fromId;
 	}
 
+	/**
+	 * This method sets the id of the entity giving the standing.
+	 * 
+	 * @param fromId
+	 * 		The id of the entity.
+	 */
 	public void setFromId(long fromId) {
 		this.fromId = fromId;
 	}

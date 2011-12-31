@@ -24,27 +24,57 @@ public class TransactionMatchIdentifier implements Serializable, Comparable<Tran
 	@Column(name = SELL_TRANSACTION_ID, nullable = false)
 	private long sellTransactionId;
 	
-	public TransactionMatchIdentifier() {
-		// Do nothing.
+	@SuppressWarnings("unused")
+	private TransactionMatchIdentifier() {
+		// Private no-args constructor for serialization.
 	}
 	
+	/**
+	 * This constructs a new {@link TransactionMatchIdentifier}.
+	 * 
+	 * @param buyTransactionId
+	 * 		The id of the buy {@link WalletTransaction}.
+	 * 
+	 * @param sellTransactionId
+	 * 		The id of the sell {@link WalletTransaction}.
+	 */
 	public TransactionMatchIdentifier(long buyTransactionId, long sellTransactionId) {
 		this.buyTransactionId = buyTransactionId;
 		this.sellTransactionId = sellTransactionId;
 	}
 	
+	/**
+	 * @return
+	 * 		The id of the buy {@link WalletTransaction}.
+	 */
 	public long getBuyTransactionId() {
 		return buyTransactionId;
 	}
 
+	/**
+	 * This method sets the id of the buy {@link WalletTransaction}.
+	 * 
+	 * @param transactionId
+	 * 		The id of the buy {@link WalletTransaction}.
+	 */
 	public void setBuyTransactionId(long transactionId) {
 		this.buyTransactionId = transactionId;
 	}
 	
+	/**
+	 * @return
+	 * 		The id of the sell {@link WalletTransaction}.
+	 */
 	public long getSellTransactionId() {
 		return sellTransactionId;
 	}
 
+	/**
+	 * This method sets the id of the sell {@link WalletTransaction}.
+	 * 
+	 * @param transactionId
+	 * 		The id of the sell {@link WalletTransaction}.
+	 */
 	public void setSellTransactionId(long transactionId) {
 		this.sellTransactionId = transactionId;
 	}

@@ -12,15 +12,35 @@ import org.hibernate.Session;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * This class is responsible for executing the revision in a {@link RevisionCollection} object.
+ *
+ * @author michael
+ */
 public class RevisionExecutor {
 	
 	private final Database database;
 	
+	/**
+	 * This contructs a new {@link RevisionExecutor}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public RevisionExecutor(Database database) {
 		this.database = database;
 	}
 	
+	/**
+	 * This method executes any non-executed revisions in the {@link RevisionExecutor}.
+	 * 
+	 * @param revisions
+	 * 		The {@link RevisionCollection} to get the revisions from.
+	 * 
+	 * @return
+	 * 		The {@link Version} representing the version of the {@link Database} after this operation.
+	 */
 	@Transactional
 	public Version execute(RevisionCollection revisions) {
 		Preconditions.checkNotNull(revisions);

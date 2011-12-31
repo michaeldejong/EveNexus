@@ -14,6 +14,11 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+/**
+ * The {@link RevisionExecutorTest} class is responsible for testing the consistency of the {@link RevisionExecutor}.
+ * 
+ * @author michael
+ */
 public class RevisionExecutorTest {
 
 	private String databaseType;
@@ -22,6 +27,9 @@ public class RevisionExecutorTest {
 	private RevisionCollection invalidCollection;
 	private RevisionUtil util;
 	
+	/**
+	 * This method sets up each test.
+	 */
 	@Before
 	public void setup() {
 		databaseType = "test";
@@ -57,22 +65,34 @@ public class RevisionExecutorTest {
 		util.dropDatabase();
 	}
 
+	/**
+	 * This method cleans up after each test.
+	 */
 	@After
 	public void tearDown() {
 		util.dropDatabase();
 	}
 	
+	/**
+	 * This tests that an {@link RevisionExecutor} with a NULL argument throws a {@link NullPointerException}.
+	 */
 	@Test(expected = java.lang.NullPointerException.class)
 	public void testExecutorWithNull() {
 		executor.execute(null);
 	}
 	
+	/**
+	 * This method tests the basic execution of the {@link RevisionExecutor}.
+	 */
 	@Test
 	public void testExecution() {
 		Version dbVersion = executor.execute(collection);
 		checkDatabaseAndCleanup(dbVersion);
 	}
 	
+	/**
+	 * This method test that the same {@link RevisionCollection} can be executed twice.
+	 */
 	@Test
 	public void testDoubleExecution() {
 		// Execute once.
@@ -84,6 +104,9 @@ public class RevisionExecutorTest {
 		checkDatabaseAndCleanup(dbVersion);
 	}
 	
+	/**
+	 * This method test that an invalid {@link RevisionCollection} will throw an {@link IllegalStateException}.
+	 */
 	@Test(expected = java.lang.IllegalStateException.class)
 	public void testInvalidVersioning() {
 		// Execute the complete list of revision.

@@ -1,7 +1,5 @@
 package nl.minicom.evenexus.persistence.interceptor;
 
-import javax.inject.Inject;
-
 import nl.minicom.evenexus.persistence.Database;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -12,17 +10,40 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This {@link MethodInterceptor} intercepts methods and prepares a {@link Session} object for them.
+ * After exiting the method, it will automatically close the {@link Session}.
+ * 
+ * @author michael
+ */
 public class TransactionalInterceptor implements MethodInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionalInterceptor.class);
 	
 	private final Database database;
 	
-	@Inject
+	/**
+	 * This constructs a new {@link TransactionalInterceptor} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	public TransactionalInterceptor(Database database) {
 		this.database = database;
 	}
 	
+	/**
+	 * This method is called, when the target method is intercepted.
+	 * 
+	 * @param invocation
+	 * 		The target method which was invoked.
+	 * 
+	 * @return
+	 * 		An object which will be returned by the target method.
+	 * 
+	 * @throws Throwable
+	 * 		If something went wrong during the intercept.
+	 */
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		Session session = database.getCurrentSession();
 		
