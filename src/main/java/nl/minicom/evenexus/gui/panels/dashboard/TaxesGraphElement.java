@@ -18,6 +18,11 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
+/**
+ * This {@link GraphElement} defines all the taxes paid by all the characters.
+ * 
+ * @author michael
+ */
 public class TaxesGraphElement implements GraphElement {
 	
 	private static final String VISIBLE_SETTING = SettingsManager.DASHBOARD_GRAPH_VISIBLE;
@@ -26,6 +31,15 @@ public class TaxesGraphElement implements GraphElement {
 	private final Database database;
 	private final Map<Integer, Double> data;
 	
+	/**
+	 * Constructs a new {@link TaxesGraphElement}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public TaxesGraphElement(SettingsManager settingsManager, Database database) {
 		this.data = new TreeMap<Integer, Double>();

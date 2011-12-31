@@ -89,9 +89,9 @@ public class AccountsPanel extends JPanel {
 		deleteCharacter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for (int row : table.getSelectedRows()) {
+				//for (int row : table.getSelectedRows()) {
 					// TODO: unsupported!
-				}
+				//}
 				reloadTab();
 			}
 		});

@@ -2,6 +2,8 @@ package nl.minicom.evenexus.gui.panels.dashboard;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +21,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -26,10 +29,17 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimePeriodValue;
 import org.jfree.data.time.TimePeriodValues;
 import org.jfree.data.time.TimePeriodValuesCollection;
+import org.jfree.ui.Layer;
+import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is responsible for drawing {@link GraphElement}s.
+ * 
+ * @author michael
+ */
 public class LineGraphEngine extends ChartPanel {
 
 	private static final long serialVersionUID = 6134550946248367873L;
@@ -41,6 +51,12 @@ public class LineGraphEngine extends ChartPanel {
 	
 	private int period;
 
+	/**
+	 * Constructs a new {@link LineGraphEngine}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public LineGraphEngine(SettingsManager settingsManager) {
 		super(null, true);		
@@ -48,16 +64,29 @@ public class LineGraphEngine extends ChartPanel {
 		this.elements = new ArrayList<GraphElement>();
 	}
 	
+	/**
+	 * This method adds a new {@link GraphElement} to this {@link LineGraphEngine}.
+	 * 
+	 * @param element
+	 * 		The {@link GraphElement} to add.
+	 */
 	public void addGraphElement(GraphElement element) {
 		if (!elements.contains(element)) {
 			elements.add(element);
 		}
 	}
 
+	/**
+	 * @return
+	 * 		A {@link List} of {@link GraphElement}s.
+	 */
 	public List<GraphElement> getGraphElements() {
 		return Collections.unmodifiableList(elements);
 	}
 	
+	/**
+	 * This method reloads the {@link LineGraphEngine}.
+	 */
 	public void reload() {
 		try {
 			TimePeriodValuesCollection collection = new TimePeriodValuesCollection();
@@ -98,30 +127,28 @@ public class LineGraphEngine extends ChartPanel {
 			
 			setChart(chart);
 
-//			addMouseMotionListener(new MouseMotionListener() {
-//				@Override
-//				public void mouseMoved(MouseEvent arg0) {
-//					double mouse = arg0.getX();
-//					long value = (long) dateAxis.java2DToValue(mouse, getScreenDataArea(), RectangleEdge.BOTTOM);
-//					long halfDay = 12L * 3600L * 1000L;
-//					
-//					XYPlot xPlot = ((XYPlot) chart.getPlot());
-//					xPlot.clearDomainMarkers();
-//					
-//					value = (long) (value / (2 * halfDay)) * (2 * halfDay) + halfDay;
-//					
-//					marker = new IntervalMarker(value - halfDay, value + halfDay);
-//					marker.setPaint(new Color(0, 0, 0, 8));
-//					marker.setOutlinePaint(new Color(0, 0, 0, 0));
-//					xPlot.addDomainMarker(marker, Layer.BACKGROUND);
-//					
-//					System.err.println(mouse + "\t" + value + "\t" + new Date(value));
-//				}
-//				
-//				@Override
-//				public void mouseDragged(MouseEvent arg0) {
-//				}
-//			});
+			addMouseMotionListener(new MouseMotionListener() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					double mouse = arg0.getX();
+					long value = (long) dateAxis.java2DToValue(mouse, getScreenDataArea(), RectangleEdge.BOTTOM);
+					long halfDay = 12L * 3600L * 1000L;
+					
+					XYPlot xPlot = ((XYPlot) chart.getPlot());
+					xPlot.clearDomainMarkers();
+					
+					value = (long) (value / (2 * halfDay)) * (2 * halfDay) + halfDay;
+					
+					IntervalMarker marker = new IntervalMarker(value - halfDay, value + halfDay);
+					marker.setPaint(new Color(0, 0, 0, 8));
+					marker.setOutlinePaint(new Color(0, 0, 0, 0));
+					xPlot.addDomainMarker(marker, Layer.BACKGROUND);
+				}
+				
+				@Override
+				public void mouseDragged(MouseEvent arg0) {
+				}
+			});
 		}
 		catch (SQLException e) {
 			LOG.error(e.getLocalizedMessage(), e);
@@ -139,6 +166,12 @@ public class LineGraphEngine extends ChartPanel {
 		return dataset;
 	}
 
+	/**
+	 * This method sets the period to display of the {@link LineGraphEngine}.
+	 * 	
+	 * @param value
+	 * 		The amount of days to display in this {@link LineGraphEngine}.
+	 */
 	public void setPeriod(Integer value) {
 		period = value;
 		settingsManager.saveObject(SettingsManager.FILTER_DASHBOARD_PERIOD, value);

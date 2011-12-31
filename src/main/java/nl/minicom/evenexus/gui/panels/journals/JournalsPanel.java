@@ -110,6 +110,9 @@ public class JournalsPanel extends TabPanel implements ImportListener {
 		}
 	}
 
+	/**
+	 * This method reloads the content of this panel.
+	 */
 	protected void reloadContent() {
 		table.reload();
 		LOG.info("Journal panel reloaded!");

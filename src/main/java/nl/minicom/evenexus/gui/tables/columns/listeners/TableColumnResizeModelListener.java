@@ -11,10 +11,21 @@ import javax.swing.table.TableColumnModel;
 import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 
+/**
+ * The {@link TableColumnModelListener} which listens to resize events.
+ * 
+ * @author michael
+ */
 public class TableColumnResizeModelListener implements TableColumnModelListener {
 
 	private final ColumnModel model;
 	
+	/**
+	 * Constructs a new {@link TableColumnResizeModelListener}.
+	 * 
+	 * @param model
+	 * 		The {@link ColumnModel}.
+	 */
 	public TableColumnResizeModelListener(ColumnModel model) {
 		this.model = model;
 	}

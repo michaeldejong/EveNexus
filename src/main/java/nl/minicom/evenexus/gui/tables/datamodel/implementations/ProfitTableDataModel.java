@@ -23,7 +23,12 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This {@link ITableDataModel} defines the data model which contains
+ * all the data of the profit table.
+ * 
+ * @author michael
+ */
 public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, IPeriodFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProfitTableDataModel.class);
@@ -35,6 +40,18 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	private int period;
 	private String typeName;
 	
+	/**
+	 * Constructs a new {@link ProfitTableDataModel}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public ProfitTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
@@ -42,6 +59,9 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 		this.settingsManager = settingsManager;
 	}
 	
+	/**
+	 * This method initializes the {@link ProfitTableDataModel}.
+	 */
 	public void initialize() {
 		setTypeName(null);
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_PROFIT_PERIOD, IPeriodFilter.WEEK));

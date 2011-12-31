@@ -19,15 +19,28 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
+/**
+ * This {@link GraphElement} defines the all the purchases made by characters.
+ * 
+ * @author michael
+ */
 public class PurchasesGraphElement implements GraphElement {
 	
 	private static final String VISIBLE_SETTING = SettingsManager.DASHBOARD_GRAPH_PURCHASES_VISIBLE;
 
 	private final SettingsManager settingsManager;
 	private final Database database;
-	
 	private final Map<Integer, Double> data;
-	
+
+	/**
+	 * Constructs a new {@link PurchasesGraphElement}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public PurchasesGraphElement(SettingsManager settingsManager, Database database) {
 		this.data = new TreeMap<Integer, Double>();

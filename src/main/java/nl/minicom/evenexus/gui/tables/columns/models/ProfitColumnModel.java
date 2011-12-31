@@ -11,8 +11,19 @@ import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.persistence.dao.Profit;
 import nl.minicom.evenexus.utils.SettingsManager;
 
+/**
+ * This {@link ColumnModel} defines all the available columns for the profit table.
+ * 
+ * @author michael
+ */
 public class ProfitColumnModel extends ColumnModel {
 
+	/**
+	 * Constructs a new {@link ProfitColumnModel}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public ProfitColumnModel(SettingsManager settingsManager) {
 		super(settingsManager);

@@ -19,7 +19,11 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This {@link ITableDataModel} defines the data model of sell orders.
+ *
+ * @author michael
+ */
 public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SellOrdersTableDataModel.class);
@@ -29,6 +33,15 @@ public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilte
 	
 	private String typeName;
 	
+	/**
+	 * Constructs a new {@link SellOrdersTableDataModel}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public SellOrdersTableDataModel(Database database, BugReportDialog dialog) {
 		this.database = database;

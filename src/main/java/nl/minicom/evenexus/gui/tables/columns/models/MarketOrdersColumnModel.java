@@ -10,8 +10,19 @@ import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
 
+/**
+ * This {@link ColumnModel} defines all the available columns for the market orders table.
+ * 
+ * @author michael
+ */
 public class MarketOrdersColumnModel extends ColumnModel {
 
+	/**
+	 * Constructs a new {@link MarketOrdersColumnModel}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public MarketOrdersColumnModel(SettingsManager settingsManager) {
 		super(settingsManager);

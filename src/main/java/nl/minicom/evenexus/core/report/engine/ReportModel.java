@@ -160,26 +160,57 @@ public class ReportModel implements ModelListener {
 		return groups;
 	}
 
+	/**
+	 * This method checks if this {@link ReportModel} has a {@link ReportItem} with the specified alias.
+	 * 
+	 * @param itemAlias
+	 * 		The alias of the {@link ReportItem} we're looking for.
+	 * 
+	 * @return
+	 * 		True if the {@link ReportItem} is present.
+	 */
 	public boolean hasItem(String itemAlias) {
 		return reportItems.containsKey(itemAlias);
 	}
 
+	/**
+	 * This method removes the {@link ReportItem} with the specified alias.
+	 * 
+	 * @param itemAlias
+	 * 		The alias of the {@link ReportItem} to remove.
+	 */
 	public void removeItem(String itemAlias) {
 		reportItems.remove(itemAlias);
 	}
 
+	/**
+	 * @return
+	 * 		The {@link Model} of the first {@link ReportGroup}.
+	 */
 	public Model<ReportGroup> getGrouping1() {
 		return reportGroups.get(0);
 	}
 
+	/**
+	 * @return
+	 * 		The {@link Model} of the second {@link ReportGroup}.
+	 */
 	public Model<ReportGroup> getGrouping2() {
 		return reportGroups.get(1);
 	}
 
+	/**
+	 * @return
+	 * 		The {@link Model} of the third {@link ReportGroup}.
+	 */
 	public Model<ReportGroup> getGrouping3() {
 		return reportGroups.get(2);
 	}
 
+	/**
+	 * @return
+	 * 		True if this {@link ReportModel} is valid, or false if it is not.
+	 */
 	public boolean isValid() {
 		if (reportItems.isEmpty()) {
 			return false;

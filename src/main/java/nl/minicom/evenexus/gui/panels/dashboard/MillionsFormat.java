@@ -9,6 +9,11 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
 
+/**
+ * This formatter formats {@link BigDecimal}s to millions.
+ * 
+ * @author michael
+ */
 public class MillionsFormat extends NumberFormat {
 
 	private static final long serialVersionUID = -7321220259544291956L;

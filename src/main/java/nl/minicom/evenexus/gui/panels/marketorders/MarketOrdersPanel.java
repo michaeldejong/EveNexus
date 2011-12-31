@@ -127,6 +127,9 @@ public class MarketOrdersPanel extends TabPanel implements ImportListener {
 		reloadTab();
 	}
 
+	/**
+	 * This method reloads all the contents of this panel.
+	 */
 	protected void reloadContent() {
 		table1.reload();
 		table2.reload();

@@ -19,7 +19,11 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * The {@link JournalTableDataModel} defines the data model used in the table for journal entries.
+ * 
+ * @author michael
+ */
 public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JournalTableDataModel.class);
@@ -30,6 +34,18 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 	
 	private int period;
 	
+	/**
+	 * Constructs a new {@link JournalTableDataModel}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public JournalTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
@@ -89,6 +105,9 @@ public class JournalTableDataModel implements ITableDataModel, IPeriodFilter {
 		};
 	}
 
+	/**
+	 * This method intializes the {@link JournalTableDataModel}.
+	 */
 	public void initialize() {
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_JOURNAL_PERIOD, IPeriodFilter.WEEK));
 	}

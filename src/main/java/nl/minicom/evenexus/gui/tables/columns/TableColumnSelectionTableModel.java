@@ -6,16 +6,43 @@ import javax.swing.table.TableModel;
 
 import nl.minicom.evenexus.gui.tables.Table;
 
+/**
+ * This {@link TableModel} is a simple {@link TableModel} with two columns.
+ * A column for a checkbox and one for the name of the column.
+ *
+ * @author michael
+ */
 public class TableColumnSelectionTableModel implements TableModel {
 	
 	private final ColumnModel model;
 	private final Table[] tables;
 	
+	/**
+	 * Constructs a new {@link TableColumnSelectionTableModel}.
+	 * 
+	 * @param model
+	 * 		The {@link ColumnModel}.
+	 * 
+	 * @param tables
+	 * 		An array of {@link Table}s.
+	 */
 	public TableColumnSelectionTableModel(ColumnModel model, Table[] tables) {
 		this.model = model;
 		this.tables = tables;
 	}
 
+	/**
+	 * This method sets the value of a certain cell.
+	 * 
+	 * @param value
+	 * 		The new value.
+	 * 
+	 * @param row
+	 * 		The row to update.
+	 * 
+	 * @param column
+	 * 		The column to update.
+	 */
 	public void setValueAt(Object value, int row, int column) {
 		model.getColumnAtIndex(row).setVisible((Boolean) value);
 		model.synchronize();
