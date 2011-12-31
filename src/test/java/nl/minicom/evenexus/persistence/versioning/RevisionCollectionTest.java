@@ -9,6 +9,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class tests the workings of the {@link RevisionCollection} class.
+ * 
+ * @author michael
+ */
 public class RevisionCollectionTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RevisionCollectionTest.class);

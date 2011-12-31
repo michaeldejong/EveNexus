@@ -11,16 +11,33 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.junit.Ignore;
 
+/**
+ * This class provides utility method to the other revision test classes.
+ * 
+ * @author michael
+ */
 @Ignore
 public class RevisionUtil {
 
 	private final Database database;
 	
+	/**
+	 * Constructs a new {@link RevisionUtil} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public RevisionUtil(Database database) {
 		this.database = database;
 	}
 
+	/**
+	 * This method loads the test tabel.
+	 * 
+	 * @return
+	 * 		A {@link List} of objects in the test table.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	protected List<Object[]> loadTestTable() {
@@ -28,6 +45,9 @@ public class RevisionUtil {
 		return session.createSQLQuery("SELECT id, value FROM testtable").list();
 	}
 
+	/**
+	 * This method drops all objects in the database.
+	 */
 	@Transactional
 	protected void dropDatabase() {
 		Session session = database.getCurrentSession();
@@ -35,6 +55,15 @@ public class RevisionUtil {
 		session.flush();
 	}
 	
+	/**
+	 * This method lists all column names present in a specific table.
+	 * 
+	 * @param tableName
+	 * 		The table to look up.
+	 * 
+	 * @return
+	 * 		An array of colunm names.
+	 */
 	@Transactional
 	protected Object[] listDbColumnNames(final String tableName) {
 		Session session = database.getCurrentSession();

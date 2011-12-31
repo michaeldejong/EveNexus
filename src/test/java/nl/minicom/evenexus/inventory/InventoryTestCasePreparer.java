@@ -14,15 +14,32 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.junit.Assert;
 
+/**
+ * This class is responsible for preparing {@link InventoryTestCase} objects in the database.
+ * 
+ * @author michael
+ */
 public class InventoryTestCasePreparer {
 
 	private final Database database;
 	
+	/**
+	 * This constructs a new {@link InventoryTestCasePreparer} object.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public InventoryTestCasePreparer(Database database) {
 		this.database = database;
 	}
 	
+	/**
+	 * This method prepares the specified {@link InventoryTestCase} and persists it to the database.
+	 * 
+	 * @param testCase
+	 * 		The {@link InventoryTestCase} to persist.
+	 */
 	@Transactional
 	public void prepare(InventoryTestCase testCase) {
 		Session session = database.getCurrentSession();
@@ -39,6 +56,12 @@ public class InventoryTestCasePreparer {
 		}
 	}
 	
+	/**
+	 * This method checks the test case results with the data in the database.
+	 * 
+	 * @param testCase
+	 * 		The {@link InventoryTestCase} to use when checking the database.
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public void checkTestCaseResults(InventoryTestCase testCase) {
@@ -99,6 +122,9 @@ public class InventoryTestCasePreparer {
 		}
 	}
 	
+	/**
+	 * This method drops all the objects in the database.
+	 */
 	@Transactional
 	public void dropDatabase() {
 		Session session = database.getCurrentSession();

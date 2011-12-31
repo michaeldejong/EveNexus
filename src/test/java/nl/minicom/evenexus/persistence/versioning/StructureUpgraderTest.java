@@ -33,6 +33,11 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+/**
+ * This class tests the {@link StructureUpgrader} class.
+ *
+ * @author michael
+ */
 public class StructureUpgraderTest {
 	
 	private RevisionExecutor executor;
@@ -41,7 +46,9 @@ public class StructureUpgraderTest {
 	
 	/**
 	 * This method sets up a test case on which we can run tests.
-	 * @throws SQLException 
+	 * 
+	 * @throws SQLException
+	 * 		If we could not set up the test. 
 	 */
 	@Before
 	public void setup() throws SQLException {
@@ -52,21 +59,39 @@ public class StructureUpgraderTest {
 		util.dropDatabase();
 	}
 	
+	/**
+	 * This method is called when cleaning up when a test has finished.
+	 * 
+	 * @throws SQLException
+	 * 		If we could not clean the database.
+	 */
 	@After
 	public void tearDown() throws SQLException {
 		util.dropDatabase();
 	}
 	
+	/**
+	 * This method tests the getRevisionType method.
+	 */
 	@Test
 	public void testRevisionType() {
 		Assert.assertEquals("database", instance.getRevisionType());
 	}
 	
+	/**
+	 * This method tests that we cannot register additional revisions from outside of this object.
+	 */
 	@Test(expected = java.lang.UnsupportedOperationException.class)
 	public void testCannotRegisterAdditionalRevisions() {
 		instance.registerRevision(null);
 	}
 	
+	/**
+	 * This method tests the created database structure with the expected structure (found in entity classes).
+	 * 
+	 * @throws SQLException
+	 * 		If we could not compare the structures.
+	 */
 	@Test
 	public void testFinalStructure() throws SQLException {
 		// Upgrade structure

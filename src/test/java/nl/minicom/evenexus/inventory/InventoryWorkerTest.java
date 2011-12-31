@@ -20,11 +20,19 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+/**
+ * This test class is responsible for testing the {@link InventoryWorker} class.
+ * 
+ * @author michael
+ */
 public class InventoryWorkerTest {
 	
 	private Provider<InventoryWorker> workerProvider;
 	private InventoryTestCasePreparer preparer;
 	
+	/**
+	 * This method sets up a test.
+	 */
 	@Before
 	public void setup() {
 		Injector injector = Guice.createInjector(new TestModule());
@@ -36,26 +44,53 @@ public class InventoryWorkerTest {
 		executor.execute(new StructureUpgrader());
 	}
 	
+	/**
+	 * This method cleans up a test.
+	 */
 	@After
 	public void tearDown() {
 		preparer.dropDatabase();
 	}
 	
+	/**
+	 * This method prepares and tests a test case with only buy WalletTransactions.
+	 * 
+	 * @throws IOException
+	 * 		If something went wrong while testing.
+	 */
 	@Test
 	public void testBuyTransactionsOnly() throws IOException {
 		testProfitMatching("/inventory/test-case-01.json");
 	}
 	
+	/**
+	 * This method prepares and tests a test case with mixed WalletTransactions.
+	 * 
+	 * @throws IOException
+	 * 		If something went wrong while testing.
+	 */
 	@Test
 	public void testMixedTransactions() throws IOException {
 		testProfitMatching("/inventory/test-case-02.json");
 	}
 	
+	/**
+	 * This method prepares and tests a test case with invalidly ordered WalletTransactions.
+	 * 
+	 * @throws IOException
+	 * 		If something went wrong while testing.
+	 */
 	@Test
 	public void testInvalidlyOrderedTransactions() throws IOException {
 		testProfitMatching("/inventory/test-case-03.json");
 	}
 	
+	/**
+	 * This method prepares and tests a test case with invalidly matched WalletTransactions.
+	 * 
+	 * @throws IOException
+	 * 		If something went wrong while testing.
+	 */
 	@Test
 	public void testInvalidlyMatchedTransactions() throws IOException {
 		testProfitMatching("/inventory/test-case-04.json");

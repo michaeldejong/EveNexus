@@ -5,6 +5,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This class tests the IRevision interface.
+ * 
+ * @author michael
+ */
 public class RevisionTest {
 
 	private int revisionNumber;
