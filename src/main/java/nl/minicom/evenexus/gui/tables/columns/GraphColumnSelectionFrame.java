@@ -5,17 +5,34 @@ import javax.swing.table.TableModel;
 
 import nl.minicom.evenexus.gui.panels.dashboard.LineGraphEngine;
 
+/**
+ * This dialog allows the user to define what elements to display in the {@link LineGraphEngine}.
+ * 
+ * @author michael
+ */
 public class GraphColumnSelectionFrame extends ColumnSelectionFrame {
 
 	private static final long serialVersionUID = 1L;
 	
 	private final LineGraphEngine model;
 	
+	/**
+	 * Constructs a new {@link GraphColumnSelectionFrame}.
+	 * 
+	 * @param model
+	 * 		The {@link LineGraphEngine}.
+	 */
 	public GraphColumnSelectionFrame(LineGraphEngine model) {
 		this.model = model;
 		createGUI();
 	}
 
+	/**
+	 * This method creates the new {@link TableModel}.
+	 * 
+	 * @return
+	 * 		The constructed {@link TableModel}.
+	 */
 	protected TableModel createTableModel() {
 		return new TableModel() {					
 				@Override

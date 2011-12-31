@@ -15,7 +15,11 @@ import javax.swing.text.NumberFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This {@link DefaultTableCellRenderer} defines how we render integer values in the GUI.
+ * 
+ * @author michael
+ */
 public class IntegerRenderer extends DefaultTableCellRenderer {
 	
 	private static final long serialVersionUID = -4703532359023302661L;

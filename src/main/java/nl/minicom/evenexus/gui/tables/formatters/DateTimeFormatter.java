@@ -7,6 +7,11 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import nl.minicom.evenexus.utils.TimeUtils;
 
+/**
+ * This class lets us format date classes.
+ * 
+ * @author michael
+ */
 public class DateTimeFormatter extends AbstractFormatter {
 
 	private static final long serialVersionUID = -1208977482711815877L;

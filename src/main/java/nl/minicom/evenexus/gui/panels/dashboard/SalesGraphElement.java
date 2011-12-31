@@ -41,7 +41,7 @@ public class SalesGraphElement implements GraphElement {
 	}
 
 	@Override
-	public void setVisible(Boolean value) {
+	public void setVisible(boolean value) {
 		settingsManager.saveObject(VISIBLE_SETTING, value);
 	}
 

@@ -15,6 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * The {@link DateTimeRenderer} defines how we should render dates and times in the GUI.
+ *  
+ * @author michael
+ */
 public class DateTimeRenderer extends DefaultTableCellRenderer {
 
 	private static final long serialVersionUID = -3869075201627613304L;
@@ -22,6 +27,9 @@ public class DateTimeRenderer extends DefaultTableCellRenderer {
 	private static final Logger LOG = LoggerFactory.getLogger(DateTimeRenderer.class);
 	private static final AbstractFormatter FORMATTER = new DateTimeFormatter();
 
+	/**
+	 * Constructs a new {@link DateTimeRenderer}.
+	 */
 	public DateTimeRenderer() {
 		setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
 	}

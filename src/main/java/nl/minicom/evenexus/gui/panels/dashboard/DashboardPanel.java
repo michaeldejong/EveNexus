@@ -25,6 +25,11 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This {@link TabPanel} displays a customizable graph containing all the financial information.
+ * 
+ * @author michael
+ */
 public class DashboardPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = 9040274995425958160L;
@@ -39,6 +44,33 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 	private final PurchasesGraphElement purchasesGraphElement;
 	private final LineGraphEngine chartPanel;
 
+	/**
+	 * Constructs a new {@link DashboardPanel}.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param inventoryManager
+	 * 		The {@link InventoryManager}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param profitGraphElement
+	 * 		The {@link ProfitGraphElement}.
+	 * 
+	 * @param taxesGraphElement
+	 * 		The {@link TaxesGraphElement}.
+	 * 
+	 * @param salesGraphElement
+	 * 		The {@link SalesGraphElement}.
+	 * 
+	 * @param purchasesGraphElement
+	 * 		The {@link ProfitGraphElement}.
+	 * 
+	 * @param graphingEngine
+	 * 		The {@link LineGraphEngine}.
+	 */
 	@Inject
 	public DashboardPanel(ImportManager importManager,
 			InventoryManager inventoryManager,
@@ -59,6 +91,9 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 		this.chartPanel = graphingEngine;
 	}
 	
+	/**
+	 * This method initializes the {@link DashboardPanel}.
+	 */
 	public void initialize() {
 		chartPanel.setPeriod(settingsManager.loadInt(SettingsManager.FILTER_DASHBOARD_PERIOD, 14));
 		chartPanel.addGraphElement(profitGraphElement);
@@ -108,6 +143,9 @@ public class DashboardPanel extends TabPanel implements ImportListener {
 		reloadTab();
 	}
 
+	/**
+	 * This method reloads the content on this {@link DashboardPanel}.
+	 */
 	protected void reloadContent() {
 		chartPanel.reload();
 		LOG.info("Dashboard panel reloaded!");

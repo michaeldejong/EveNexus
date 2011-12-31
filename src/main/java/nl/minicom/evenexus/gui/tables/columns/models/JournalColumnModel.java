@@ -10,8 +10,19 @@ import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
 
+/**
+ * This class defines all the available columns in the journals table.
+ * 
+ * @author michael
+ */
 public class JournalColumnModel extends ColumnModel {
 
+	/**
+	 * Constructs a new {@link JournalColumnModel}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public JournalColumnModel(SettingsManager settingsManager) {
 		super(settingsManager);

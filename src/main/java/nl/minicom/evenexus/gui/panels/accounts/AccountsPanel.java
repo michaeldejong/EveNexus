@@ -90,7 +90,7 @@ public class AccountsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for (int row : table.getSelectedRows()) {
-					table.delete(row);
+					// TODO: unsupported!
 				}
 				reloadTab();
 			}

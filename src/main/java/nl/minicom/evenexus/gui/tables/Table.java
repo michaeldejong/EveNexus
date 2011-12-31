@@ -24,7 +24,11 @@ import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This class is an extension of the {@link JTable} class. It allows us to display various kinds of data in the GUI.
+ * 
+ * @author michael
+ */
 public class Table extends JTable {
 	
 	private static final long serialVersionUID = -5591796667411345474L;
@@ -40,12 +44,27 @@ public class Table extends JTable {
 	
 	private volatile boolean isInitialized = false;
 	
+	/**
+	 * Constructs a new {@link Table} object.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public Table(BugReportDialog dialog) {
 		this.data = new ArrayList<Map<String, Object>>();
 		this.dialog = dialog;
 	}
 	
+	/**
+	 * This method initializes the {@link Table}.
+	 * 
+	 * @param tableDataModel
+	 * 		The {@link ITableDataModel} to use.
+	 * 
+	 * @param columns
+	 * 		The {@link ColumnModel} of this {@link Table}.
+	 */
 	public void initialize(ITableDataModel tableDataModel, ColumnModel columns) {
 		synchronized (this) {
 			if (isInitialized) {
@@ -125,6 +144,9 @@ public class Table extends JTable {
 		}
 	}
 	
+	/**
+	 * This method reloads the {@link Table}.
+	 */
 	public final void reload() {
 		synchronized (this) {
 			if (!isInitialized) {
@@ -168,6 +190,10 @@ public class Table extends JTable {
 		return -1;
 	}
 	
+	/**
+	 * @return
+	 * 		The {@link ScrollableResults} of this {@link Table}.
+	 */
 	public final ScrollableResults getSelectedResultRow() {
 		synchronized (this) {
 			try {
@@ -181,19 +207,6 @@ public class Table extends JTable {
 		}
 	}
 
-	public void delete(int selectedIndex) {
-		synchronized (this) {
-			try {
-				result.setRowNumber(selectedIndex);
-				// TODO : remove...
-			}
-			catch (Exception e) {
-				LOG.error(e.getLocalizedMessage(), e);
-				dialog.setVisible(true);
-			}
-		}
-	}
-	
 	private TableModel createTableModel() {
 		
 		return new TableModel() {
@@ -262,12 +275,20 @@ public class Table extends JTable {
 		};
 	}
 
+	/**
+	 * @return
+	 * 		The {@link ITableDataModel} of this {@link Table}.
+	 */
 	public ITableDataModel getDataModel() {
 		synchronized (this) {
 			return tableDataModel;
 		}
 	}
 
+	/**
+	 * @return
+	 * 		The {@link ColumnModel} of this {@link Table}.
+	 */
 	public ColumnModel getColumns() {
 		synchronized (this) {
 			return columnModel;
