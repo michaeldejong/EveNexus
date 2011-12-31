@@ -22,7 +22,11 @@ import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This class is responsible for drawing the tray in the OS menu.
+ * 
+ * @author michael
+ */
 public class Tray {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Tray.class);
@@ -33,6 +37,12 @@ public class Tray {
 
 	private Gui gui = null;
 	
+	/**
+	 * Constructs a new {@link Tray} object.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public Tray(BugReportDialog dialog) {
 		this.dialog = dialog;
@@ -45,10 +55,19 @@ public class Tray {
 		tray = SystemTray.getSystemTray();
 	}
 
+	/**
+	 * This method sets the reference to the {@link Gui}.
+	 * 
+	 * @param gui
+	 * 		The {@link Gui}.
+	 */
 	public void setGui(Gui gui) {
 		this.gui = gui;
 	}
 	
+	/**
+	 * This method creates and displays the tray.
+	 */
 	public void createTray() {
 		if (SystemTray.isSupported()) {
 			ActionListener restoreListener = new ActionListener() {

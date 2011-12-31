@@ -18,14 +18,21 @@ import javax.swing.table.TableModel;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.icons.Icon;
 
+/**
+ * The {@link ColumnSelectionFrame} allows the user to select what columns to display in a {@link JTable}.
+ * 
+ * @author michael
+ */
 public abstract class ColumnSelectionFrame extends JDialog {
 
 	private static final long serialVersionUID = 4091649495384411402L;
 	
 	private final JTable columnTable;
 	
+	/**
+	 * Constructs a new {@link ColumnSelectionFrame} object.
+	 */
 	public ColumnSelectionFrame() {
-		super();		
 		setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
 
 		this.columnTable = new JTable();
@@ -36,6 +43,9 @@ public abstract class ColumnSelectionFrame extends JDialog {
 		setResizable(false);
 	}
 
+	/**
+	 * This method creates the gui.
+	 */
 	public void createGUI() {
 		columnTable.setRowHeight(23);		
 		columnTable.getTableHeader().setReorderingAllowed(false);
@@ -82,8 +92,17 @@ public abstract class ColumnSelectionFrame extends JDialog {
     	);
 	}
 
+	/**
+	 * This method defines how to create the {@link TableModel} object.
+	 * 
+	 * @return
+	 * 		The created {@link TableModel}.
+	 */
 	protected abstract TableModel createTableModel();
 
+	/**
+	 * This method makes this {@link ColumnSelectionFrame} visible.
+	 */
 	public void setVisible() {
 		setVisible(true);
 	}

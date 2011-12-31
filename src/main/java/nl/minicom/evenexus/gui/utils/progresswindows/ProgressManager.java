@@ -25,6 +25,9 @@ public abstract class ProgressManager extends JDialog implements ProgressListene
 	private int totalSteps;
 	private int currentSteps;
 	
+	/**
+	 * Constructs a new {@link ProgressManager}.
+	 */
 	public ProgressManager() {
 		this.progressBar = new JProgressBar();		
 		this.progressLabel = new JLabel();
@@ -33,10 +36,18 @@ public abstract class ProgressManager extends JDialog implements ProgressListene
 		this.currentSteps = 0;
 	}
 	
+	/**
+	 * @return
+	 * 		The {@link JProgressBar} present in this dialog.
+	 */
 	public final JProgressBar getProgressBar() {
 		return progressBar;
 	}
 	
+	/**
+	 * @return
+	 * 		The {@link JLabel} present in this dialog.
+	 */
 	public final JLabel getProgressLabel() {
 		return progressLabel;
 	}
@@ -47,7 +58,18 @@ public abstract class ProgressManager extends JDialog implements ProgressListene
 	 */
 	public abstract void buildGui();
 	
-		
+	/**
+	 * This method updates the dialog to a new state.
+	 * 
+	 * @param total
+	 * 		The total amount of steps.
+	 * 
+	 * @param value
+	 * 		The current step.
+	 * 
+	 * @param userMessage
+	 * 		The message to display.
+	 */
 	public void update(int total, int value, String userMessage) {
 		totalSteps = total;
 		currentSteps = value;
@@ -56,7 +78,15 @@ public abstract class ProgressManager extends JDialog implements ProgressListene
 		progressBar.setValue(value);
 	}
 	
-		
+	/**
+	 * This method updates the state of this dialog.
+	 * 
+	 * @param increment
+	 * 		The amount of steps to increment.
+	 * 
+	 * @param userMessage
+	 * 		The message to display.
+	 */
 	public void update(double increment, String userMessage) {
 		int newTotal = totalSteps * 1000;
 		int newValue = (int) ((currentSteps + increment) * 1000);
@@ -66,10 +96,18 @@ public abstract class ProgressManager extends JDialog implements ProgressListene
 		progressBar.setValue(newValue);
 	}
 	
+	/**
+	 * @return
+	 * 		The total amount of steps.
+	 */
 	public int getTotal() {
 		return totalSteps;
 	}
 	
+	/**
+	 * @return
+	 * 		The current step.
+	 */
 	public int getCurrent() {
 		return currentSteps;
 	}

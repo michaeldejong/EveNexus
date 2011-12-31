@@ -16,7 +16,12 @@ import javax.swing.filechooser.FileFilter;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.icons.Icon;
 
-
+/**
+ * This class allows the user to select a database file.
+ * This class must be overridden to implement what has to be done with the selected file.
+ * 
+ * @author michael
+ */
 public abstract class DatabaseFileChooser extends JDialog {
 
 	private static final long serialVersionUID = -1581636709182360671L;
@@ -24,6 +29,9 @@ public abstract class DatabaseFileChooser extends JDialog {
 	private static int width = 550;
 	private static int height = 400;
 	
+	/**
+	 * This method initializes the {@link DatabaseFileChooser}.
+	 */
 	public void initialize() {
 		setResizable(false);
 		setTitle("Select file");
@@ -91,8 +99,20 @@ public abstract class DatabaseFileChooser extends JDialog {
     	);		
 	}
 	
+	/**
+	 * This method sets additional parameters.
+	 * 
+	 * @param chooser
+	 * 		The {@link JFileChooser}.
+	 */
 	public abstract void setAdditionalParameters(JFileChooser chooser);
 
+	/**
+	 * This method defines what has to be done with the specified {@link File}.
+	 * 
+	 * @param file
+	 * 		The {@link File} which was selected by the user.
+	 */
 	public abstract void onFileSelect(File file);
 	
 	/**

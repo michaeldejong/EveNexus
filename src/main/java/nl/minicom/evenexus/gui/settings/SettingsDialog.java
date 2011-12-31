@@ -9,6 +9,11 @@ import javax.swing.JTabbedPane;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.SettingsTitle;
 
+/**
+ * This dialog contains several tabs, where the user can change the settings of EveNexus.
+ * 
+ * @author michael
+ */
 public class SettingsDialog extends CustomDialog {
 
 	private static final long serialVersionUID = 8860569373371189189L;
@@ -16,6 +21,15 @@ public class SettingsDialog extends CustomDialog {
 	private final ProxyTab proxyTab;
 	private final ApiServerTab apiServerTab;
 	
+	/**
+	 * Constructs a new {@link SettingsDialog} object.
+	 * 
+	 * @param proxyTab
+	 * 		The {@link ProxyTab}.
+	 * 
+	 * @param apiServerTab
+	 * 		The {@link ApiServerTab}.
+	 */
 	@Inject
 	public SettingsDialog(ProxyTab proxyTab,
 			ApiServerTab apiServerTab) {
@@ -25,6 +39,9 @@ public class SettingsDialog extends CustomDialog {
 		this.apiServerTab = apiServerTab;
 	}
 	
+	/**
+	 * This method initializes the {@link SettingsDialog}.
+	 */
 	public void initialize() {
 		proxyTab.initialize();
 		apiServerTab.initialize();

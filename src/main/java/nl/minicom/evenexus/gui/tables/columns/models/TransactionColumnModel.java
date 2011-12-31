@@ -10,8 +10,19 @@ import nl.minicom.evenexus.gui.tables.columns.Column;
 import nl.minicom.evenexus.gui.tables.columns.ColumnModel;
 import nl.minicom.evenexus.utils.SettingsManager;
 
+/**
+ * This class defines all the available columns for the transactions table.
+ * 
+ * @author michael
+ */
 public class TransactionColumnModel extends ColumnModel {
 
+	/**
+	 * Constructs a new {@link TransactionColumnModel}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 */
 	@Inject
 	public TransactionColumnModel(SettingsManager settingsManager) {
 		super(settingsManager);

@@ -21,17 +21,31 @@ import nl.minicom.evenexus.gui.validation.ValidationRule;
 import nl.minicom.evenexus.utils.ProxyManager;
 
 
+/**
+ * The {@link ProxyTab} allows the user to define a proxy server.
+ * 
+ * @author michael
+ */
 public class ProxyTab extends JPanel {
 	
 	private static final long serialVersionUID = 5594974133127416959L;
 	
 	private final ProxyManager proxyManager;
 	
+	/**
+	 * Constructs a new {@link ProxyTab} object.
+	 * 
+	 * @param proxyManager
+	 * 		The {@link ProxyManager}.
+	 */
 	@Inject
 	public ProxyTab(final ProxyManager proxyManager) {
 		this.proxyManager = proxyManager;
 	}
 	
+	/**
+	 * This method initializes the {@link ProxyTab}.
+	 */
 	public void initialize() {
 		setBackground(GuiConstants.getTabBackground());
 		final JCheckBox proxyEnabledBox = new JCheckBox("Enable proxy settings");

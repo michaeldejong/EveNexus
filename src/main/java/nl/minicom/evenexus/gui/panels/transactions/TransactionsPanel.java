@@ -23,7 +23,11 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * This {@link TabPanel} displays all the transactions of the user.
+ * 
+ * @author michael
+ */
 public class TransactionsPanel extends TabPanel implements ImportListener {
 
 	private static final long serialVersionUID = -4187071888216622511L;	
@@ -34,6 +38,24 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 	private final TransactionTableDataModel tableDataModel;
 	private final SettingsManager settingsManager;
 	
+	/**
+	 * Constructs a new {@link TransactionsPanel}.
+	 * 
+	 * @param importManager
+	 * 		The {@link ImportManager}.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param columnModel
+	 * 		The {@link TransactionColumnModel}.
+	 * 
+	 * @param tableDataModel
+	 * 		The {@link TransactionTableDataModel}.
+	 * 
+	 * @param table
+	 * 		The {@link Table}.
+	 */
 	@Inject
 	public TransactionsPanel(
 			ImportManager importManager,
@@ -93,6 +115,9 @@ public class TransactionsPanel extends TabPanel implements ImportListener {
 		}
 	}
 
+	/**
+	 * This method reloads the content of the panel.
+	 */
 	protected void reloadContent() {
 		table.reload();
 		LOG.info("Transaction panel reloaded!");

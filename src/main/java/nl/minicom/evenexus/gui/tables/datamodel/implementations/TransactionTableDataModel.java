@@ -22,6 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * This {@link ITableDataModel} defines the data model for transactions.
+ * 
+ * @author michael
+ */
 public class TransactionTableDataModel implements ITableDataModel, ITypeNameFilter, IPeriodFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionTableDataModel.class);
@@ -33,6 +38,18 @@ public class TransactionTableDataModel implements ITableDataModel, ITypeNameFilt
 	private long period;
 	private String typeName;
 	
+	/**
+	 * Constructs a new {@link TransactionTableDataModel} object.
+	 * 
+	 * @param settingsManager
+	 * 		The {@link SettingsManager}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 * 
+	 * @param dialog
+	 * 		The {@link BugReportDialog}.
+	 */
 	@Inject
 	public TransactionTableDataModel(SettingsManager settingsManager, Database database, BugReportDialog dialog) {
 		this.database = database;
@@ -40,6 +57,9 @@ public class TransactionTableDataModel implements ITableDataModel, ITypeNameFilt
 		this.settingsManager = settingsManager;
 	}
 	
+	/**
+	 * This method initializes the {@link TransactionTableDataModel}.
+	 */
 	public void initialize() {	
 		setTypeName(null);
 		setPeriod(settingsManager.loadInt(SettingsManager.FILTER_TRANSACTION_PERIOD, IPeriodFilter.WEEK));

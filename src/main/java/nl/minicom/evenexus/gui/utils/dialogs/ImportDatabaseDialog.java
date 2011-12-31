@@ -17,7 +17,11 @@ import nl.minicom.evenexus.persistence.versioning.StructureUpgrader;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 
-
+/**
+ * This dialog allows the user to import an old backup of the database.
+ * 
+ * @author michael
+ */
 public class ImportDatabaseDialog extends DatabaseFileChooser {
 
 	private static final long serialVersionUID = -2633245343435662634L;
@@ -26,6 +30,18 @@ public class ImportDatabaseDialog extends DatabaseFileChooser {
 	private final RevisionExecutor executor;
 	private final Database database;
 	
+	/**
+	 * Constructs a new {@link ImportDatabaseDialog} dialog.
+	 * 
+	 * @param gui
+	 * 		The {@link Gui}.
+	 * 
+	 * @param executor
+	 * 		The {@link RevisionExecutor}.
+	 * 
+	 * @param database
+	 * 		The {@link Database}.
+	 */
 	@Inject
 	public ImportDatabaseDialog(Gui gui, RevisionExecutor executor, Database database) {
 		this.gui = gui;

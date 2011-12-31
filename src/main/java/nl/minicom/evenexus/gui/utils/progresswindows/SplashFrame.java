@@ -12,7 +12,11 @@ import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 
-
+/**
+ * This dialog is show when starting up EveNexus.
+ * 
+ * @author michael
+ */
 public class SplashFrame extends ProgressManager {
 
 	private static final long serialVersionUID = -5496680715749455383L;

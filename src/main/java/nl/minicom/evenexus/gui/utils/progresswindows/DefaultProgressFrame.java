@@ -10,13 +10,19 @@ import javax.swing.JProgressBar;
 import nl.minicom.evenexus.gui.Gui;
 import nl.minicom.evenexus.gui.icons.Icon;
 
-
+/**
+ * This class draws a dialog containing a progress bar.
+ * 
+ * @author michael
+ */
 public class DefaultProgressFrame extends ProgressManager {
 
 	private static final long serialVersionUID = -5496680715749455383L;
 	
+	/**
+	 * Constructs a new {@link DefaultProgressFrame}.
+	 */
 	public DefaultProgressFrame() {
-		super();
 		buildGui();
 	}
 	
