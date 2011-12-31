@@ -35,6 +35,11 @@ import nl.minicom.evenexus.utils.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The {@link Gui} class displays the GUI of the EveNexus application.
+ * 
+ * @author michael
+ */
 @Singleton
 public class Gui extends JFrame {
 

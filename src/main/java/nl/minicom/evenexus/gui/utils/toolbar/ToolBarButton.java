@@ -10,10 +10,25 @@ import javax.swing.JButton;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 
+/**
+ * This class is a special implementation of the {@link JButton} class.
+ * It is designed to be used in the {@link ToolBar} class.
+ * @author michael
+ *
+ */
 public class ToolBarButton extends JButton {
 
 	private static final long serialVersionUID = -7696380876971354114L;
 	
+	/**
+	 * Constructs a new {@link ToolBarButton} object.
+	 * 
+	 * @param icon
+	 * 		The icon of the button.
+	 * 
+	 * @param tooltip
+	 * 		The tooltip of the button.
+	 */
 	public ToolBarButton(Icon icon, String tooltip) {
 		super(Icon.getIcon(icon));
 		setToolTipText(tooltip);

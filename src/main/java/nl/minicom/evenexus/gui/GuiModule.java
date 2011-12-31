@@ -21,6 +21,11 @@ import nl.minicom.evenexus.i18n.Translator;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * This {@link AbstractModule} defines the required bindings for all GUI classes.
+ * 
+ * @author michael
+ */
 public class GuiModule extends AbstractModule {
 
 	@Override

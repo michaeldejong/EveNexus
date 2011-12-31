@@ -6,22 +6,26 @@ import java.awt.Font;
 
 import javax.swing.JLabel;
 
+/**
+ * This class defines all the constants which can be used in the GUI.
+ * 
+ * @author michael
+ */
 public final class GuiConstants {
 
 	public static final int BUTTON_HEIGHT = 32;
-	
 	public static final int TEXT_FIELD_HEIGHT = 23;
-	
 	public static final int COMBO_BOX_HEIGHT = 23;
-
 	public static final int SPINNER_HEIGHT = 22;
-
 	public static final int PROGRESS_BAR_HEIGHT = 20;
-	
 	public static final int FOLDED_STATUS_BAR = 28;
-	
+
 	public static final Color APPLICATION_BACKGROUND_COLOR = new Color(237, 237, 237);
 	
+	/**
+	 * @return
+	 * 		The background {@link Color} of the tabs (OS specific).
+	 */
 	public static Color getTabBackground() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			return new Color(228, 228, 228);
@@ -29,6 +33,15 @@ public final class GuiConstants {
 		return Color.WHITE;
 	}
 	
+	/**
+	 * This method creates a {@link JLabel} with bold text.
+	 * 
+	 * @param value
+	 * 		The test in the {@link JLabel}.
+	 * 
+	 * @return
+	 * 		The constructed {@link JLabel}.
+	 */
 	public static JLabel createBoldLabel(String value) {
 		JLabel label = new JLabel(value);
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
