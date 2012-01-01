@@ -182,6 +182,12 @@ public class ReportGroupingPage extends ReportWizardPage {
 		 */
 		public void setEnabled(boolean enabled) {
 			checkBox.setEnabled(enabled);
+			if (enabled) {
+				model.enable();
+			}
+			else {
+				model.disable();
+			}
 		}
 
 		/**

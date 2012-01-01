@@ -101,53 +101,51 @@ public class Application {
 	 * 		If the {@link Application} could not be initialized.
 	 */
 	public void initialize(final ProgressManager progressManager, String[] args) throws Exception {
-		synchronized (this) {
-			Preconditions.checkArgument(!initialized, "This class has already been initialized!");
-			
-			// 0. Initialize program settings.
-			LOG.info("Reading program settings...");
-			progressManager.update(9, 1, "Reading program settings...");
-			settingsManager.initialize();
-			
-			// 1. Establishing database connection
-			LOG.info("Establishing database connection...");
-			progressManager.update(9, 2, "Establishing database connection...");
-			database.getCurrentSession();
-			
-			// 2. Preparing proxy settings.
-			LOG.info("Initializing proxy settings...");
-			progressManager.update(9, 3, "Initializing proxy settings...");
-			proxyManager.initialize();
-			
-			// 3. Check database structure & upgrade.
-			LOG.info("Checking database structure consistency...");
-			progressManager.update(9, 4, "Checking database structure consistency");
-			revisionExecutor.execute(new StructureUpgrader());
-			revisionExecutor.execute(new ContentUpgrader());
-			
-			progressManager.update(9, 4, "Initializing ResourceBundles");
-			translator.initialize(Locale.ENGLISH);
-			
-			// 4. Create inventory manager.
-			LOG.info("Initializing inventory manager...");
-			progressManager.update(9, 5, "Initializing inventory manager...");
-			inventoryManager.processUnprocessedTransactions();
-			
-			// 5. Initializing importers.
-			LOG.info("Initializing API importers...");
-			progressManager.update(9, 6, "Initializing API importers...");
-			importManager.initialize();
-			
-			// 6. Preparing program shutdown hook.
-			LOG.info("Preparing program shutdown hook...");
-			progressManager.update(9, 7, "Preparing program shutdown hook...");
-			Runtime.getRuntime().addShutdownHook(new ShutdownThread(settingsManager));
-			
-			// 7. Completing initialization.
-			LOG.info("Completing initialization...");
-			progressManager.update(9, 8, "Completing initialization...");
-			initialized = true;
-		}
+		Preconditions.checkArgument(!initialized, "This class has already been initialized!");
+		
+		// 0. Initialize program settings.
+		LOG.info("Reading program settings...");
+		progressManager.update(9, 1, "Reading program settings...");
+		settingsManager.initialize();
+		
+		// 1. Establishing database connection
+		LOG.info("Establishing database connection...");
+		progressManager.update(9, 2, "Establishing database connection...");
+		database.getCurrentSession();
+		
+		// 2. Preparing proxy settings.
+		LOG.info("Initializing proxy settings...");
+		progressManager.update(9, 3, "Initializing proxy settings...");
+		proxyManager.initialize();
+		
+		// 3. Check database structure & upgrade.
+		LOG.info("Checking database structure consistency...");
+		progressManager.update(9, 4, "Checking database structure consistency");
+		revisionExecutor.execute(new StructureUpgrader());
+		revisionExecutor.execute(new ContentUpgrader());
+		
+		progressManager.update(9, 4, "Initializing ResourceBundles");
+		translator.initialize(Locale.ENGLISH);
+		
+		// 4. Create inventory manager.
+		LOG.info("Initializing inventory manager...");
+		progressManager.update(9, 5, "Initializing inventory manager...");
+		inventoryManager.processUnprocessedTransactions();
+		
+		// 5. Initializing importers.
+		LOG.info("Initializing API importers...");
+		progressManager.update(9, 6, "Initializing API importers...");
+		importManager.initialize();
+		
+		// 6. Preparing program shutdown hook.
+		LOG.info("Preparing program shutdown hook...");
+		progressManager.update(9, 7, "Preparing program shutdown hook...");
+		Runtime.getRuntime().addShutdownHook(new ShutdownThread(settingsManager));
+		
+		// 7. Completing initialization.
+		LOG.info("Completing initialization...");
+		progressManager.update(9, 8, "Completing initialization...");
+		initialized = true;
 	}
 
 	/**

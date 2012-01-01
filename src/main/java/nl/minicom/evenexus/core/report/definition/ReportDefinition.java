@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 import nl.minicom.evenexus.core.report.definition.components.GroupTranslator;
 import nl.minicom.evenexus.core.report.definition.components.ReportFilter;
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
+import nl.minicom.evenexus.core.report.definition.components.ReportGroup.Type;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.definition.components.utils.Aggregate;
 import nl.minicom.evenexus.core.report.persistence.expressions.Column;
@@ -134,6 +135,7 @@ public class ReportDefinition {
 		addGroup(
 				new ReportGroup(
 						GROUP_DAY, 
+						Type.DATE,
 						new GroupTranslator() {
 								@Override
 								public String translate(String input) {
@@ -157,7 +159,8 @@ public class ReportDefinition {
 		
 		addGroup(
 				new ReportGroup(
-						GROUP_ITEM
+						GROUP_ITEM,
+						Type.NAME
 				)
 				.defineExpression(
 						Table.TRANSACTIONS, 
@@ -167,7 +170,8 @@ public class ReportDefinition {
 		
 		addGroup(
 				new ReportGroup(
-						GROUP_WEEK, 
+						GROUP_WEEK,
+						Type.DATE,
 						new GroupTranslator() {
 								@Override
 								public String translate(String input) {
@@ -191,7 +195,8 @@ public class ReportDefinition {
 		
 		addGroup(
 				new ReportGroup(
-						GROUP_MONTH, 
+						GROUP_MONTH,
+						Type.DATE, 
 						new GroupTranslator() {
 								@Override
 								public String translate(String input) {

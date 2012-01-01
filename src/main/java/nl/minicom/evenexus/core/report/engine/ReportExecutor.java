@@ -15,11 +15,14 @@ import nl.minicom.evenexus.core.report.persistence.expressions.Equals;
 import nl.minicom.evenexus.core.report.persistence.expressions.Expression;
 import nl.minicom.evenexus.core.report.persistence.expressions.Table;
 import nl.minicom.evenexus.core.report.persistence.expressions.Value;
+import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
+
+import com.google.common.collect.Lists;
 
 /**
  * This class is responsible for executing the report and drawing it. 
@@ -28,7 +31,7 @@ import org.hibernate.Session;
  */
 public class ReportExecutor {
 	
-	private final Session session;
+	private final Database database;
 
 	private ReportModel model;
 	private Table table;
@@ -37,11 +40,11 @@ public class ReportExecutor {
 	 * This constructor creates a new {@link ReportExecutor} based on a 
 	 * provided {@link ReportModel}.
 	 * 
-	 * @param session	A reference to the {@link Session} connection.
+	 * @param database	A reference to the {@link Database} connection.
 	 */
 	@Inject
-	public ReportExecutor(Session session) {
-		this.session = session;
+	public ReportExecutor(Database database) {
+		this.database = database;
 	}
 	
 	/**
@@ -54,12 +57,17 @@ public class ReportExecutor {
 		this.model = reportModel;
 		this.table = null;
 	}
-
+	
 	/**
-	 * @return	The {@link ReportModel} provided to the constructor.
+	 * This method deletes the current report from the database.
 	 */
-	public ReportModel getModel() {
-		return model;
+	@Transactional
+	public void deleteReport() {
+		if (table != null) {
+			QueryBuilder builder = new QueryBuilder();
+			builder.append("DROP TABLE IF EXISTS " + table.getTableName());
+			builder.createStatement(database.getCurrentSession()).executeUpdate();
+		}
 	}
 	
 	/**
@@ -70,7 +78,8 @@ public class ReportExecutor {
 	 * @return						The {@link Dataset} containing data from the query.
 	 * @throws HibernateException	Will be thrown if the query is invalid.
 	 */
-	public Dataset createDataSet(Expression[] groupValues) throws HibernateException {
+	@Transactional
+	public Dataset createDataSet(Expression... groupValues) throws HibernateException {
 		ensureReportTableExists();
 		
 		Select select = new Select(table);
@@ -99,25 +108,25 @@ public class ReportExecutor {
 		select.setCondition(condition);
 		
 		// Add report item aliasses
+		List<String> aliases = Lists.newArrayList();
 		for (ReportItem item : model.getReportItems()) {
 			select.addExpression(item.getAggregate().createExpression(new Column(item.getKey())), item.getKey());
+			aliases.add(item.getKey());
 		}
 		
 		QueryBuilder builder = new QueryBuilder();
 		select.writeTranslation(builder);
 		
 		Dataset dataset = new Dataset();
-		SQLQuery statement = builder.createStatement(session);
+		SQLQuery statement = builder.createStatement(database.getCurrentSession());
 		
 		ScrollableResults results = null;
 		try {
 			results = statement.scroll();
-			String[] aliases = statement.getReturnAliases();
-			
 			if (results.first()) {
 				do {
 					String key = results.getString(1);
-					for (int i = 0; i <= aliases.length; i++) {
+					for (int i = 0; i <= aliases.size(); i++) {
 						dataset.setValue(key, i, results.getDouble(i));
 					}
 				}
@@ -133,8 +142,15 @@ public class ReportExecutor {
 		
 		return dataset;
 	}
-		
-	private void ensureReportTableExists() throws HibernateException {
+	
+	/**
+	 * This method ensures that the table we need to write the results to, is present in the database.
+	 * 
+	 * @throws HibernateException
+	 * 		If something went wrong.
+	 */
+	@Transactional
+	void ensureReportTableExists() throws HibernateException {
 		if (table == null) {
 			table = new Table("report_" + System.currentTimeMillis());
 			
@@ -143,7 +159,7 @@ public class ReportExecutor {
 			createDataSelect().writeTranslation(builder);
 			builder.append(")");
 			
-			builder.createStatement(session).executeUpdate();
+			builder.createStatement(database.getCurrentSession()).executeUpdate();
 		}
 	}
 	

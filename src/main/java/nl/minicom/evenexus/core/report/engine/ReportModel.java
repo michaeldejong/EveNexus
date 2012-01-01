@@ -1,9 +1,7 @@
 package nl.minicom.evenexus.core.report.engine;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -28,7 +26,7 @@ import com.google.common.collect.Lists;
 @Singleton
 public class ReportModel implements ModelListener {
 	
-	private final List<WeakReference<ModelListener>> listeners;
+	private final List<ModelListener> listeners;
 
 	// Report items
 	private final Map<String, ReportItem> reportItems;
@@ -89,6 +87,7 @@ public class ReportModel implements ModelListener {
 	 */
 	public void addItem(ReportItem item) {
 		reportItems.put(item.getKey(), item);
+		onStateChanged();
 	}
 	
 	/**
@@ -98,6 +97,18 @@ public class ReportModel implements ModelListener {
 	 */
 	public void removeItem(ReportItem item) {
 		reportItems.remove(item.getKey());
+		onStateChanged();
+	}
+
+	/**
+	 * This method removes the {@link ReportItem} with the specified alias.
+	 * 
+	 * @param itemAlias
+	 * 		The alias of the {@link ReportItem} to remove.
+	 */
+	public void removeItem(String itemAlias) {
+		reportItems.remove(itemAlias);
+		onStateChanged();
 	}
 	
 	/**
@@ -122,6 +133,7 @@ public class ReportModel implements ModelListener {
 	 */
 	public void removeGroup(ReportGroup group) {
 		reportGroups.remove(group);
+		onStateChanged();
 	}
 
 	/**
@@ -143,8 +155,8 @@ public class ReportModel implements ModelListener {
 	/**
 	 * @return a {@link List} of {@link ReportItem} objects in this {@link ReportModel}.
 	 */
-	public Collection<ReportItem> getReportItems() {
-		return Collections.unmodifiableCollection(reportItems.values());
+	public List<ReportItem> getReportItems() {
+		return Collections.unmodifiableList(Lists.newArrayList(reportItems.values()));
 	}
 
 	/**
@@ -171,16 +183,6 @@ public class ReportModel implements ModelListener {
 	 */
 	public boolean hasItem(String itemAlias) {
 		return reportItems.containsKey(itemAlias);
-	}
-
-	/**
-	 * This method removes the {@link ReportItem} with the specified alias.
-	 * 
-	 * @param itemAlias
-	 * 		The alias of the {@link ReportItem} to remove.
-	 */
-	public void removeItem(String itemAlias) {
-		reportItems.remove(itemAlias);
 	}
 
 	/**
@@ -258,7 +260,19 @@ public class ReportModel implements ModelListener {
 		}
 		
 		synchronized (listeners) {
-			listeners.add(new WeakReference<ModelListener>(listener));
+			listeners.add(listener);
+		}
+	}
+
+	/**
+	 * Removes the specified {@link ModelListener} from the {@link ReportModel} listeners.
+	 * 
+	 * @param listener
+	 * 		The {@link ModelListener} to remove.
+	 */
+	public void removeListener(ModelListener listener) {
+		synchronized (listeners) {
+			listeners.remove(listener);
 		}
 	}
 
@@ -267,8 +281,7 @@ public class ReportModel implements ModelListener {
 		synchronized (listeners) {
 			int index = 0;
 			while (index < listeners.size()) {
-				WeakReference<ModelListener> reference = listeners.get(index);
-				ModelListener listener = reference.get();
+				ModelListener listener = listeners.get(index);
 				if (listener == null) {
 					listeners.remove(index);
 				}
@@ -285,8 +298,7 @@ public class ReportModel implements ModelListener {
 		synchronized (listeners) {
 			int index = 0;
 			while (index < listeners.size()) {
-				WeakReference<ModelListener> reference = listeners.get(index);
-				ModelListener listener = reference.get();
+				ModelListener listener = listeners.get(index);
 				if (listener == null) {
 					listeners.remove(index);
 				}

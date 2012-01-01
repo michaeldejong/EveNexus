@@ -9,14 +9,20 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.swing.GroupLayout;
 
+import nl.minicom.evenexus.core.report.engine.Dataset;
+import nl.minicom.evenexus.core.report.engine.ReportExecutor;
+import nl.minicom.evenexus.core.report.engine.ReportModel;
+import nl.minicom.evenexus.core.report.persistence.expressions.Expression;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.ReportWizardDialog;
+import nl.minicom.evenexus.gui.panels.report.renderers.LineGraphChart;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
 
+import org.jfree.chart.ChartPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +38,12 @@ public class ReportPanel extends TabPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
 	
 	private final SettingsManager settingsManager;
-	private final ReportChartPanel chartPanel;
+	private final ChartPanel chartPanel;
+	private final ReportExecutor executor;
 	private final Provider<ReportWizardDialog> dialogProvider;
+	
+	private Dataset dataset = null;
+	private ReportModel reportModel = null;
 	
 	/**
 	 * Constructs a new {@link ReportPanel}.
@@ -44,16 +54,17 @@ public class ReportPanel extends TabPanel {
 	 * @param dialogProvider
 	 * 		A {@link Provider} which supplies {@link ReportWizardDialog}s.
 	 * 
-	 * @param chartPanel
-	 * 		The {@link ReportChartPanel}.
+	 * @param executor
+	 * 		The {@link ReportExecutor}.
 	 */
 	@Inject
 	public ReportPanel(SettingsManager settingsManager, 
 			Provider<ReportWizardDialog> dialogProvider,
-			ReportChartPanel chartPanel) {
+			ReportExecutor executor) {
 		
 		this.settingsManager = settingsManager;
-		this.chartPanel = chartPanel;
+		this.chartPanel = new ChartPanel(null);
+		this.executor = executor;
 		this.dialogProvider = dialogProvider;
 	}
 
@@ -109,6 +120,44 @@ public class ReportPanel extends TabPanel {
 	@Override
 	protected void reloadContent() {
 		LOG.info("Report panel reloaded!");
+	}
+
+	/**
+	 * This method displays a new report in this {@link ReportPanel}.
+	 * 
+	 * @param reportModel
+	 * 		The {@link ReportModel} to display.
+	 */
+	public void displayReport(ReportModel reportModel) {
+		executor.deleteReport();
+		this.reportModel = reportModel;
+		executor.initialize(reportModel);
+		this.dataset = executor.createDataSet();
+		
+		switch (reportModel.getDisplayType().getValue()) {
+			case GRAPH:
+				chartPanel.setChart(LineGraphChart.render(reportModel, dataset));
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * This method displays a subselection of a report in this {@link ReportPanel}.
+	 * 
+	 * @param groupExpressions
+	 * 		The expressions which define what data to select from the {@link Dataset}.
+	 */
+	public void displayReport(Expression... groupExpressions) {
+		dataset = executor.createDataSet(groupExpressions);
+//		switch (reportModel.getDisplayType().getValue()) {
+//			case GRAPH:
+				chartPanel.setChart(LineGraphChart.render(reportModel, dataset, groupExpressions));
+//				break;
+//			default:
+//				break;
+//		}
 	}
 	
 }

@@ -17,6 +17,7 @@ import nl.minicom.evenexus.core.report.persistence.expressions.Table;
 public class ReportGroup {
 	
 	private final String key;
+	private final Type type;
 	private final Map<Table, Expression> expressions;
 	private final GroupTranslator translator;
 	
@@ -25,21 +26,31 @@ public class ReportGroup {
 	 * There is no {@link GroupTranslator}, so the groupings will not be translated
 	 * into something more user-readable.
 	 * 
-	 * @param key	The unique alias for this {@link ReportGroup}.
+	 * @param key	
+	 * 		The unique alias for this {@link ReportGroup}.
+	 * 
+	 * @param type
+	 * 		The type of {@link ReportGroup}.
 	 */
-	public ReportGroup(String key) {
-		this(key, null);
+	public ReportGroup(String key, Type type) {
+		this(key, type, null);
 	}
 
 	/**
 	 * This constructor constructs a new {@link ReportGroup} object.
 	 *
-	 * @param key			The unique alias for this {@link ReportGroup}.
-	 * @param translator	The {@link GroupTranslator}, which will translate 
-	 * 						values to more user-readable values.
+	 * @param key
+	 * 		The unique alias for this {@link ReportGroup}.
+	 * 
+	 * @param type
+	 * 		The type of {@link ReportGroup}.
+	 * 
+	 * @param translator
+	 * 		The {@link GroupTranslator}, which will translate values to more user-readable values.
 	 */
-	public ReportGroup(String key, GroupTranslator translator) {
+	public ReportGroup(String key, Type type, GroupTranslator translator) {
 		this.key = key;
+		this.type = type;
 		this.translator = translator;
 		this.expressions = new LinkedHashMap<Table, Expression>();
 	}
@@ -49,6 +60,14 @@ public class ReportGroup {
 	 */
 	public String getKey() {
 		return key;
+	}
+	
+	/**
+	 * @return
+	 * 		The type of {@link ReportGroup}.
+	 */
+	public Type getType() {
+		return type;
 	}
 	
 	/**
@@ -96,6 +115,16 @@ public class ReportGroup {
 	 */
 	public Expression getExpression(Table table) {
 		return expressions.get(table);
+	}
+	
+	/**
+	 * This enum describes the type of {@link ReportGroup}s available.
+	 * 
+	 * @author michael
+	 */
+	public enum Type {
+		DATE,
+		NAME;
 	}
 	
 }

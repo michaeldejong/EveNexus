@@ -9,8 +9,10 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import nl.minicom.evenexus.core.report.engine.ModelListener;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
+import nl.minicom.evenexus.gui.panels.report.ReportPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportDisplayPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportFiltersPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportGroupingPage;
@@ -25,13 +27,14 @@ import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
  * 
  * @author michael
  */
-public class ReportWizardDialog extends CustomDialog {
+public class ReportWizardDialog extends CustomDialog implements ModelListener {
 
 	private static final long serialVersionUID = 5707542816331260941L;
 	
 	private final JPanel contentPanel;
 	private final ReportWizardPage[] pages;
 	private final ReportModel reportModel;
+	private final ReportPanel reportPanel;
 	
 	private final JButton prev;
 	private final JButton next;
@@ -56,15 +59,20 @@ public class ReportWizardDialog extends CustomDialog {
 	 * 
 	 * @param reportModel
 	 * 		The {@link ReportModel}.
+	 * 
+	 * @param reportPanel
+	 * 		The {@link ReportPanel}.
 	 */
 	@Inject
 	public ReportWizardDialog(ReportItemsPage items, ReportGroupingPage groups,
-			ReportFiltersPage filters, ReportDisplayPage displays, ReportModel reportModel) {
+			ReportFiltersPage filters, ReportDisplayPage displays, ReportModel reportModel,
+			ReportPanel reportPanel) {
 		
 		super(new ReportItemTitle(), 360, 420);
 		this.contentPanel = new JPanel();
 		this.pages = new ReportWizardPage[] { items, groups, filters, displays };
 		this.reportModel = reportModel;
+		this.reportPanel = reportPanel;
 
 		this.prev = createButton("< Previous");
 		this.next = createButton("Next >");
@@ -75,6 +83,8 @@ public class ReportWizardDialog extends CustomDialog {
 	 * This method initializes the {@link ReportWizardDialog}.
 	 */
 	public void initialize() {
+		reportModel.addListener(this);
+		
 		for (ReportWizardPage page : pages) {
 			page.buildGui();
 		}
@@ -104,14 +114,12 @@ public class ReportWizardDialog extends CustomDialog {
 	}
 
 	private JPanel createButtonBar() {
-		updateButtonStates();
 		
 		prev.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				index--;
 				displayPage();
-				updateButtonStates();
 			}
 		});
 		
@@ -120,14 +128,14 @@ public class ReportWizardDialog extends CustomDialog {
 			public void actionPerformed(ActionEvent e) {
 				index++;
 				displayPage();
-				updateButtonStates();
 			}
 		});
 		
 		execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Execute report!
+				reportPanel.displayReport(reportModel);
+				dispose();
 			}
 		});
 		
@@ -165,7 +173,10 @@ public class ReportWizardDialog extends CustomDialog {
 		return button;
 	}
 	
-	private void updateButtonStates() {
+	/**
+	 * This method updates the states of the buttons.
+	 */
+	protected void updateButtonStates() {
 		prev.setEnabled(index > 0);
 		next.setEnabled(getCurrentPage().allowNext() && index < pages.length - 1);
 		execute.setEnabled(reportModel.isValid());
@@ -184,10 +195,32 @@ public class ReportWizardDialog extends CustomDialog {
 				layout.createSequentialGroup()
 				.addComponent(getCurrentPage())
 		);
+
+		updateButtonStates();
 	}
 	
 	private ReportWizardPage getCurrentPage() {
 		return pages[index];
+	}
+	
+	/**
+	 * This method overrides the default dispose method. It will first 
+	 * de-register itself as a {@link ModelListener} from the {@link ReportModel}.
+	 */
+	@Override
+	public void dispose() {
+		reportModel.removeListener(this);
+		super.dispose();
+	}
+
+	@Override
+	public void onValueChanged() {
+		updateButtonStates();
+	}
+
+	@Override
+	public void onStateChanged() {
+		updateButtonStates();
 	}
 	
 }
