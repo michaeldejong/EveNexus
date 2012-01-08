@@ -1,13 +1,16 @@
 package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.ScrollableResults;
@@ -73,6 +76,24 @@ public class AccountTableDataModel implements ITableDataModel {
 				"corporationid",
 				"corporationname"
 		};
+	}
+
+	@Override
+	@Transactional
+	public void delete(Map<String, Object> row) {
+		if (!row.containsKey("KeyID") || row.get("KeyID") == null) {
+			throw new IllegalStateException("Row is not valid!");
+		}
+		
+		Session session = database.getCurrentSession();
+		StringBuilder builder = new StringBuilder();
+		builder.append("DELETE FROM ");
+		builder.append("	apikeys ");
+		builder.append("WHERE ");
+		builder.append("	keyid = ? ");
+		builder.append("LIMIT 1");
+		
+		session.createSQLQuery(builder.toString()).setBigInteger(0, (BigInteger) row.get("KeyID")).executeUpdate();
 	}
 
 }

@@ -4,6 +4,7 @@ package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -124,6 +125,11 @@ public class ProfitTableDataModel implements ITableDataModel, ITypeNameFilter, I
 	@Override
 	public final void setPeriod(int days) {
 		period = days;
+	}
+
+	@Override
+	public void delete(Map<String, Object> row) {
+		throw new UnsupportedOperationException();
 	}
 
 }

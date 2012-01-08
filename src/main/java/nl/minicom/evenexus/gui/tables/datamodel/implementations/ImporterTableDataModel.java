@@ -3,6 +3,7 @@ package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -71,6 +72,11 @@ public class ImporterTableDataModel implements ITableDataModel {
 	@Override
 	public String[] getFields() {
 		return new String[] {};
+	}
+
+	@Override
+	public void delete(Map<String, Object> row) {
+		throw new UnsupportedOperationException();
 	}
 
 }
