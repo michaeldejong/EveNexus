@@ -17,7 +17,6 @@ import javax.swing.border.LineBorder;
 
 import nl.minicom.evenexus.core.report.engine.DisplayType;
 import nl.minicom.evenexus.core.report.engine.Model;
-import nl.minicom.evenexus.core.report.engine.ModelListener;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
@@ -32,7 +31,7 @@ import com.google.inject.Inject;
  *
  * @author michael
  */
-public class ReportDisplayPage extends ReportWizardPage {
+public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryListener {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
@@ -47,6 +46,7 @@ public class ReportDisplayPage extends ReportWizardPage {
 	private final List<ReportDisplayEntry> entries;
 	
 	private ReportModel model;
+	private ReportPageListener listener = null;
 	
 	/**
 	 * This constructs a new {@link ReportDisplayPage}.
@@ -56,21 +56,25 @@ public class ReportDisplayPage extends ReportWizardPage {
 	 */
 	@Inject
 	public ReportDisplayPage(ReportModel model) {
+		super(model);
 		this.entries = Lists.newArrayList();
 		this.model = model;
 	}
 
 	/**
 	 * This method builds the gui, allowing the user to select a display type.
+	 * 
+	 * @param listener
+	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui() {
+	public void buildGui(ReportPageListener listener) {
 		GroupLayout layout = new GroupLayout(this);
 		Group horizontalGroup = layout.createParallelGroup();
 		Group verticalGroup = layout.createSequentialGroup();
 		
 		for (DisplayType type : DisplayType.values()) {
-			ReportDisplayEntry entry = new ReportDisplayEntry(type, model);
+			ReportDisplayEntry entry = new ReportDisplayEntry(this, type, model);
 			horizontalGroup.addComponent(entry);
 			verticalGroup.addComponent(entry);
 			entries.add(entry);
@@ -98,9 +102,15 @@ public class ReportDisplayPage extends ReportWizardPage {
 		
 		private final JPanel iconPanel;
 		private final ReportModel model;
+		private final DisplayType type;
+		
+		private State state = State.DEFAULT;
 		
 		/**
 		 * This constructs a new {@link ReportDisplayEntry}.
+		 * 
+		 * @param listener
+		 * 		The {@link ReportPageListener}. 
 		 * 
 		 * @param type
 		 * 		The {@link DisplayType} of this {@link ReportDisplayEntry}.
@@ -108,13 +118,14 @@ public class ReportDisplayPage extends ReportWizardPage {
 		 * @param model
 		 * 		The {@link ReportModel}.
 		 */
-		public ReportDisplayEntry(DisplayType type, ReportModel model) {
+		public ReportDisplayEntry(final DisplayEntryListener listener, DisplayType type, ReportModel model) {
 			this.model = model;
 			this.iconPanel = createImageButton(type);
+			this.type = type;
+			
 			JLabel title = GuiConstants.createBoldLabel(type.getTitle());
 			JLabel description = createDescription(type.getDescription());
 			
-			onModelDisplayStateChange(type);
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
 			
 			GroupLayout layout = new GroupLayout(this);
@@ -146,6 +157,43 @@ public class ReportDisplayPage extends ReportWizardPage {
 				)
 				.addGap(4)
 			);
+			
+			final ReportDisplayEntry entry = this;
+			addMouseListener(new MouseListener() {
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					// Do nothing.
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					// Do nothin.
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					listener.onDeselectionMove(entry);
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					listener.onSelectionMove(entry);
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					listener.onStateChange(entry);
+				}
+			});
+			
+			Model<DisplayType> displayType = model.getDisplayType();
+			if (displayType.isSet() && displayType.getValue().equals(type)) {
+				onStateChange(this);
+			}
+		}
+		
+		private DisplayType getType() {
+			return type;
 		}
 		
 		private JLabel createDescription(String value) {
@@ -168,72 +216,14 @@ public class ReportDisplayPage extends ReportWizardPage {
 			iconLabel.setBounds(8, 8, 48, 48);
 			panel.add(iconLabel);
 			
-			addListener(type);
-			
 			return panel;
 		}
 		
-		private void addListener(final DisplayType type) {
-			model.getDisplayType().addListener(new ModelListener() {
-				@Override
-				public void onValueChanged() {
-					onModelDisplayStateChange(type);
-				}
-
-				@Override
-				public void onStateChanged() {
-					// Do nothing.
-				}
-			});
-			
-			addMouseListener(new MouseListener() {
-				
-				@Override
-				public void mouseReleased(MouseEvent arg0) {
-					model.getDisplayType().setValue(type);
-				}
-				
-				@Override
-				public void mousePressed(MouseEvent arg0) {
-					// Do nothing.
-				}
-				
-				@Override
-				public void mouseExited(MouseEvent arg0) {
-					onModelDisplayStateChange(type);
-				}
-				
-				@Override
-				public void mouseEntered(MouseEvent arg0) {
-					Model<DisplayType> displayType = model.getDisplayType();
-					if (displayType.isSet() && type.equals(displayType.getValue())) {
-						setState(State.SELECTED);
-					}
-					else {
-						setState(State.HOVER);
-					}
-				}
-				
-				@Override
-				public void mouseClicked(MouseEvent arg0) {
-					// Do nothing.
-				}
-			});
-		}
-
-		private void onModelDisplayStateChange(final DisplayType type) {
-			Model<DisplayType> displayType = model.getDisplayType();
-			if (displayType.isSet() && type.equals(displayType.getValue())) {
-				setState(State.SELECTED);
-			}
-			else {
-				setState(State.DEFAULT);
-			}
-		}
-
 		private void setState(State newState) {
+			this.state = newState;
 			switch (newState) {
 				case SELECTED:
+					model.getDisplayType().setValue(getType());
 					setColors(BACKGROUND_SELECTED, BORDER_SELECTED);
 					break;
 				case HOVER:
@@ -242,6 +232,10 @@ public class ReportDisplayPage extends ReportWizardPage {
 				default: 
 					setColors(BACKGROUND_DEFAULT, BORDER_DEFAULT);
 			}
+		}
+
+		private State getState() {
+			return state;
 		}
 		
 		private void setColors(Color background, Color border) {
@@ -263,4 +257,52 @@ public class ReportDisplayPage extends ReportWizardPage {
 		HOVER,
 		SELECTED;
 	}
+
+	@Override
+	public boolean allowPrevious() {
+		return true;
+	}
+
+	@Override
+	public boolean allowNext() {
+		return false;
+	}
+
+	@Override
+	public void onStateChange(ReportDisplayEntry selected) {
+		for (ReportDisplayEntry entry : entries) {
+			if (entry.equals(selected)) {
+				entry.setState(State.SELECTED);
+			}
+			else {
+				entry.setState(State.DEFAULT);
+			}
+		}
+		
+		if (listener != null) {
+			listener.onModification();
+		}
+	}
+
+	@Override
+	public void onSelectionMove(ReportDisplayEntry selected) {
+		for (ReportDisplayEntry entry : entries) {
+			if (entry.equals(selected)) {
+				entry.setState(State.HOVER);
+			}
+			else if (entry.getState() == State.HOVER){
+				entry.setState(State.DEFAULT);
+			}
+		}
+	}
+
+	@Override
+	public void onDeselectionMove(ReportDisplayEntry deselected) {
+		for (ReportDisplayEntry entry : entries) {
+			if (entry.equals(deselected)) {
+				entry.setState(State.DEFAULT);
+			}
+		}
+	}
+	
 }

@@ -51,7 +51,7 @@ public class ReportGroup {
 	public ReportGroup(String key, Type type, GroupTranslator translator) {
 		this.key = key;
 		this.type = type;
-		this.translator = translator;
+		this.translator = null;
 		this.expressions = new LinkedHashMap<Table, Expression>();
 	}
 	
@@ -123,7 +123,9 @@ public class ReportGroup {
 	 * @author michael
 	 */
 	public enum Type {
-		DATE,
+		DAY,
+		WEEK,
+		MONTH,
 		NAME;
 	}
 	

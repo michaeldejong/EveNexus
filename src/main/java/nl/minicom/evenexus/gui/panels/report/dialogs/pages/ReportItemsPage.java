@@ -45,6 +45,7 @@ public class ReportItemsPage extends ReportWizardPage {
 	 */
 	@Inject
 	public ReportItemsPage(ReportDefinition definition, ReportModel model, Translator translator) {
+		super(model);
 		this.definition = definition;
 		this.translator = translator;
 		this.model = model;
@@ -52,9 +53,12 @@ public class ReportItemsPage extends ReportWizardPage {
 
 	/**
 	 * This method builds the items panel.
+	 * 
+	 * @param listener
+	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui() {
+	public void buildGui(final ReportPageListener listener) {
 		JPanel itemPanel = new JPanel();
 		itemPanel.setLayout(null);
 		itemPanel.setBackground(Color.WHITE);
@@ -73,6 +77,7 @@ public class ReportItemsPage extends ReportWizardPage {
 			String keyTranslation = translator.translate(item.getKey());
 			
 			final JCheckBox checkBox = new JCheckBox();
+			checkBox.setSelected(model.hasItem(item.getKey()));
 			checkBox.setText(" " + keyTranslation + " ");
 			checkBox.addActionListener(new ActionListener() {
 				@Override
@@ -86,6 +91,7 @@ public class ReportItemsPage extends ReportWizardPage {
 						model.addItem(item);
 						checkBox.setSelected(true);
 					}
+					listener.onModification();
 				}
 			});
 			
@@ -99,6 +105,11 @@ public class ReportItemsPage extends ReportWizardPage {
 	@Override
 	public DialogTitle getTitle() {
 		return new ReportItemTitle();
+	}
+
+	@Override
+	public boolean allowPrevious() {
+		return false;
 	}
 	
 	/**

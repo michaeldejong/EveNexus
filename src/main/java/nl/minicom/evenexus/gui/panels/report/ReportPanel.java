@@ -135,7 +135,7 @@ public class ReportPanel extends TabPanel {
 		this.dataset = executor.createDataSet();
 		
 		switch (reportModel.getDisplayType().getValue()) {
-			case GRAPH:
+			case BAR_CHART:
 				chartPanel.setChart(LineGraphChart.render(reportModel, dataset));
 				break;
 			default:

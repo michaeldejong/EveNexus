@@ -27,6 +27,7 @@ public class Database {
 		this.sessionMapping = new HashMap<Thread, Session>();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void ensureInitialized() {
 		if (sessionFactory == null) {
 			Configuration config = new Configuration();
@@ -48,7 +49,6 @@ public class Database {
 				session = sessionFactory.openSession();
 				sessionMapping.put(Thread.currentThread(), session);
 			}
-			
 			return session;
 		}
 	}

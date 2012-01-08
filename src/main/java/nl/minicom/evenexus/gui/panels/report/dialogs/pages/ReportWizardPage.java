@@ -4,6 +4,10 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
+import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
+import nl.minicom.evenexus.core.report.engine.DisplayType;
+import nl.minicom.evenexus.core.report.engine.Model;
+import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 
 /**
@@ -15,10 +19,16 @@ public abstract class ReportWizardPage extends JPanel {
 
 	private static final long serialVersionUID = -518048166321128035L;
 	
+	private final ReportModel reportModel;
+	
 	/**
 	 * This constructs a new {@link ReportWizardPage}.
+	 * 
+	 * @param reportModel
+	 * 		The {@link ReportModel}.
 	 */
-	public ReportWizardPage() {
+	public ReportWizardPage(ReportModel reportModel) {
+		this.reportModel = reportModel;
 		setDimensions();
 	}
 	
@@ -26,7 +36,7 @@ public abstract class ReportWizardPage extends JPanel {
 		setMinimumSize(new Dimension(0, 0));
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 	}
-
+	
 	/**
 	 * @return
 	 * 		The {@link DialogTitle} of the {@link ReportWizardPage}.
@@ -35,14 +45,43 @@ public abstract class ReportWizardPage extends JPanel {
 	
 	/**
 	 * This method builds the gui.
+	 * 
+	 * @param listener 
+	 * 		The parent {@link ReportPageListener}.
 	 */
-	public abstract void buildGui();
-
+	public abstract void buildGui(ReportPageListener listener);
+	
+	/**
+	 * @return
+	 * 		True if the user is allowed to go back to the previous page.
+	 */
+	public abstract boolean allowPrevious();
+	
 	/**
 	 * @return
 	 * 		True if the user is allowed to proceed to the next page.
 	 */
-	public boolean allowNext() {
+	public abstract boolean allowNext();
+	
+	/**
+	 * @return
+	 * 		True if the user is allowed to execute the report.
+	 */
+	public boolean allowExecute() {
+		if (reportModel.getReportItems().isEmpty()) {
+			return false;
+		}
+		
+		Model<ReportGroup> grouping1 = reportModel.getGrouping1();
+		if (!grouping1.isEnabled() || !grouping1.isSet()) {
+			return false;
+		}
+		
+		Model<DisplayType> displayType = reportModel.getDisplayType();
+		if (!displayType.isEnabled() || !displayType.isSet()) {
+			return false;
+		}
+		
 		return true;
 	}
 

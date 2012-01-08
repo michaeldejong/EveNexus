@@ -15,7 +15,7 @@ public class Table extends Expression {
 	
 	public static final Table TRANSACTIONS = new Table("transactions");
 	public static final Table JOURNAL = new Table("journal");
-	public static final Table PROFIT = new Table("profit");
+	public static final Table PROFITS = new Table("profits");
 	
 	private final String tableName;
 	private final String alias;

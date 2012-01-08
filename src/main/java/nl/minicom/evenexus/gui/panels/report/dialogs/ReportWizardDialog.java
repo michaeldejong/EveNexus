@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import nl.minicom.evenexus.core.report.engine.ModelListener;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.report.ReportPanel;
@@ -17,6 +17,7 @@ import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportDisplayPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportFiltersPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportGroupingPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportItemsPage;
+import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportPageListener;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportWizardPage;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
@@ -27,7 +28,8 @@ import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
  * 
  * @author michael
  */
-public class ReportWizardDialog extends CustomDialog implements ModelListener {
+@Singleton
+public class ReportWizardDialog extends CustomDialog implements ReportPageListener {
 
 	private static final long serialVersionUID = 5707542816331260941L;
 	
@@ -68,7 +70,7 @@ public class ReportWizardDialog extends CustomDialog implements ModelListener {
 			ReportFiltersPage filters, ReportDisplayPage displays, ReportModel reportModel,
 			ReportPanel reportPanel) {
 		
-		super(new ReportItemTitle(), 360, 420);
+		super(new ReportItemTitle(), 360, 520);
 		this.contentPanel = new JPanel();
 		this.pages = new ReportWizardPage[] { items, groups, filters, displays };
 		this.reportModel = reportModel;
@@ -83,10 +85,9 @@ public class ReportWizardDialog extends CustomDialog implements ModelListener {
 	 * This method initializes the {@link ReportWizardDialog}.
 	 */
 	public void initialize() {
-		reportModel.addListener(this);
-		
+		index = 0;
 		for (ReportWizardPage page : pages) {
-			page.buildGui();
+			page.buildGui(this);
 		}
 		
 		setTitle("Report creation wizard");
@@ -202,25 +203,12 @@ public class ReportWizardDialog extends CustomDialog implements ModelListener {
 	private ReportWizardPage getCurrentPage() {
 		return pages[index];
 	}
-	
-	/**
-	 * This method overrides the default dispose method. It will first 
-	 * de-register itself as a {@link ModelListener} from the {@link ReportModel}.
-	 */
-	@Override
-	public void dispose() {
-		reportModel.removeListener(this);
-		super.dispose();
-	}
 
 	@Override
-	public void onValueChanged() {
-		updateButtonStates();
-	}
-
-	@Override
-	public void onStateChanged() {
-		updateButtonStates();
+	public void onModification() {
+		ReportWizardPage currentPage = getCurrentPage();
+		next.setEnabled(currentPage.allowNext());
+		execute.setEnabled(currentPage.allowExecute());
 	}
 	
 }

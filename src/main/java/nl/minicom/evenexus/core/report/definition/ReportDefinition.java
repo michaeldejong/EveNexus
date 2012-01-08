@@ -16,12 +16,15 @@ import nl.minicom.evenexus.core.report.definition.components.ReportFilter;
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup.Type;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
+import nl.minicom.evenexus.core.report.definition.components.ReportItem.Unit;
 import nl.minicom.evenexus.core.report.definition.components.utils.Aggregate;
+import nl.minicom.evenexus.core.report.persistence.expressions.Abs;
 import nl.minicom.evenexus.core.report.persistence.expressions.Column;
 import nl.minicom.evenexus.core.report.persistence.expressions.Concat;
 import nl.minicom.evenexus.core.report.persistence.expressions.DayOfYear;
 import nl.minicom.evenexus.core.report.persistence.expressions.GreaterThan;
 import nl.minicom.evenexus.core.report.persistence.expressions.Month;
+import nl.minicom.evenexus.core.report.persistence.expressions.Multiply;
 import nl.minicom.evenexus.core.report.persistence.expressions.Or;
 import nl.minicom.evenexus.core.report.persistence.expressions.SmallerThan;
 import nl.minicom.evenexus.core.report.persistence.expressions.Table;
@@ -52,14 +55,18 @@ public class ReportDefinition {
 	public static final String FILTER_ITEM = "report_filter_item";
 
 	// Item keys
-	public static final String ITEM_ITEMS_BOUGHT = "report_item_items_bought";
-	public static final String ITEM_ITEMS_SOLD = "report_item_items_sold";
+	public static final String ITEM_PURCHASES_IN_QUANTITY = "report_item_purchases_in_quantity";
+	public static final String ITEM_PURCHASES_IN_ISK = "report_item_purchases_in_isk";
+	public static final String ITEM_SALES_IN_QUANTITY = "report_item_sales_in_quantity";
+	public static final String ITEM_SALES_IN_ISK = "report_item_sales_in_isk";
+	public static final String PROFIT_NET_PROFIT = "report_profit_net_profit";
 	
 	// Group keys
 	public static final String GROUP_DAY = "report_group_day";
 	public static final String GROUP_WEEK = "report_group_week";
 	public static final String GROUP_MONTH = "report_group_month";
 	public static final String GROUP_ITEM = "report_group_item";
+	public static final String GROUP_STATION_NAME = "report_group_station_name";
 
 	// Defined items & groups
 	private final Map<String, ReportFilter> reportFilters = new LinkedHashMap<String, ReportFilter>();
@@ -90,25 +97,40 @@ public class ReportDefinition {
 				new ReportFilter(FILTER_START_DATE)
 					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 					.defineExpression(Table.JOURNAL, new Column(WalletJournal.DATE))
-					.defineExpression(Table.PROFIT, new Column(Profit.DATE))
+					.defineExpression(Table.PROFITS, new Column(Profit.DATE))
 		);
 		
 		addFilter(
 				new ReportFilter(FILTER_END_DATE)
 					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 					.defineExpression(Table.JOURNAL, new Column(WalletJournal.DATE))
-					.defineExpression(Table.PROFIT, new Column(Profit.DATE))
+					.defineExpression(Table.PROFITS, new Column(Profit.DATE))
 		);
 
 		addFilter(
 				new ReportFilter(FILTER_ITEM)
 					.defineExpression(Table.TRANSACTIONS, new Column(WalletTransaction.TYPE_ID))
-					.defineExpression(Table.PROFIT, new Column(Profit.TYPE_ID))
+					.defineExpression(Table.PROFITS, new Column(Profit.TYPE_ID))
 		);
 		
 		addItem(
 				new ReportItem(
-						ITEM_ITEMS_BOUGHT,
+						PROFIT_NET_PROFIT,
+						Unit.CURRENCY,
+						Table.PROFITS, 
+						Aggregate.SUM, 
+						new Multiply(
+								new Column(Profit.NET_PROFIT),
+								new Column(Profit.QUANTITY)
+						),
+						null
+				)
+		);
+		
+		addItem(
+				new ReportItem(
+						ITEM_PURCHASES_IN_QUANTITY,
+						Unit.QUANTITY,
 						Table.TRANSACTIONS, 
 						Aggregate.SUM, 
 						new Column(WalletTransaction.QUANTITY), 
@@ -121,7 +143,25 @@ public class ReportDefinition {
 		
 		addItem(
 				new ReportItem(
-						ITEM_ITEMS_SOLD,
+						ITEM_PURCHASES_IN_ISK,
+						Unit.CURRENCY,
+						Table.TRANSACTIONS, 
+						Aggregate.SUM,
+						new Multiply(
+								new Abs(new Column(WalletTransaction.PRICE)),
+								new Column(WalletTransaction.QUANTITY)
+						),
+						new SmallerThan(
+								new Column(WalletTransaction.PRICE), 
+								new Value(0)
+						)
+				)
+		);
+		
+		addItem(
+				new ReportItem(
+						ITEM_SALES_IN_QUANTITY,
+						Unit.QUANTITY,
 						Table.TRANSACTIONS, 
 						Aggregate.SUM, 
 						new Column(WalletTransaction.QUANTITY), 
@@ -132,10 +172,27 @@ public class ReportDefinition {
 				)
 		);
 		
+		addItem(
+				new ReportItem(
+						ITEM_SALES_IN_ISK,
+						Unit.CURRENCY,
+						Table.TRANSACTIONS, 
+						Aggregate.SUM,
+						new Multiply(
+								new Column(WalletTransaction.PRICE),
+								new Column(WalletTransaction.QUANTITY)
+						),
+						new GreaterThan(
+								new Column(WalletTransaction.PRICE), 
+								new Value(0)
+						)
+				)
+		);
+		
 		addGroup(
 				new ReportGroup(
 						GROUP_DAY, 
-						Type.DATE,
+						Type.DAY,
 						new GroupTranslator() {
 								@Override
 								public String translate(String input) {
@@ -155,6 +212,14 @@ public class ReportDefinition {
 								new DayOfYear(new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 						)
 				)
+				.defineExpression(
+						Table.PROFITS, 
+						new Concat(
+								new Year(new Column(Profit.DATE)),
+								new Value("-"),
+								new DayOfYear(new Column(Profit.DATE))
+						)
+				)
 		);
 		
 		addGroup(
@@ -164,14 +229,29 @@ public class ReportDefinition {
 				)
 				.defineExpression(
 						Table.TRANSACTIONS, 
-						new Column(WalletTransaction.TYPE_ID)
+						new Column(WalletTransaction.TYPE_NAME)
+				)
+				.defineExpression(
+						Table.PROFITS, 
+						new Column(Profit.TYPE_NAME)
+				)
+		);
+		
+		addGroup(
+				new ReportGroup(
+						GROUP_STATION_NAME,
+						Type.NAME
+				)
+				.defineExpression(
+						Table.TRANSACTIONS, 
+						new Column(WalletTransaction.STATION_NAME)
 				)
 		);
 		
 		addGroup(
 				new ReportGroup(
 						GROUP_WEEK,
-						Type.DATE,
+						Type.WEEK,
 						new GroupTranslator() {
 								@Override
 								public String translate(String input) {
@@ -191,12 +271,20 @@ public class ReportDefinition {
 								new Week(new Column(WalletTransaction.TRANSACTION_DATE_TIME))
 						)
 				)
+				.defineExpression(
+						Table.PROFITS, 
+						new Concat(
+								new Year(new Column(Profit.DATE)),
+								new Value("-"),
+								new Week(new Column(Profit.DATE))
+						)
+				)
 		);
 		
 		addGroup(
 				new ReportGroup(
 						GROUP_MONTH,
-						Type.DATE, 
+						Type.MONTH, 
 						new GroupTranslator() {
 								@Override
 								public String translate(String input) {
@@ -214,6 +302,14 @@ public class ReportDefinition {
 								new Year(new Column(WalletTransaction.TRANSACTION_DATE_TIME)),
 								new Value("-"),
 								new Month(new Column(WalletTransaction.TRANSACTION_DATE_TIME))
+						)
+				)
+				.defineExpression(
+						Table.PROFITS, 
+						new Concat(
+								new Year(new Column(Profit.DATE)),
+								new Value("-"),
+								new Month(new Column(Profit.DATE))
 						)
 				)
 		);

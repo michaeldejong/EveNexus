@@ -1,11 +1,16 @@
 package nl.minicom.evenexus.core.report.engine;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
+import nl.minicom.evenexus.core.report.definition.components.ReportGroup.Type;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.persistence.QueryBuilder;
 import nl.minicom.evenexus.core.report.persistence.Select;
@@ -20,9 +25,9 @@ import nl.minicom.evenexus.persistence.interceptor.Transactional;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
-import org.hibernate.ScrollableResults;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * This class is responsible for executing the report and drawing it. 
@@ -78,6 +83,7 @@ public class ReportExecutor {
 	 * @return						The {@link Dataset} containing data from the query.
 	 * @throws HibernateException	Will be thrown if the query is invalid.
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public Dataset createDataSet(Expression... groupValues) throws HibernateException {
 		ensureReportTableExists();
@@ -85,11 +91,11 @@ public class ReportExecutor {
 		Select select = new Select(table);
 		
 		// Add field for grouping		
+		ReportGroup currentGroup = model.getReportGroups().get(groupValues.length);
 		if (groupValues.length < model.getReportGroups().size()) {
-			ReportGroup group = model.getReportGroups().get(groupValues.length);
-			select.addExpression(new Column(group.getKey()), group.getKey());
-			select.addGroup(new Column(group.getKey()));
-			select.addOrder(new Column(group.getKey()));
+			select.addExpression(new Column(currentGroup.getKey()), currentGroup.getKey());
+			select.addGroup(new Column(currentGroup.getKey()));
+			select.addOrder(new Column(currentGroup.getKey()));
 		}
 
 		// Filter on selected groupings
@@ -117,30 +123,47 @@ public class ReportExecutor {
 		QueryBuilder builder = new QueryBuilder();
 		select.writeTranslation(builder);
 		
-		Dataset dataset = new Dataset();
+		Dataset dataset = createDataset(currentGroup);
 		SQLQuery statement = builder.createStatement(database.getCurrentSession());
 		
-		ScrollableResults results = null;
+		List<Object[]> results = null;
 		try {
-			results = statement.scroll();
-			if (results.first()) {
-				do {
-					String key = results.getString(1);
-					for (int i = 0; i <= aliases.size(); i++) {
-						dataset.setValue(key, i, results.getDouble(i));
-					}
+			results = statement.list();
+			for (Object[] row : results) {
+				String key = row[0].toString();
+				for (int i = 0; i < aliases.size(); i++) {
+					BigDecimal value = (BigDecimal) row[i + 1];
+					String groupValue = currentGroup.translate(key);
+					dataset.setValue(aliases.get(i), groupValue, value);
 				}
-				while (results.next());
 			}
 		}
 		catch (HibernateException e) {
 			throw e;
 		}
-		finally {
-			results.close();
-		}
 		
 		return dataset;
+	}
+
+	private Dataset createDataset(ReportGroup currentGroup) {
+		if (Type.DAY == currentGroup.getType()) {
+			Date start = model.getStartDate().getValue();
+			Date end = model.getEndDate().getValue();
+			
+			Calendar c = Calendar.getInstance();
+			c.setTime(start);
+			
+			Set<String> groupKeys = Sets.newHashSet();
+			groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR));
+			while (c.getTime().before(end)) {
+				groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR));
+				c.add(Calendar.DAY_OF_YEAR, 1);
+			}
+			
+			return new Dataset(groupKeys, false);
+		}
+		
+		return new Dataset(true);
 	}
 	
 	/**
@@ -212,7 +235,9 @@ public class ReportExecutor {
 		subSelect.addExpression(currentItem.getExpression(), currentItem.getKey());
 		
 		// Add the condition
-		subSelect.setCondition(currentItem.getCondition());
+		if (currentItem.getCondition() != null) {
+			subSelect.setCondition(currentItem.getCondition());
+		}
 		
 		return subSelect;
 	}

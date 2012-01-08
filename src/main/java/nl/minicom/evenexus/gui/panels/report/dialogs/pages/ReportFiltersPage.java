@@ -56,33 +56,38 @@ public class ReportFiltersPage extends ReportWizardPage {
 	 */
 	@Inject
 	public ReportFiltersPage(Database database, ReportModel model) {
+		super(model);
 		this.database = database;
 		this.model = model;
 	}
 
 	/**
 	 * This method builds the gui, allowing the user to define the filters.
+	 * 
+	 * @param listener
+	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui() {
+	public void buildGui(ReportPageListener listener) {
 		JLabel timeLabel = GuiConstants.createBoldLabel("Time filters");
 		JLabel locationLabel = GuiConstants.createBoldLabel("Location filters");
 		JLabel characterLabel = GuiConstants.createBoldLabel("Character filters");
 		
-		JSpinner fromDateSpinner = createDateSpinner(model.getStartDate());
-		JCheckBox fromBox = createCheckBox("From: ", fromDateSpinner);
+		JSpinner fromDateSpinner = createDateSpinner(listener, model.getStartDate());
+		JCheckBox fromBox = createCheckBox(listener, "From: ", fromDateSpinner);
 
-		JSpinner toSpinner = createDateSpinner(model.getEndDate());
-		JCheckBox toBox = createCheckBox("To: ", toSpinner);
+		JSpinner toSpinner = createDateSpinner(listener, model.getEndDate());
+		JCheckBox toBox = createCheckBox(listener, "To: ", toSpinner);
 		
-		JComboBox regionComboBox = createRegionComboBox();
-		JCheckBox regionBox = createCheckBox("Region: ", regionComboBox);
+		JComboBox regionComboBox = createRegionComboBox(listener);
+		JCheckBox regionBox = createCheckBox(listener, "Region: ", regionComboBox);
 		
-		JComboBox characterComboBox = createCharacterComboBox();
-		JCheckBox characterBox = createCheckBox("Character: ", characterComboBox);
+		JComboBox characterComboBox = createCharacterComboBox(listener);
+		JCheckBox characterBox = createCheckBox(listener, "Character: ", characterComboBox);
 		if (characterComboBox.getModel().getSize() == 0) {
 			characterBox.setEnabled(false);
 			characterComboBox.setEnabled(false);
+			listener.onModification();
 		}
 		
 		GroupLayout layout = new GroupLayout(this);
@@ -135,7 +140,7 @@ public class ReportFiltersPage extends ReportWizardPage {
     	);
 	}
 
-	private JComboBox createRegionComboBox() {
+	private JComboBox createRegionComboBox(final ReportPageListener listener) {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setMinimumSize(new Dimension(120, GuiConstants.COMBO_BOX_HEIGHT));
 		comboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.COMBO_BOX_HEIGHT));
@@ -147,7 +152,7 @@ public class ReportFiltersPage extends ReportWizardPage {
 				model.addElement(" " + region.getRegionName());
 			}
 		}
-				
+		
 		comboBox.setModel(model);
 		return comboBox;
 	}
@@ -178,7 +183,7 @@ public class ReportFiltersPage extends ReportWizardPage {
 				.list();
 	}
 
-	private JComboBox createCharacterComboBox() {
+	private JComboBox createCharacterComboBox(final ReportPageListener listener) {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setMinimumSize(new Dimension(120, GuiConstants.COMBO_BOX_HEIGHT));
 		comboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.COMBO_BOX_HEIGHT));
@@ -194,7 +199,9 @@ public class ReportFiltersPage extends ReportWizardPage {
 		return comboBox;
 	}
 
-	private JCheckBox createCheckBox(String value, final JComponent... dependentComponent) {
+	private JCheckBox createCheckBox(final ReportPageListener listener, 
+			String value, final JComponent... dependentComponent) {
+		
 		final JCheckBox checkBox = new JCheckBox(value);
 		checkBox.setMinimumSize(new Dimension(120, 0));
 		checkBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, GuiConstants.SPINNER_HEIGHT));
@@ -206,6 +213,7 @@ public class ReportFiltersPage extends ReportWizardPage {
 				@Override
 				public void onValid(boolean isValid) {
 					dependent.setEnabled(isValid);
+					listener.onModification();
 				}
 			};
 		}
@@ -224,7 +232,7 @@ public class ReportFiltersPage extends ReportWizardPage {
 		return checkBox;
 	}
 
-	private JSpinner createDateSpinner(final Model<Date> dateValue) {
+	private JSpinner createDateSpinner(final ReportPageListener listener, final Model<Date> dateValue) {
 		final SpinnerDateModel model = new SpinnerDateModel(dateValue.getValue(), null, null, Calendar.DAY_OF_YEAR);
 		JSpinner spinner = new JSpinner(model);
 		spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss dd/MM/yyyy "));
@@ -235,6 +243,7 @@ public class ReportFiltersPage extends ReportWizardPage {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				dateValue.setValue(model.getDate());
+				listener.onModification();
 			}
 		});
 		
@@ -244,6 +253,16 @@ public class ReportFiltersPage extends ReportWizardPage {
 	@Override
 	public DialogTitle getTitle() {
 		return new ReportFilteringTitle();
+	}
+
+	@Override
+	public boolean allowNext() {
+		return true;
+	}
+
+	@Override
+	public boolean allowPrevious() {
+		return true;
 	}
 	
 }

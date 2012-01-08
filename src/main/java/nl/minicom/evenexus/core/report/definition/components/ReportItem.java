@@ -12,6 +12,7 @@ import nl.minicom.evenexus.core.report.persistence.expressions.Table;
 public class ReportItem {
 	
 	private final String key;
+	private final Unit unit;
 	private final Table table;
 	private final Aggregate aggregate;
 	private final Expression expression;
@@ -21,13 +22,17 @@ public class ReportItem {
 	 * This constructor will create a definition of a {@link ReportItem}.
 	 * 
 	 * @param key			The unique alias for this {@link ReportItem}.
+	 * @param unit			The unit of the {@link ReportItem}.
 	 * @param table			The {@link Table} to operator on.
 	 * @param aggregate		How to aggregate the {@link Expression} itself.
 	 * @param expression	The data {@link Expression}.
 	 * @param condition		What data to include.
 	 */
-	public ReportItem(String key, Table table, Aggregate aggregate, Expression expression, Expression condition) {
+	public ReportItem(String key, Unit unit, Table table, 
+			Aggregate aggregate, Expression expression, Expression condition) {
+		
 		this.key = key;
+		this.unit = unit;
 		this.table = table;
 		this.aggregate = aggregate;
 		this.expression = expression;
@@ -39,6 +44,13 @@ public class ReportItem {
 	 */
 	public String getKey() {
 		return key;
+	}
+	
+	/**
+	 * @return	The {@link Unit} for this {@link ReportItem}.
+	 */
+	public Unit getUnit() {
+		return unit;
 	}
 	
 	/**
@@ -67,6 +79,17 @@ public class ReportItem {
 	 */
 	public Expression getCondition() {
 		return condition;
+	}
+	
+	/**
+	 * This enum specified if the {@link ReportItem} is quantifies a number of units, or
+	 * an amount of currency. 
+	 *
+	 * @author michael
+	 */
+	public enum Unit {
+		CURRENCY,
+		QUANTITY;
 	}
 	
 }

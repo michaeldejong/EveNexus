@@ -1,9 +1,5 @@
 package nl.minicom.evenexus.core.report.engine;
 
-import java.lang.ref.WeakReference;
-import java.util.List;
-
-import com.google.common.collect.Lists;
 
 /**
  * <p>This class is a data container which can hold one parameterized value.
@@ -20,8 +16,6 @@ import com.google.common.collect.Lists;
  */
 public class Model<T> {
 	
-	private final List<WeakReference<ModelListener>> listeners;
-
 	private T value;
 	private boolean enabled = false;
 	
@@ -41,7 +35,6 @@ public class Model<T> {
 	 */
 	public Model(T value) {
 		this.value = value;
-		this.listeners = Lists.newArrayList();
 	}
 	
 	/**
@@ -49,7 +42,6 @@ public class Model<T> {
 	 */
 	public final void enable() {
 		this.enabled = true;
-		onStateChanged();
 	}
 	
 	/**
@@ -57,7 +49,6 @@ public class Model<T> {
 	 */
 	public final void disable() {
 		this.enabled = false;
-		onStateChanged();
 	}
 	
 	/**
@@ -76,61 +67,6 @@ public class Model<T> {
 	 */
 	public final void setValue(T value) {
 		this.value = value;
-		onValueChanged();
-	}
-	
-	/**
-	 * This method will trigger registered listeners. They will be
-	 * notified of a change in value of this {@link Model}.
-	 */
-	private void onValueChanged() {
-		synchronized (listeners) {
-			int index = 0;
-			while (index < listeners.size()) {
-				WeakReference<ModelListener> reference = listeners.get(index);
-				ModelListener listener = reference.get();
-				if (listener == null) {
-					listeners.remove(index);
-				}
-				else {
-					listener.onValueChanged();
-					index++;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * This method will trigger registered listeners. They will be
-	 * notified of a change in value of this {@link Model}.
-	 */
-	private void onStateChanged() {
-		synchronized (listeners) {
-			int index = 0;
-			while (index < listeners.size()) {
-				WeakReference<ModelListener> reference = listeners.get(index);
-				ModelListener listener = reference.get();
-				if (listener == null) {
-					listeners.remove(index);
-				}
-				else {
-					listener.onStateChanged();
-					index++;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Registers a new {@link ModelListener} with this {@link Model}.
-	 * 
-	 * @param listener
-	 * 		The {@link ModelListener} to notify on change.
-	 */
-	public void addListener(ModelListener listener) {
-		synchronized (listeners) {
-			listeners.add(new WeakReference<ModelListener>(listener));
-		}
 	}
 	
 	/**

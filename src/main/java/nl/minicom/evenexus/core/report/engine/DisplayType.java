@@ -10,9 +10,17 @@ import nl.minicom.evenexus.gui.icons.Icon;
  */
 public enum DisplayType {
 
-	TABLE(1, Icon.TABLE_48, "Table", "Selecting this option will format your report in the form of a table."), 
-	GRAPH(2, Icon.GRAPH_48, "Graph", "Selecting this option will format your report in the form of a graph."), 
-	PIE(3, Icon.PIE_CHART_48, "Pie chart", "Selecting this option will format your report in the form of a pie chart.");
+	TABLE(1, Icon.TABLE_48, "Table", 
+			"Selecting this option will format your report in the form of a table."), 
+			
+	BAR_CHART(2, Icon.BAR_CHART_48, "Bar chart", 
+			"Selecting this option will format your report in the form of a bar chart."), 
+			
+	LINE_GRAPH(3, Icon.GRAPH_48, "Line graph", 
+			"Selecting this option will format your report in the form of a line graph."),
+			
+	PIE(4, Icon.PIE_CHART_48, "Pie chart", 
+			"Selecting this option will format your report in the form of a pie chart.");
 	
 	private final int id;
 	private final Icon icon;

@@ -3,6 +3,7 @@ package nl.minicom.evenexus.core.report.engine;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
@@ -24,10 +25,8 @@ import com.google.common.collect.Lists;
  * @author Michael
  */
 @Singleton
-public class ReportModel implements ModelListener {
+public class ReportModel {
 	
-	private final List<ModelListener> listeners;
-
 	// Report items
 	private final Map<String, ReportItem> reportItems;
 	
@@ -46,8 +45,6 @@ public class ReportModel implements ModelListener {
 	 */
 	@Inject
 	public ReportModel() {
-		this.listeners = Lists.newArrayList();
-		
 		// Display type
 		this.displayType = createModel(DisplayType.TABLE);
 		
@@ -58,6 +55,7 @@ public class ReportModel implements ModelListener {
 		this.reportGroups = new ArrayList<Model<ReportGroup>>();
 		for (int i = 0; i < 3; i++) {
 			Model<ReportGroup> groupModel = createModel(null);
+			groupModel.disable();
 			this.reportGroups.add(groupModel);
 		}
 		
@@ -67,9 +65,7 @@ public class ReportModel implements ModelListener {
 	}
 	
 	private <T> Model<T> createModel(T value) {
-		Model<T> model = new Model<T>(value);
-		model.addListener(this);
-		return model;
+		return new Model<T>(value);
 	}
 	
 	/**
@@ -87,7 +83,6 @@ public class ReportModel implements ModelListener {
 	 */
 	public void addItem(ReportItem item) {
 		reportItems.put(item.getKey(), item);
-		onStateChanged();
 	}
 	
 	/**
@@ -97,7 +92,6 @@ public class ReportModel implements ModelListener {
 	 */
 	public void removeItem(ReportItem item) {
 		reportItems.remove(item.getKey());
-		onStateChanged();
 	}
 
 	/**
@@ -108,7 +102,6 @@ public class ReportModel implements ModelListener {
 	 */
 	public void removeItem(String itemAlias) {
 		reportItems.remove(itemAlias);
-		onStateChanged();
 	}
 	
 	/**
@@ -133,7 +126,6 @@ public class ReportModel implements ModelListener {
 	 */
 	public void removeGroup(ReportGroup group) {
 		reportGroups.remove(group);
-		onStateChanged();
 	}
 
 	/**
@@ -156,7 +148,15 @@ public class ReportModel implements ModelListener {
 	 * @return a {@link List} of {@link ReportItem} objects in this {@link ReportModel}.
 	 */
 	public List<ReportItem> getReportItems() {
-		return Collections.unmodifiableList(Lists.newArrayList(reportItems.values()));
+		List<ReportItem> items = Lists.newArrayList(reportItems.values());
+		Collections.sort(items, new Comparator<ReportItem>() {
+			@Override
+			public int compare(ReportItem arg0, ReportItem arg1) {
+				return arg0.getUnit().ordinal() - arg1.getUnit().ordinal();
+			}
+		});
+		
+		return Collections.unmodifiableList(items);
 	}
 
 	/**
@@ -183,6 +183,19 @@ public class ReportModel implements ModelListener {
 	 */
 	public boolean hasItem(String itemAlias) {
 		return reportItems.containsKey(itemAlias);
+	}
+
+	/**
+	 * This method returns the ReportItem with the specified itemAlias.
+	 * 
+	 * @param itemAlias
+	 * 		The alias of the {@link ReportItem}.
+	 * 
+	 * @return
+	 * 		The {@link ReportItem} with the itemAlias, or NULL if none was found.
+	 */
+	public ReportItem getReportItem(String itemAlias) {
+		return reportItems.get(itemAlias);
 	}
 
 	/**
@@ -246,68 +259,6 @@ public class ReportModel implements ModelListener {
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		calendar.add(Calendar.MILLISECOND, -1);
 		return calendar.getTime();
-	}
-	
-	/**
-	 * Adds a {@link ModelListener} to notify when changes occur to any {@link Model} in the {@link ReportModel}.
-	 * 
-	 * @param listener
-	 * 		The {@link ModelListener} to add.
-	 */
-	public void addListener(ModelListener listener) {
-		if (listener == this) {
-			throw new IllegalStateException();
-		}
-		
-		synchronized (listeners) {
-			listeners.add(listener);
-		}
-	}
-
-	/**
-	 * Removes the specified {@link ModelListener} from the {@link ReportModel} listeners.
-	 * 
-	 * @param listener
-	 * 		The {@link ModelListener} to remove.
-	 */
-	public void removeListener(ModelListener listener) {
-		synchronized (listeners) {
-			listeners.remove(listener);
-		}
-	}
-
-	@Override
-	public void onValueChanged() {
-		synchronized (listeners) {
-			int index = 0;
-			while (index < listeners.size()) {
-				ModelListener listener = listeners.get(index);
-				if (listener == null) {
-					listeners.remove(index);
-				}
-				else {
-					listener.onValueChanged();
-					index++;
-				}
-			}
-		}
-	}
-
-	@Override
-	public void onStateChanged() {
-		synchronized (listeners) {
-			int index = 0;
-			while (index < listeners.size()) {
-				ModelListener listener = listeners.get(index);
-				if (listener == null) {
-					listeners.remove(index);
-				}
-				else {
-					listener.onStateChanged();
-					index++;
-				}
-			}
-		}
 	}
 	
 }

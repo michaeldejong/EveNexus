@@ -19,12 +19,13 @@ import javax.swing.event.ChangeListener;
 import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
 import nl.minicom.evenexus.core.report.engine.Model;
-import nl.minicom.evenexus.core.report.engine.ModelListener;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportGroupingTitle;
 import nl.minicom.evenexus.i18n.Translator;
+
+import com.google.common.collect.Maps;
 
 /**
  * The {@link ReportGroupingPage} allows the user to define how
@@ -39,6 +40,8 @@ public class ReportGroupingPage extends ReportWizardPage {
 	private final ReportModel model;
 	private final ReportDefinition definition;
 	private final Translator translator;
+	
+	private final Map<JCheckBox, JComboBox> componentMapping;
 
 	/**
 	 * Constructs an ew {@link ReportGroupingPage}.
@@ -54,27 +57,29 @@ public class ReportGroupingPage extends ReportWizardPage {
 	 */
 	@Inject
 	public ReportGroupingPage(ReportModel model, ReportDefinition definition, Translator translator) {
+		super(model);
 		this.model = model;
 		this.definition = definition;
 		this.translator = translator;
+		this.componentMapping = Maps.newHashMap();
 	}
 	
 	/**
 	 * This method builds the gui allowing the user to select groupings.
+	 * 
+	 * @param listener
+	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui() {
+	public void buildGui(ReportPageListener listener) {
 		JLabel group1Label = GuiConstants.createBoldLabel("Grouping 1");
 		JLabel group2Label = GuiConstants.createBoldLabel("Grouping 2");
 		JLabel group3Label = GuiConstants.createBoldLabel("Grouping 3");
 		
-		final ReportGroupPanel group1Panel = new ReportGroupPanel().buildGui(model.getGrouping1());
-		final ReportGroupPanel group2Panel = new ReportGroupPanel().buildGui(model.getGrouping2());
-		final ReportGroupPanel group3Panel = new ReportGroupPanel().buildGui(model.getGrouping3());
+		final ReportGroupPanel group1Panel = new ReportGroupPanel().buildGui(model.getGrouping1(), listener);
+		final ReportGroupPanel group2Panel = new ReportGroupPanel().buildGui(model.getGrouping2(), listener);
+		final ReportGroupPanel group3Panel = new ReportGroupPanel().buildGui(model.getGrouping3(), listener);
 
-		addReportGroupPanelLogic(group1Panel, group2Panel, model.getGrouping1(), model.getGrouping2());
-		addReportGroupPanelLogic(group2Panel, group3Panel, model.getGrouping2(), model.getGrouping3());
-		
 		group1Panel.setEnabled(true);
 		
 		GroupLayout layout = new GroupLayout(this);
@@ -106,31 +111,14 @@ public class ReportGroupingPage extends ReportWizardPage {
     	);
 	}
 	
-	private void addReportGroupPanelLogic(final ReportGroupPanel parent, final ReportGroupPanel child, 
-			final Model<ReportGroup> parentModel, final Model<ReportGroup> childModel) {
-		
-		parentModel.addListener(new ModelListener() {
-			@Override
-			public void onValueChanged() {
-				// Do nothing.
-			}
-
-			@Override
-			public void onStateChanged() {
-				if (parentModel.isEnabled()) {
-					child.setEnabled(true);
-				}
-				else {
-					child.setEnabled(false);
-					childModel.disable();
-				}
-			}
-		});
-	}
-
 	@Override
 	public DialogTitle getTitle() {
 		return new ReportGroupingTitle();
+	}
+
+	@Override
+	public boolean allowPrevious() {
+		return true;
 	}
 	
 	/**
@@ -151,7 +139,7 @@ public class ReportGroupingPage extends ReportWizardPage {
 
 		private static final long serialVersionUID = 4204408757202631909L;
 		
-		private Model<ReportGroup> model;
+		private Model<ReportGroup> groupModel;
 		private Map<String, ReportGroup> groupMapping;
 		private JComboBox comboBox;
 		private JCheckBox checkBox;
@@ -159,21 +147,53 @@ public class ReportGroupingPage extends ReportWizardPage {
 		/**
 		 * This method builds the gui for a specific {@link Model} of a {@link ReportGroup}.
 		 * 
-		 * @param model
+		 * @param groupModel
 		 * 		The {@link Model} to read from, and write changes to.
+		 * 
+		 * @param listener
+		 * 		The {@link ReportPageListener}.
 		 * 
 		 * @return
 		 * 		this.
 		 */
-		public ReportGroupPanel buildGui(Model<ReportGroup> model) {
-			this.model = model;
+		public ReportGroupPanel buildGui(Model<ReportGroup> groupModel, ReportPageListener listener) {
+			this.groupModel = groupModel;
 			this.groupMapping = createGroupMapping();
-			this.comboBox = createGroupingComboBox();
-			this.checkBox = createGroupingCheckBox(comboBox);
+			this.comboBox = createGroupingComboBox(listener);
+			this.checkBox = createGroupingCheckBox(listener, comboBox);
+			
+			componentMapping.put(checkBox, comboBox);
+			checkBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					comboBox.setEnabled(checkBox.isEnabled());
+				}
+			});
+			
+			checkBox.setSelected(groupModel.isEnabled());
+			Integer indexOf = getIndexOf(groupModel.getValue());
+			if (indexOf != null) {
+				comboBox.setSelectedIndex(indexOf);
+			}
+			
+			listener.onModification();
 			doLayouting();
 			return this;
 		}
 		
+		private Integer getIndexOf(ReportGroup value) {
+			int i = 0;
+			if (value != null) {
+				for (ReportGroup group : groupMapping.values()) {
+					if (group != null && group.getKey() != null && group.getKey().equals(value.getKey())) {
+						return i;
+					}
+					i++;
+				}
+			}
+			return null;
+		}
+
 		/**
 		 * This method enables this {@link ReportGroupingPage}.
 		 * 
@@ -182,12 +202,6 @@ public class ReportGroupingPage extends ReportWizardPage {
 		 */
 		public void setEnabled(boolean enabled) {
 			checkBox.setEnabled(enabled);
-			if (enabled) {
-				model.enable();
-			}
-			else {
-				model.disable();
-			}
 		}
 
 		/**
@@ -195,7 +209,7 @@ public class ReportGroupingPage extends ReportWizardPage {
 		 * 		The {@link Model} on which this panel is based.
 		 */
 		public Model<ReportGroup> getModel() {
-			return model;
+			return groupModel;
 		}
 
 		private void doLayouting() {			
@@ -216,36 +230,18 @@ public class ReportGroupingPage extends ReportWizardPage {
 	    	);
 		}
 
-		private JCheckBox createGroupingCheckBox(final JComboBox child) {
-			model.addListener(new ModelListener() {
-				@Override
-				public void onValueChanged() {
-					// Do nothing.
-				}
-
-				@Override
-				public void onStateChanged() {
-					if (model.isEnabled()) {
-						String selectedName = child.getSelectedItem().toString();
-						ReportGroup selectedGroup = groupMapping.get(selectedName);
-						model.setValue(selectedGroup);
-					}
-					else {
-						model.setValue(null);
-					}
-				}
-			});
-			
+		private JCheckBox createGroupingCheckBox(final ReportPageListener listener, final JComboBox child) {
 			final JCheckBox checkBox = new JCheckBox();
 			checkBox.addChangeListener(new ChangeListener() {
 				@Override
 				public void stateChanged(ChangeEvent arg0) {
-					if (checkBox.isEnabled() && checkBox.isSelected()) {
-						model.enable();
+					if (checkBox.isEnabled() && checkBox.isSelected() && !groupModel.isEnabled()) {
+						groupModel.enable();
 					}
-					else {
-						model.disable();
+					else if (groupModel.isEnabled()) {
+						groupModel.disable();
 					}
+					listener.onModification();
 				}
 			});
 			
@@ -261,7 +257,7 @@ public class ReportGroupingPage extends ReportWizardPage {
 			return choices;
 		}
 		
-		private JComboBox createGroupingComboBox() {
+		private JComboBox createGroupingComboBox(final ReportPageListener listener) {
 			DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
 			for (String name : groupMapping.keySet()) {
 				comboBoxModel.addElement(name);
@@ -277,7 +273,8 @@ public class ReportGroupingPage extends ReportWizardPage {
 				public void actionPerformed(ActionEvent arg0) {
 					String name = comboBox.getSelectedItem().toString();
 					ReportGroup reportGroup = groupMapping.get(name);
-					model.setValue(reportGroup);
+					groupModel.setValue(reportGroup);
+					listener.onModification();
 				}
 			});
 			

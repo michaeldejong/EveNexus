@@ -31,10 +31,11 @@ public enum Icon {
 	SEARCH_32				("/img/32/search.png"),
 	
 	ADD_USER_48 			("/img/48/user_add.png"),
+	BAR_CHART_48			("/img/48/chart.png"),
 	BUG_REPORT_48			("/img/48/bug_report.png"),
 	DATABASE_ERROR_48		("/img/48/database_error.png"),
 	EXPORT_DATABASE_48		("/img/48/database_next.png"),
-	GRAPH_48				("/img/48/chart.png"),
+	GRAPH_48				("/img/48/graph.png"),
 	LOGO_48					("/img/48/logo.png"),
 	PIE_CHART_48			("/img/48/pie_chart.png"),
 	SETTINGS_48				("/img/48/process.png"),

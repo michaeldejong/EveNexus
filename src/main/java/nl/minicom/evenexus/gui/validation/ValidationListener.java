@@ -11,8 +11,6 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import nl.minicom.evenexus.core.report.engine.ModelListener;
-
 /**
  * The {@link ValidationListener} class implements several Listeners found in Swing and AWT components.
  * The idea is that you can simply attach a {@link ValidationListener} to a component which in turn triggers 
@@ -66,11 +64,6 @@ public class ValidationListener implements KeyListener, ActionListener, ChangeLi
 		trigger();
 	}
 
-	@Override
-	public void onStateChanged() {
-		trigger();
-	}
-	
 	/**
 	 * This method triggers all {@link ValidationRule}s and tells them to validate themselves.
 	 */
