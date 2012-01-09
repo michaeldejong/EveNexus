@@ -25,8 +25,9 @@ import com.google.gson.JsonIOException;
  */
 public final class ContentCreator {
 
+	private static final Integer VERSION = 3;
 	private static final String DRIVER = "org.sqlite.JDBC";
-	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/cruc10-sqlite3-v.1.db";
+	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/cruc101-sqlite3-v1.db";
 	
 	/**
 	 * This creates a new serialized text file using data from the specified SQLite database.
@@ -57,7 +58,7 @@ public final class ContentCreator {
 		connect();
 		
 		Container c = new Container();
-		c.setVersion(2);
+		c.setVersion(VERSION);
 		addStations(c);
 		addItems(c);
 		
