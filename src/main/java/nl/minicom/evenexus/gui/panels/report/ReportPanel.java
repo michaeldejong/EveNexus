@@ -17,7 +17,8 @@ import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.ReportWizardDialog;
-import nl.minicom.evenexus.gui.panels.report.renderers.LineGraphChart;
+import nl.minicom.evenexus.gui.panels.report.renderers.BarChart;
+import nl.minicom.evenexus.gui.panels.report.renderers.LineChart;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -136,7 +137,10 @@ public class ReportPanel extends TabPanel {
 		
 		switch (reportModel.getDisplayType().getValue()) {
 			case BAR_CHART:
-				chartPanel.setChart(LineGraphChart.render(reportModel, dataset));
+				chartPanel.setChart(BarChart.render(reportModel, dataset));
+				break;
+			case LINE_GRAPH:
+				chartPanel.setChart(LineChart.render(reportModel, dataset));
 				break;
 			default:
 				break;
@@ -153,7 +157,7 @@ public class ReportPanel extends TabPanel {
 		dataset = executor.createDataSet(groupExpressions);
 //		switch (reportModel.getDisplayType().getValue()) {
 //			case GRAPH:
-				chartPanel.setChart(LineGraphChart.render(reportModel, dataset, groupExpressions));
+				chartPanel.setChart(LineChart.render(reportModel, dataset, groupExpressions));
 //				break;
 //			default:
 //				break;

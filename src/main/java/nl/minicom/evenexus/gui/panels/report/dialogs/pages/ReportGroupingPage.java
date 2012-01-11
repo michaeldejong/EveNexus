@@ -66,19 +66,16 @@ public class ReportGroupingPage extends ReportWizardPage {
 	
 	/**
 	 * This method builds the gui allowing the user to select groupings.
-	 * 
-	 * @param listener
-	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui(ReportPageListener listener) {
+	public void buildGui() {
 		JLabel group1Label = GuiConstants.createBoldLabel("Grouping 1");
 		JLabel group2Label = GuiConstants.createBoldLabel("Grouping 2");
 		JLabel group3Label = GuiConstants.createBoldLabel("Grouping 3");
 		
-		final ReportGroupPanel group1Panel = new ReportGroupPanel().buildGui(model.getGrouping1(), listener);
-		final ReportGroupPanel group2Panel = new ReportGroupPanel().buildGui(model.getGrouping2(), listener);
-		final ReportGroupPanel group3Panel = new ReportGroupPanel().buildGui(model.getGrouping3(), listener);
+		final ReportGroupPanel group1Panel = new ReportGroupPanel().buildGui(model.getGrouping1());
+		final ReportGroupPanel group2Panel = new ReportGroupPanel().buildGui(model.getGrouping2());
+		final ReportGroupPanel group3Panel = new ReportGroupPanel().buildGui(model.getGrouping3());
 
 		group1Panel.setEnabled(true);
 		
@@ -150,33 +147,15 @@ public class ReportGroupingPage extends ReportWizardPage {
 		 * @param groupModel
 		 * 		The {@link Model} to read from, and write changes to.
 		 * 
-		 * @param listener
-		 * 		The {@link ReportPageListener}.
-		 * 
 		 * @return
 		 * 		this.
 		 */
-		public ReportGroupPanel buildGui(Model<ReportGroup> groupModel, ReportPageListener listener) {
+		public ReportGroupPanel buildGui(final Model<ReportGroup> groupModel) {
 			this.groupModel = groupModel;
 			this.groupMapping = createGroupMapping();
-			this.comboBox = createGroupingComboBox(listener);
-			this.checkBox = createGroupingCheckBox(listener, comboBox);
+			this.comboBox = createGroupingComboBox();
+			this.checkBox = createGroupingCheckBox();
 			
-			componentMapping.put(checkBox, comboBox);
-			checkBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					comboBox.setEnabled(checkBox.isEnabled());
-				}
-			});
-			
-			checkBox.setSelected(groupModel.isEnabled());
-			Integer indexOf = getIndexOf(groupModel.getValue());
-			if (indexOf != null) {
-				comboBox.setSelectedIndex(indexOf);
-			}
-			
-			listener.onModification();
 			doLayouting();
 			return this;
 		}
@@ -230,20 +209,37 @@ public class ReportGroupingPage extends ReportWizardPage {
 	    	);
 		}
 
-		private JCheckBox createGroupingCheckBox(final ReportPageListener listener, final JComboBox child) {
+		private JCheckBox createGroupingCheckBox() {
 			final JCheckBox checkBox = new JCheckBox();
+			componentMapping.put(checkBox, comboBox);
+			
 			checkBox.addChangeListener(new ChangeListener() {
 				@Override
 				public void stateChanged(ChangeEvent arg0) {
-					if (checkBox.isEnabled() && checkBox.isSelected() && !groupModel.isEnabled()) {
-						groupModel.enable();
-					}
-					else if (groupModel.isEnabled()) {
-						groupModel.disable();
-					}
-					listener.onModification();
+					groupModel.setEnabled(checkBox.isEnabled() && checkBox.isSelected());
 				}
 			});
+			
+			checkBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					comboBox.setEnabled(checkBox.isSelected());
+					Integer indexOf = getIndexOf(groupModel.getValue());
+					if (indexOf != null) {
+						comboBox.setSelectedIndex(indexOf);
+					}
+					else {
+						comboBox.setSelectedIndex(0);
+					}
+				}
+			});
+			
+			checkBox.setSelected(groupModel.isEnabled());
+			comboBox.setEnabled(checkBox.isSelected());
+			Integer indexOf = getIndexOf(groupModel.getValue());
+			if (indexOf != null) {
+				comboBox.setSelectedIndex(indexOf);
+			}
 			
 			return checkBox;
 		}
@@ -257,7 +253,7 @@ public class ReportGroupingPage extends ReportWizardPage {
 			return choices;
 		}
 		
-		private JComboBox createGroupingComboBox(final ReportPageListener listener) {
+		private JComboBox createGroupingComboBox() {
 			DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
 			for (String name : groupMapping.keySet()) {
 				comboBoxModel.addElement(name);
@@ -274,11 +270,16 @@ public class ReportGroupingPage extends ReportWizardPage {
 					String name = comboBox.getSelectedItem().toString();
 					ReportGroup reportGroup = groupMapping.get(name);
 					groupModel.setValue(reportGroup);
-					listener.onModification();
 				}
 			});
 			
 			return comboBox;
 		}
+	}
+
+	@Override
+	public void removeListeners() {
+		// TODO Auto-generated method stub
+		
 	}
 }

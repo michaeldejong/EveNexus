@@ -3,6 +3,7 @@ package nl.minicom.evenexus.core.report.engine;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,7 +39,7 @@ public class Dataset {
 	 * 		The {@link Set} of predefined group entries. 
 	 */
 	public Dataset(Set<String> groupKeys, boolean orderBySize) {
-		this.values = new TreeMap<String, GroupEntry>();
+		this.values = new LinkedHashMap<String, GroupEntry>();
 		this.orderBySize = orderBySize;
 		
 		for (String group : groupKeys) {

@@ -1,10 +1,16 @@
 package nl.minicom.evenexus.core.report.engine;
 
+import java.util.Set;
+
+import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ModificationListener;
+
+import com.google.common.collect.Sets;
+
 
 /**
  * <p>This class is a data container which can hold one parameterized value.
  * Other classes are free to register with this class as a listener as long
- * as they implement the {@link ModelListener} interface.</p>
+ * as they implement the {@link ModificationListener} interface.</p>
  * 
  * <p>When ever the method setValue() of the {@link Model} is called (irrelevant)
  * of the supplied value, this class will trigger all listeners.</p>
@@ -17,7 +23,8 @@ package nl.minicom.evenexus.core.report.engine;
 public class Model<T> {
 	
 	private T value;
-	private boolean enabled = false;
+	private boolean enabled;
+	private final Set<ModificationListener> modificationListeners;
 	
 	/**
 	 * This will construct a {@link Model} object with NULL as an initial value.
@@ -34,21 +41,36 @@ public class Model<T> {
 	 * 		The initial value of this {@link Model}.
 	 */
 	public Model(T value) {
+		this(value, true);
+	}
+	
+	/**
+	 * This will construct a {@link Model} obejct with the supplied value as
+	 * the initial value of the {@link Model}.
+	 * 
+	 * @param value		
+	 * 		The initial value of this {@link Model}.
+	 * 
+	 * @param enabled
+	 * 		If this {@link Model} should be enabled.
+	 */
+	public Model(T value, boolean enabled) {
 		this.value = value;
+		this.enabled = enabled;
+		this.modificationListeners = Sets.newHashSet();
 	}
 	
 	/**
-	 * This enables the {@link Model}.
+	 * This method sets the enabled flag of the {@link Model}.
+	 * 
+	 * @param enabled
+	 * 		True if the model is enabled.
 	 */
-	public final void enable() {
-		this.enabled = true;
-	}
-	
-	/**
-	 * This disables the {@link Model}.
-	 */
-	public final void disable() {
-		this.enabled = false;
+	public final void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		for (ModificationListener listener : modificationListeners) {
+			listener.onModification();
+		}
 	}
 	
 	/**
@@ -67,6 +89,9 @@ public class Model<T> {
 	 */
 	public final void setValue(T value) {
 		this.value = value;
+		for (ModificationListener listener : modificationListeners) {
+			listener.onModification();
+		}
 	}
 	
 	/**
@@ -81,6 +106,26 @@ public class Model<T> {
 	 */
 	public final boolean isSet() {
 		return value != null;
+	}
+	
+	/**
+	 * This method adds a new {@link ModificationListener} to this {@link Model}.
+	 * 
+	 * @param listener
+	 * 		The {@link ModificationListener} to add.
+	 */
+	public void addListener(ModificationListener listener) {
+		modificationListeners.add(listener);
+	}
+	
+	/**
+	 * This method removes a {@link ModificationListener} to this {@link Model}.
+	 * 
+	 * @param listener
+	 * 		The {@link ModificationListener} to remove.
+	 */
+	public void removeListener(ModificationListener listener) {
+		modificationListeners.remove(listener);
 	}
 
 }

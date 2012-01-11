@@ -46,7 +46,6 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 	private final List<ReportDisplayEntry> entries;
 	
 	private ReportModel model;
-	private ReportPageListener listener = null;
 	
 	/**
 	 * This constructs a new {@link ReportDisplayPage}.
@@ -63,12 +62,9 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 
 	/**
 	 * This method builds the gui, allowing the user to select a display type.
-	 * 
-	 * @param listener
-	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui(ReportPageListener listener) {
+	public void buildGui() {
 		GroupLayout layout = new GroupLayout(this);
 		Group horizontalGroup = layout.createParallelGroup();
 		Group verticalGroup = layout.createSequentialGroup();
@@ -103,8 +99,6 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 		private final JPanel iconPanel;
 		private final ReportModel model;
 		private final DisplayType type;
-		
-		private State state = State.DEFAULT;
 		
 		/**
 		 * This constructs a new {@link ReportDisplayEntry}.
@@ -188,7 +182,10 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 			
 			Model<DisplayType> displayType = model.getDisplayType();
 			if (displayType.isSet() && displayType.getValue().equals(type)) {
-				onStateChange(this);
+				setState(State.SELECTED);
+			}
+			else {
+				setState(State.DEFAULT);
 			}
 		}
 		
@@ -220,7 +217,6 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 		}
 		
 		private void setState(State newState) {
-			this.state = newState;
 			switch (newState) {
 				case SELECTED:
 					model.getDisplayType().setValue(getType());
@@ -234,10 +230,6 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 			}
 		}
 
-		private State getState() {
-			return state;
-		}
-		
 		private void setColors(Color background, Color border) {
 			setBackground(background);
 			iconPanel.setBorder(new CompoundBorder(
@@ -278,19 +270,19 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 				entry.setState(State.DEFAULT);
 			}
 		}
-		
-		if (listener != null) {
-			listener.onModification();
-		}
 	}
 
 	@Override
 	public void onSelectionMove(ReportDisplayEntry selected) {
 		for (ReportDisplayEntry entry : entries) {
-			if (entry.equals(selected)) {
+			DisplayType type = model.getDisplayType().getValue();
+			if (type != null && type.equals(entry.getType())) {
+				entry.setState(State.SELECTED);
+			}
+			else if (entry.equals(selected)) {
 				entry.setState(State.HOVER);
 			}
-			else if (entry.getState() == State.HOVER){
+			else {
 				entry.setState(State.DEFAULT);
 			}
 		}
@@ -299,10 +291,20 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 	@Override
 	public void onDeselectionMove(ReportDisplayEntry deselected) {
 		for (ReportDisplayEntry entry : entries) {
-			if (entry.equals(deselected)) {
+			DisplayType type = model.getDisplayType().getValue();
+			if (type != null && type.equals(entry.getType())) {
+				entry.setState(State.SELECTED);
+			}
+			else {
 				entry.setState(State.DEFAULT);
 			}
 		}
+	}
+
+	@Override
+	public void removeListeners() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

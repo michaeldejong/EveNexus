@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.swing.GroupLayout;
@@ -14,19 +15,23 @@ import javax.swing.JScrollPane;
 import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
+import nl.minicom.evenexus.core.report.engine.ReportModel.ItemListener;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
 import nl.minicom.evenexus.i18n.Translator;
+
+import com.google.common.collect.Maps;
 
 /**
  * This page allows the user to define on what report items he or she wishes to report.
  *
  * @author michael
  */
-public class ReportItemsPage extends ReportWizardPage {
+public class ReportItemsPage extends ReportWizardPage implements ItemListener {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
+	private final Map<ReportItem, JCheckBox> mapping;
 	private final ReportDefinition definition;
 	private final Translator translator;
 	private final ReportModel model;
@@ -46,19 +51,19 @@ public class ReportItemsPage extends ReportWizardPage {
 	@Inject
 	public ReportItemsPage(ReportDefinition definition, ReportModel model, Translator translator) {
 		super(model);
+		this.mapping = Maps.newHashMap();
 		this.definition = definition;
 		this.translator = translator;
 		this.model = model;
+		
+		model.addListener(this);
 	}
 
 	/**
 	 * This method builds the items panel.
-	 * 
-	 * @param listener
-	 * 		The {@link ReportPageListener}.
 	 */
 	@Override
-	public void buildGui(final ReportPageListener listener) {
+	public void buildGui() {
 		JPanel itemPanel = new JPanel();
 		itemPanel.setLayout(null);
 		itemPanel.setBackground(Color.WHITE);
@@ -77,7 +82,8 @@ public class ReportItemsPage extends ReportWizardPage {
 			String keyTranslation = translator.translate(item.getKey());
 			
 			final JCheckBox checkBox = new JCheckBox();
-			checkBox.setSelected(model.hasItem(item.getKey()));
+			boolean selected = model.hasItem(item.getKey());
+			checkBox.setSelected(selected);
 			checkBox.setText(" " + keyTranslation + " ");
 			checkBox.addActionListener(new ActionListener() {
 				@Override
@@ -85,18 +91,17 @@ public class ReportItemsPage extends ReportWizardPage {
 					String itemAlias = item.getKey();
 					if (model.hasItem(itemAlias)) {
 						model.removeItem(itemAlias);
-						checkBox.setSelected(false);
 					}
 					else {
 						model.addItem(item);
-						checkBox.setSelected(true);
 					}
-					listener.onModification();
 				}
 			});
 			
 			checkBox.setBounds(6, y, 340, 18);
 			checkBox.setBackground(Color.WHITE);
+			mapping.put(item, checkBox);
+			
 			itemPanel.add(checkBox);
 			y += 21;
 		}
@@ -113,11 +118,29 @@ public class ReportItemsPage extends ReportWizardPage {
 	}
 	
 	/**
+	 * This method removes all listeners from the {@link ReportModel}.
+	 */
+	public void removeListeners() {
+		model.removeListener(this);
+	}
+	
+	/**
 	 * @return
 	 *		This method returns true if the user is allowed to go to the next page.
 	 */
 	public boolean allowNext() {
 		return !model.getReportItems().isEmpty();
+	}
+
+	@Override
+	public void onReportItemAdded(ReportItem item) {
+		mapping.get(item).setSelected(true);
+		
+	}
+
+	@Override
+	public void onReportItemRemoved(ReportItem item) {
+		mapping.get(item).setSelected(false);
 	}
 	
 }

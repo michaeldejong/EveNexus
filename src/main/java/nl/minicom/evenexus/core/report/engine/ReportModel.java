@@ -9,14 +9,17 @@ import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
+import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ModificationListener;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * The {@link ReportModel} object is responsible for describing a certain
@@ -25,19 +28,17 @@ import com.google.common.collect.Lists;
  * @author Michael
  */
 @Singleton
-public class ReportModel {
+public class ReportModel implements ModificationListener { 
 	
-	// Report items
+	private final Set<ItemListener> itemListeners;
+	private final Set<ModificationListener> modificationListeners;
+	
 	private final Map<String, ReportItem> reportItems;
-	
-	// Report groupings
 	private final List<Model<ReportGroup>> reportGroups;
-	
-	// Report filters
+
 	private final Model<Date> startDate;
 	private final Model<Date> endDate;
-	
-	// Display type
+
 	private final Model<DisplayType> displayType;
 	
 	/**
@@ -45,27 +46,26 @@ public class ReportModel {
 	 */
 	@Inject
 	public ReportModel() {
-		// Display type
+		this.itemListeners = Sets.newHashSet();
+		this.modificationListeners = Sets.newHashSet();
 		this.displayType = createModel(DisplayType.TABLE);
-		
-		// Report items
 		this.reportItems = new LinkedHashMap<String, ReportItem>();
-		
-		// Report groupings
 		this.reportGroups = new ArrayList<Model<ReportGroup>>();
-		for (int i = 0; i < 3; i++) {
-			Model<ReportGroup> groupModel = createModel(null);
-			groupModel.disable();
-			this.reportGroups.add(groupModel);
-		}
-		
-		// Report filters
+
 		this.endDate = createModel(endOfToday());
 		this.startDate = createModel(oneMonthAgo());
+
+		for (int i = 0; i < 3; i++) {
+			Model<ReportGroup> groupModel = createModel(null);
+			groupModel.setEnabled(false);
+			reportGroups.add(groupModel);
+		}
 	}
 	
 	private <T> Model<T> createModel(T value) {
-		return new Model<T>(value);
+		Model<T> model = new Model<T>(value);
+		model.addListener(this);
+		return model;
 	}
 	
 	/**
@@ -83,6 +83,11 @@ public class ReportModel {
 	 */
 	public void addItem(ReportItem item) {
 		reportItems.put(item.getKey(), item);
+		
+		for (ItemListener listener : itemListeners) {
+			listener.onReportItemAdded(item);
+		}
+		onModification();
 	}
 	
 	/**
@@ -91,7 +96,7 @@ public class ReportModel {
 	 * @param item		The {@link ReportItem} to remove.
 	 */
 	public void removeItem(ReportItem item) {
-		reportItems.remove(item.getKey());
+		removeItem(item.getKey());
 	}
 
 	/**
@@ -101,7 +106,12 @@ public class ReportModel {
 	 * 		The alias of the {@link ReportItem} to remove.
 	 */
 	public void removeItem(String itemAlias) {
-		reportItems.remove(itemAlias);
+		ReportItem item = reportItems.remove(itemAlias);
+		
+		for (ItemListener listener : itemListeners) {
+			listener.onReportItemRemoved(item);
+		}
+		onModification();
 	}
 	
 	/**
@@ -165,7 +175,7 @@ public class ReportModel {
 	public List<ReportGroup> getReportGroups() {
 		List<ReportGroup> groups = new ArrayList<ReportGroup>();
 		for (Model<ReportGroup> model : reportGroups) {
-			if (model.isSet()) {
+			if (model.isSet() && model.isEnabled()) {
 				groups.add(model.getValue());
 			}
 		}
@@ -259,6 +269,34 @@ public class ReportModel {
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		calendar.add(Calendar.MILLISECOND, -1);
 		return calendar.getTime();
+	}
+
+	public interface ItemListener {
+		void onReportItemAdded(ReportItem item);
+		void onReportItemRemoved(ReportItem item);
+	}
+
+	public void addListener(ItemListener listener) {
+		itemListeners.add(listener);
+	}
+
+	public void addListener(ModificationListener listener) {
+		modificationListeners.add(listener);
+	}
+
+	public void removeListener(ItemListener listener) {
+		itemListeners.remove(listener);
+	}
+
+	public void removeListener(ModificationListener listener) {
+		modificationListeners.remove(listener);
+	}
+
+	@Override
+	public void onModification() {
+		for (ModificationListener listener : modificationListeners) {
+			listener.onModification();
+		}
 	}
 	
 }

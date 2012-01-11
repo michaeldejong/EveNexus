@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * This class is responsible for executing the report and drawing it. 
@@ -153,7 +153,7 @@ public class ReportExecutor {
 			Calendar c = Calendar.getInstance();
 			c.setTime(start);
 			
-			Set<String> groupKeys = Sets.newHashSet();
+			Set<String> groupKeys = new LinkedHashSet<String>();
 			groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR));
 			while (c.getTime().before(end)) {
 				groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR));

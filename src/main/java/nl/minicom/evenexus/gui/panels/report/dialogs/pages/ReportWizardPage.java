@@ -45,11 +45,13 @@ public abstract class ReportWizardPage extends JPanel {
 	
 	/**
 	 * This method builds the gui.
-	 * 
-	 * @param listener 
-	 * 		The parent {@link ReportPageListener}.
 	 */
-	public abstract void buildGui(ReportPageListener listener);
+	public abstract void buildGui();
+	
+	/**
+	 * This method removes all listeners from the {@link ReportModel}.
+	 */
+	public abstract void removeListeners();
 	
 	/**
 	 * @return
@@ -67,7 +69,7 @@ public abstract class ReportWizardPage extends JPanel {
 	 * @return
 	 * 		True if the user is allowed to execute the report.
 	 */
-	public boolean allowExecute() {
+	public final boolean allowExecute() {
 		if (reportModel.getReportItems().isEmpty()) {
 			return false;
 		}

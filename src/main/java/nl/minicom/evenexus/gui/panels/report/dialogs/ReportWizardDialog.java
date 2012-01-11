@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -13,11 +12,11 @@ import javax.swing.JPanel;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.panels.report.ReportPanel;
+import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ModificationListener;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportDisplayPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportFiltersPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportGroupingPage;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportItemsPage;
-import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportPageListener;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ReportWizardPage;
 import nl.minicom.evenexus.gui.utils.dialogs.CustomDialog;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
@@ -28,8 +27,7 @@ import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportItemTitle;
  * 
  * @author michael
  */
-@Singleton
-public class ReportWizardDialog extends CustomDialog implements ReportPageListener {
+public class ReportWizardDialog extends CustomDialog implements ModificationListener {
 
 	private static final long serialVersionUID = 5707542816331260941L;
 	
@@ -37,7 +35,6 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 	private final ReportWizardPage[] pages;
 	private final ReportModel reportModel;
 	private final ReportPanel reportPanel;
-	
 	private final JButton prev;
 	private final JButton next;
 	private final JButton execute;
@@ -66,9 +63,8 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 	 * 		The {@link ReportPanel}.
 	 */
 	@Inject
-	public ReportWizardDialog(ReportItemsPage items, ReportGroupingPage groups,
-			ReportFiltersPage filters, ReportDisplayPage displays, ReportModel reportModel,
-			ReportPanel reportPanel) {
+	public ReportWizardDialog(ReportPanel reportPanel, ReportItemsPage items, ReportGroupingPage groups,
+			ReportFiltersPage filters, ReportDisplayPage displays, ReportModel reportModel) {
 		
 		super(new ReportItemTitle(), 360, 520);
 		this.contentPanel = new JPanel();
@@ -79,15 +75,17 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 		this.prev = createButton("< Previous");
 		this.next = createButton("Next >");
 		this.execute = createButton("Execute");
+		
+		reportModel.addListener(this);
 	}
-	
+
 	/**
 	 * This method initializes the {@link ReportWizardDialog}.
 	 */
 	public void initialize() {
 		index = 0;
 		for (ReportWizardPage page : pages) {
-			page.buildGui(this);
+			page.buildGui();
 		}
 		
 		setTitle("Report creation wizard");
@@ -115,10 +113,10 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 	}
 
 	private JPanel createButtonBar() {
-		
 		prev.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				getCurrentPage().removeListeners();
 				index--;
 				displayPage();
 			}
@@ -127,6 +125,7 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 		next.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				getCurrentPage().removeListeners();
 				index++;
 				displayPage();
 			}
@@ -135,6 +134,7 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 		execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				getCurrentPage().removeListeners();
 				reportPanel.displayReport(reportModel);
 				dispose();
 			}
@@ -174,15 +174,6 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 		return button;
 	}
 	
-	/**
-	 * This method updates the states of the buttons.
-	 */
-	protected void updateButtonStates() {
-		prev.setEnabled(index > 0);
-		next.setEnabled(getCurrentPage().allowNext() && index < pages.length - 1);
-		execute.setEnabled(reportModel.isValid());
-	}
-
 	private void displayPage() {
 		contentPanel.removeAll();
 		
@@ -196,17 +187,24 @@ public class ReportWizardDialog extends CustomDialog implements ReportPageListen
 				layout.createSequentialGroup()
 				.addComponent(getCurrentPage())
 		);
-
-		updateButtonStates();
+		
+		onModification();
 	}
 	
 	private ReportWizardPage getCurrentPage() {
 		return pages[index];
 	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		reportModel.removeListener(this);
+	}
 
 	@Override
 	public void onModification() {
 		ReportWizardPage currentPage = getCurrentPage();
+		prev.setEnabled(currentPage.allowPrevious());
 		next.setEnabled(currentPage.allowNext());
 		execute.setEnabled(currentPage.allowExecute());
 	}
