@@ -116,7 +116,6 @@ public class ReportWizardDialog extends CustomDialog implements ModificationList
 		prev.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				getCurrentPage().removeListeners();
 				index--;
 				displayPage();
 			}
@@ -125,7 +124,6 @@ public class ReportWizardDialog extends CustomDialog implements ModificationList
 		next.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				getCurrentPage().removeListeners();
 				index++;
 				displayPage();
 			}
@@ -134,7 +132,6 @@ public class ReportWizardDialog extends CustomDialog implements ModificationList
 		execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				getCurrentPage().removeListeners();
 				reportPanel.displayReport(reportModel);
 				dispose();
 			}
@@ -199,6 +196,9 @@ public class ReportWizardDialog extends CustomDialog implements ModificationList
 	public void dispose() {
 		super.dispose();
 		reportModel.removeListener(this);
+		for (ReportWizardPage page : pages) {
+			page.removeListeners();
+		}
 	}
 
 	@Override

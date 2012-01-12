@@ -1,6 +1,7 @@
 package nl.minicom.evenexus.core.report.definition;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +35,9 @@ import nl.minicom.evenexus.core.report.persistence.expressions.Year;
 import nl.minicom.evenexus.persistence.dao.Profit;
 import nl.minicom.evenexus.persistence.dao.WalletJournal;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * This class contains the following definitions.
@@ -349,6 +353,40 @@ public class ReportDefinition {
 	 */
 	public Collection<ReportGroup> getGroups() {
 		return Collections.unmodifiableCollection(reportGroups.values());
+	}
+	
+	/**
+	 * This method lists all {@link Table}s which are used by the selected {@link ReportItem}s.
+	 * @param items
+	 * @return
+	 */
+	public Collection<Table> getTables(Collection<ReportItem> items) {
+		Collection<Table> tables = Sets.newHashSet();
+		for (ReportItem item : items) {
+			tables.add(item.getRequiredTable());
+		}
+		return tables;
+	}
+	
+	/**
+	 * This method lists all {@link ReportGroup}s supported by the specified {@link Collection} of {@link Table}s.
+	 * 
+	 * @param tables
+	 * 		A {@link Collection} of {@link Table}s.
+	 * 
+	 * @return
+	 * 		A {@link Collection} of supported {@link ReportGroup}s.
+	 */
+	public Collection<ReportGroup> getGroups(Collection<Table> tables) {
+		Collection<ReportGroup> groups = Lists.newArrayList();
+		for (ReportGroup group : reportGroups.values()) {
+			Collection<Table> copyOfTables = new ArrayList<Table>(tables);
+			copyOfTables.removeAll(group.getSupportedTables());
+			if (copyOfTables.isEmpty()) {
+				groups.add(group);
+			}
+		}
+		return groups;
 	}
 
 	/**

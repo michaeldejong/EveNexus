@@ -300,7 +300,7 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 			}
 		}
 	}
-
+	
 	@Override
 	public void removeListeners() {
 		// TODO Auto-generated method stub

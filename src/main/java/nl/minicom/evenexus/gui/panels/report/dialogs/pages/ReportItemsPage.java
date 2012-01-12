@@ -116,10 +116,11 @@ public class ReportItemsPage extends ReportWizardPage implements ItemListener {
 	public boolean allowPrevious() {
 		return false;
 	}
-	
+
 	/**
 	 * This method removes all listeners from the {@link ReportModel}.
 	 */
+	@Override
 	public void removeListeners() {
 		model.removeListener(this);
 	}
@@ -128,6 +129,7 @@ public class ReportItemsPage extends ReportWizardPage implements ItemListener {
 	 * @return
 	 *		This method returns true if the user is allowed to go to the next page.
 	 */
+	@Override
 	public boolean allowNext() {
 		return !model.getReportItems().isEmpty();
 	}

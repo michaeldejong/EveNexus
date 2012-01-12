@@ -3,6 +3,7 @@ package nl.minicom.evenexus.gui.panels.report.dialogs.pages;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,8 +19,10 @@ import javax.swing.event.ChangeListener;
 
 import nl.minicom.evenexus.core.report.definition.ReportDefinition;
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
+import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.engine.Model;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
+import nl.minicom.evenexus.core.report.engine.ReportModel.ItemListener;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.ReportGroupingTitle;
@@ -33,7 +36,7 @@ import com.google.common.collect.Maps;
  *
  * @author michael
  */
-public class ReportGroupingPage extends ReportWizardPage {
+public class ReportGroupingPage extends ReportWizardPage implements ItemListener {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
@@ -42,6 +45,10 @@ public class ReportGroupingPage extends ReportWizardPage {
 	private final Translator translator;
 	
 	private final Map<JCheckBox, JComboBox> componentMapping;
+
+	private ReportGroupPanel group1Panel;
+	private ReportGroupPanel group2Panel;
+	private ReportGroupPanel group3Panel;
 
 	/**
 	 * Constructs an ew {@link ReportGroupingPage}.
@@ -62,6 +69,8 @@ public class ReportGroupingPage extends ReportWizardPage {
 		this.definition = definition;
 		this.translator = translator;
 		this.componentMapping = Maps.newHashMap();
+		
+		model.addListener(this);
 	}
 	
 	/**
@@ -73,9 +82,9 @@ public class ReportGroupingPage extends ReportWizardPage {
 		JLabel group2Label = GuiConstants.createBoldLabel("Grouping 2");
 		JLabel group3Label = GuiConstants.createBoldLabel("Grouping 3");
 		
-		final ReportGroupPanel group1Panel = new ReportGroupPanel().buildGui(model.getGrouping1());
-		final ReportGroupPanel group2Panel = new ReportGroupPanel().buildGui(model.getGrouping2());
-		final ReportGroupPanel group3Panel = new ReportGroupPanel().buildGui(model.getGrouping3());
+		group1Panel = new ReportGroupPanel().buildGui(model.getGrouping1());
+		group2Panel = new ReportGroupPanel().buildGui(model.getGrouping2());
+		group3Panel = new ReportGroupPanel().buildGui(model.getGrouping3());
 
 		group1Panel.setEnabled(true);
 		
@@ -106,11 +115,34 @@ public class ReportGroupingPage extends ReportWizardPage {
         				.addGap(4)
         				.addComponent(group3Panel)
     	);
+    	
+    	updateMapping();
 	}
 	
 	@Override
 	public DialogTitle getTitle() {
 		return new ReportGroupingTitle();
+	}
+	
+	@Override
+	public void removeListeners() {
+		model.removeListener(this);
+	}
+
+	@Override
+	public void onReportItemAdded(ReportItem item) {
+		updateMapping();
+	}
+
+	@Override
+	public void onReportItemRemoved(ReportItem item) {
+		updateMapping();
+	}
+
+	private void updateMapping() {
+		group1Panel.updateMapping();
+		group2Panel.updateMapping();
+		group3Panel.updateMapping();
 	}
 
 	@Override
@@ -152,7 +184,6 @@ public class ReportGroupingPage extends ReportWizardPage {
 		 */
 		public ReportGroupPanel buildGui(final Model<ReportGroup> groupModel) {
 			this.groupModel = groupModel;
-			this.groupMapping = createGroupMapping();
 			this.comboBox = createGroupingComboBox();
 			this.checkBox = createGroupingCheckBox();
 			
@@ -160,9 +191,22 @@ public class ReportGroupingPage extends ReportWizardPage {
 			return this;
 		}
 		
+		/**
+		 * This method updates the groupMapping and the comboBox's model.
+		 */
+		public void updateMapping() {
+			groupMapping = createGroupMapping();
+			DefaultComboBoxModel model = new DefaultComboBoxModel();
+			for (ReportGroup group : groupMapping.values()) {
+				model.addElement(translator.translate(group.getKey()));
+			}
+			
+			comboBox.setModel(model);
+		}
+
 		private Integer getIndexOf(ReportGroup value) {
 			int i = 0;
-			if (value != null) {
+			if (value != null && groupMapping != null) {
 				for (ReportGroup group : groupMapping.values()) {
 					if (group != null && group.getKey() != null && group.getKey().equals(value.getKey())) {
 						return i;
@@ -246,7 +290,8 @@ public class ReportGroupingPage extends ReportWizardPage {
 		
 		private Map<String, ReportGroup> createGroupMapping() {
 			final Map<String, ReportGroup> choices = new LinkedHashMap<String, ReportGroup>();
-			for (ReportGroup group : definition.getGroups()) {
+			Collection<ReportGroup> groups = definition.getGroups(definition.getTables(model.getReportItems()));
+			for (ReportGroup group : groups) {
 				String groupingName = translator.translate(group.getKey());
 				choices.put(groupingName, group);
 			}
@@ -255,9 +300,6 @@ public class ReportGroupingPage extends ReportWizardPage {
 		
 		private JComboBox createGroupingComboBox() {
 			DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-			for (String name : groupMapping.keySet()) {
-				comboBoxModel.addElement(name);
-			}
 
 			final JComboBox comboBox = new JComboBox();
 			comboBox.setMinimumSize(new Dimension(0, GuiConstants.COMBO_BOX_HEIGHT));
@@ -276,10 +318,5 @@ public class ReportGroupingPage extends ReportWizardPage {
 			return comboBox;
 		}
 	}
-
-	@Override
-	public void removeListeners() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }
