@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +43,7 @@ public class InventoryManager {
 		
 		this.workerProvider = workerProvider;
 		this.database = database;
-		this.executor = new ThreadPoolExecutor(5, 10, 5, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(256, true));
+		this.executor = new ThreadPoolExecutor(5, 10, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 		this.listeners = new ArrayList<InventoryListener>();
 		
 		executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {

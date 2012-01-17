@@ -39,6 +39,7 @@ Thumbs.db
 .project
 .settings/*
 target/*
+bin/*
 
 # Project specific #
 ####################
