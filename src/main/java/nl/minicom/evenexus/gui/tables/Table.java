@@ -20,7 +20,6 @@ import nl.minicom.evenexus.gui.tables.columns.listeners.TableColumnResizeModelLi
 import nl.minicom.evenexus.gui.tables.datamodel.ITableDataModel;
 import nl.minicom.evenexus.gui.utils.dialogs.BugReportDialog;
 
-import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,6 @@ public class Table extends JTable {
 	private final List<Map<String, Object>> data;
 	private final BugReportDialog dialog;
 	
-	private ScrollableResults result;
 	private ColumnModel columnModel;
 	private ITableDataModel tableDataModel;
 	
@@ -190,20 +188,21 @@ public class Table extends JTable {
 		return -1;
 	}
 	
-	/**
-	 * @return
-	 * 		The {@link ScrollableResults} of this {@link Table}.
-	 */
-	public final ScrollableResults getSelectedResultRow() {
+	public void delete(int selectedIndex) {
 		synchronized (this) {
 			try {
-				result.setRowNumber(getSelectedRow());
+				delete(data.get(selectedIndex));
 			}
 			catch (Exception e) {
 				LOG.error(e.getLocalizedMessage(), e);
 				dialog.setVisible(true);
 			}
-			return result;
+		}
+	}
+	
+	void delete(Map<String, Object> row) {
+		if (row != null && row.size() > 0) {
+			tableDataModel.delete(row);
 		}
 	}
 

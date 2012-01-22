@@ -4,6 +4,7 @@ package nl.minicom.evenexus.gui.tables.datamodel.implementations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -118,6 +119,11 @@ public class SellOrdersTableDataModel implements ITableDataModel, ITypeNameFilte
 			return;
 		}
 		typeName = "%" + name.toLowerCase(Locale.US) + "%";
+	}
+
+	@Override
+	public void delete(Map<String, Object> row) {
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -1,6 +1,7 @@
 package nl.minicom.evenexus.gui.tables.datamodel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface defines the basic data container used in tables.
@@ -22,5 +23,7 @@ public interface ITableDataModel {
 	 * 		An array of column names.
 	 */
 	String[] getFields();
+
+	void delete(Map<String, Object> row);
 
 }

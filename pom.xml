@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.minicom</groupId>
 	<artifactId>evenexus</artifactId>
-	<version>0.1.14</version>
+	<version>0.1.16</version>
 	<name>EveNexus</name>
 	<issueManagement>
 		<system>GitHub</system>
@@ -25,7 +25,7 @@
 	<repositories>
 		<repository>
 			<id>thirdparty</id>
-			<url>http://141.138.193.49:8081/nexus/content/repositories/thirdparty/</url>
+			<url>http://141.138.193.49:8080/nexus/content/repositories/thirdparty/</url>
 		</repository>
 	</repositories>
 

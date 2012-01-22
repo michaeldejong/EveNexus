@@ -19,45 +19,47 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 
 /**
- * This class is responsible for creating a serialized form of the eve source database.
+ * The {@link ContentCreator} class is responsible for building a serialized text file,
+ * which EveNexus can parse on the user's computer, and persist to the database.
  *
  * @author michael
  */
 public final class ContentCreator {
 
+	private static final Integer VERSION = 3;
 	private static final String DRIVER = "org.sqlite.JDBC";
-	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/inca10-sqlite3-v1.db";
+	private static final String URL = "jdbc:sqlite:/Users/michael/Downloads/cruc101-sqlite3-v1.db";
 	
 	/**
-	 * This main() method creates a serialized database dump of the eve source database.
+	 * This creates a new serialized text file using data from the specified SQLite database.
 	 * 
 	 * @param args
-	 * 		Any additional arguments. 
+	 * 		None.
 	 * 
 	 * @throws JsonIOException
-	 * 		If some object could not be serialized.
+	 * 		If the data could not be serialized by GSON.
 	 * 
 	 * @throws SQLException
-	 * 		If we had problems querying the database.
+	 * 		If we had problems contacting the database.
 	 * 
 	 * @throws IOException
-	 * 		If we could not access the file system.
+	 * 		If we had problems writing the serialized file.
 	 */
 	public static void main(String[] args) throws JsonIOException, SQLException, IOException {
 		new ContentCreator().execute();
 	}
 	
+	private Connection conn = null;
+	
 	private ContentCreator() {
 		// Prevent instantiation.
 	}
-	
-	private Connection conn = null;
 	
 	private void execute() throws SQLException, JsonIOException, IOException {
 		connect();
 		
 		Container c = new Container();
-		c.setVersion(1);
+		c.setVersion(VERSION);
 		addStations(c);
 		addItems(c);
 		addRegions(c);
