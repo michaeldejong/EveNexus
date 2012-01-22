@@ -25,7 +25,7 @@
 	<repositories>
 		<repository>
 			<id>thirdparty</id>
-			<url>http://141.138.193.49:8081/nexus/content/repositories/thirdparty/</url>
+			<url>http://141.138.193.49:8080/nexus/content/repositories/thirdparty/</url>
 		</repository>
 	</repositories>
 
