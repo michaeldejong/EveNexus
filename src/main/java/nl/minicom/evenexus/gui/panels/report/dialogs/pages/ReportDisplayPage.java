@@ -18,6 +18,7 @@ import javax.swing.border.LineBorder;
 import nl.minicom.evenexus.core.report.engine.DisplayType;
 import nl.minicom.evenexus.core.report.engine.Model;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
+import nl.minicom.evenexus.core.report.engine.ReportModel.GroupListener;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.utils.dialogs.titles.DialogTitle;
@@ -31,7 +32,7 @@ import com.google.inject.Inject;
  *
  * @author michael
  */
-public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryListener {
+public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryListener, GroupListener {
 
 	private static final long serialVersionUID = 3066113966844699181L;
 
@@ -58,6 +59,8 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 		super(model);
 		this.entries = Lists.newArrayList();
 		this.model = model;
+		
+		model.addListener(this);
 	}
 
 	/**
@@ -96,9 +99,14 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 
 		private static final long serialVersionUID = 1280615798706096140L;
 		
-		private final JPanel iconPanel;
 		private final ReportModel model;
 		private final DisplayType type;
+
+		private final JPanel iconPanel;
+		private final JLabel title;
+		private final JLabel description;
+		
+		private State state;
 		
 		/**
 		 * This constructs a new {@link ReportDisplayEntry}.
@@ -114,11 +122,12 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 		 */
 		public ReportDisplayEntry(final DisplayEntryListener listener, DisplayType type, ReportModel model) {
 			this.model = model;
-			this.iconPanel = createImageButton(type);
 			this.type = type;
+			this.state = State.DEFAULT;
 			
-			JLabel title = GuiConstants.createBoldLabel(type.getTitle());
-			JLabel description = createDescription(type.getDescription());
+			this.iconPanel = createImageButton(type);
+			this.title = GuiConstants.createBoldLabel(type.getTitle());
+			this.description = createDescription(type.getDescription());
 			
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
 			
@@ -176,7 +185,9 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 				
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					listener.onStateChange(entry);
+					if (!entry.getState().equals(State.DISABLED)) {
+						listener.onStateChange(entry);
+					}
 				}
 			});
 			
@@ -217,25 +228,36 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 		}
 		
 		private void setState(State newState) {
+			this.state = newState;
 			switch (newState) {
 				case SELECTED:
 					model.getDisplayType().setValue(getType());
-					setColors(BACKGROUND_SELECTED, BORDER_SELECTED);
+					drawState(BACKGROUND_SELECTED, BORDER_SELECTED, Color.BLACK, Cursor.HAND_CURSOR);
 					break;
 				case HOVER:
-					setColors(BACKGROUND_HOVER, BORDER_HOVER);
+					drawState(BACKGROUND_HOVER, BORDER_HOVER, Color.BLACK, Cursor.HAND_CURSOR);
+					break;
+				case DISABLED:
+					drawState(BACKGROUND_DEFAULT, BORDER_DEFAULT, Color.GRAY, Cursor.DEFAULT_CURSOR);
 					break;
 				default: 
-					setColors(BACKGROUND_DEFAULT, BORDER_DEFAULT);
+					drawState(BACKGROUND_DEFAULT, BORDER_DEFAULT, Color.BLACK, Cursor.HAND_CURSOR);
 			}
 		}
 
-		private void setColors(Color background, Color border) {
+		private void drawState(Color background, Color border, Color text, int cursor) {
 			setBackground(background);
 			iconPanel.setBorder(new CompoundBorder(
 					new LineBorder(Color.GRAY, 1),
 					new LineBorder(border, 3)
 			));
+			title.setForeground(text);
+			description.setForeground(text);
+			setCursor(Cursor.getPredefinedCursor(cursor));
+		}
+
+		public State getState() {
+			return state;
 		}
 	}
 	
@@ -247,7 +269,8 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 	private enum State {
 		DEFAULT,
 		HOVER,
-		SELECTED;
+		SELECTED,
+		DISABLED;
 	}
 
 	@Override
@@ -263,48 +286,66 @@ public class ReportDisplayPage extends ReportWizardPage implements DisplayEntryL
 	@Override
 	public void onStateChange(ReportDisplayEntry selected) {
 		for (ReportDisplayEntry entry : entries) {
-			if (entry.equals(selected)) {
-				entry.setState(State.SELECTED);
-			}
-			else {
-				entry.setState(State.DEFAULT);
+			if (!entry.getState().equals(State.DISABLED)) {
+				if (entry.equals(selected)) {
+					entry.setState(State.SELECTED);
+				}
+				else {
+					entry.setState(State.DEFAULT);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void onSelectionMove(ReportDisplayEntry selected) {
+		DisplayType type = model.getDisplayType().getValue();
 		for (ReportDisplayEntry entry : entries) {
-			DisplayType type = model.getDisplayType().getValue();
-			if (type != null && type.equals(entry.getType())) {
-				entry.setState(State.SELECTED);
-			}
-			else if (entry.equals(selected)) {
-				entry.setState(State.HOVER);
-			}
-			else {
-				entry.setState(State.DEFAULT);
+			if (!entry.getState().equals(State.DISABLED)) {
+				if (type != null && type.equals(entry.getType())) {
+					entry.setState(State.SELECTED);
+				}
+				else if (entry.equals(selected)) {
+					entry.setState(State.HOVER);
+				}
+				else {
+					entry.setState(State.DEFAULT);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void onDeselectionMove(ReportDisplayEntry deselected) {
+		DisplayType type = model.getDisplayType().getValue();
 		for (ReportDisplayEntry entry : entries) {
-			DisplayType type = model.getDisplayType().getValue();
-			if (type != null && type.equals(entry.getType())) {
-				entry.setState(State.SELECTED);
-			}
-			else {
-				entry.setState(State.DEFAULT);
+			if (!entry.getState().equals(State.DISABLED)) {
+				if (type != null && type.equals(entry.getType())) {
+					entry.setState(State.SELECTED);
+				}
+				else if (!entry.getState().equals(State.DISABLED)) {
+					entry.setState(State.DEFAULT);
+				}
 			}
 		}
 	}
 	
 	@Override
 	public void removeListeners() {
-		// TODO Auto-generated method stub
-		
+		model.removeListener(this);
+	}
+
+	@Override
+	public void onReportGroupsModified() {
+		for (ReportDisplayEntry entry : entries) {
+			DisplayType type = entry.getType();
+			if (type != null && !type.supportsAll(model.getDisplayTypes())) {
+				entry.setState(State.DISABLED);
+			}
+			else if (type != null && type.supportsAll(model.getDisplayTypes()) && entry.getState().equals(State.DISABLED)) {
+				entry.setState(State.DEFAULT);
+			}
+		}
 	}
 	
 }

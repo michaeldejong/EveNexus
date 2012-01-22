@@ -2,6 +2,7 @@ package nl.minicom.evenexus.core.report.engine;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
+import nl.minicom.evenexus.core.report.definition.components.ReportGroup.Type;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.gui.panels.report.dialogs.pages.ModificationListener;
 
@@ -31,6 +33,7 @@ import com.google.common.collect.Sets;
 public class ReportModel implements ModificationListener { 
 	
 	private final Set<ItemListener> itemListeners;
+	private final Set<GroupListener> groupListeners;
 	private final Set<ModificationListener> modificationListeners;
 	
 	private final Map<String, ReportItem> reportItems;
@@ -47,6 +50,7 @@ public class ReportModel implements ModificationListener {
 	@Inject
 	public ReportModel() {
 		this.itemListeners = Sets.newHashSet();
+		this.groupListeners = Sets.newHashSet();
 		this.modificationListeners = Sets.newHashSet();
 		this.displayType = createModel(DisplayType.TABLE);
 		this.reportItems = new LinkedHashMap<String, ReportItem>();
@@ -59,6 +63,14 @@ public class ReportModel implements ModificationListener {
 			Model<ReportGroup> groupModel = createModel(null);
 			groupModel.setEnabled(false);
 			reportGroups.add(groupModel);
+			groupModel.addListener(new ModificationListener() {
+				@Override
+				public void onModification() {
+					for (GroupListener listener : groupListeners) {
+						listener.onReportGroupsModified();
+					}
+				}
+			});
 		}
 	}
 	
@@ -112,30 +124,6 @@ public class ReportModel implements ModificationListener {
 			listener.onReportItemRemoved(item);
 		}
 		onModification();
-	}
-	
-	/**
-	 * The addGroup() method will add the supplied {@link ReportGroup} to this {@link ReportModel}.
-	 * 
-	 * @param group		The {@link ReportGroup} to add.
-	 */
-	public void addGroup(ReportGroup group) {
-		for (int i = 0; i < reportGroups.size(); i++) {
-			Model<ReportGroup> model = reportGroups.get(i);
-			if (!model.isSet()) {
-				model.setValue(group);
-				return;
-			}
-		}
-	}
-	
-	/**
-	 * The removeGroup() method will remove the supplied {@link ReportGroup}.
-	 * 
-	 * @param group		The {@link ReportGroup} to remove.
-	 */
-	public void removeGroup(ReportGroup group) {
-		reportGroups.remove(group);
 	}
 
 	/**
@@ -276,8 +264,16 @@ public class ReportModel implements ModificationListener {
 		void onReportItemRemoved(ReportItem item);
 	}
 
+	public interface GroupListener {
+		void onReportGroupsModified();
+	}
+
 	public void addListener(ItemListener listener) {
 		itemListeners.add(listener);
+	}
+	
+	public void addListener(GroupListener listener) {
+		groupListeners.add(listener);
 	}
 
 	public void addListener(ModificationListener listener) {
@@ -286,6 +282,10 @@ public class ReportModel implements ModificationListener {
 
 	public void removeListener(ItemListener listener) {
 		itemListeners.remove(listener);
+	}
+	
+	public void removeListener(GroupListener listener) {
+		groupListeners.remove(listener);
 	}
 
 	public void removeListener(ModificationListener listener) {
@@ -297,6 +297,16 @@ public class ReportModel implements ModificationListener {
 		for (ModificationListener listener : modificationListeners) {
 			listener.onModification();
 		}
+	}
+
+	public Collection<Type> getDisplayTypes() {
+		Set<Type> displayedTypes = Sets.newHashSet();
+		for (Model<ReportGroup> model : reportGroups) {
+			if (model.isEnabled() && model.isSet()) {
+				displayedTypes.add(model.getValue().getType());
+			}
+		}
+		return displayedTypes;
 	}
 	
 }

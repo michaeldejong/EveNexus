@@ -137,10 +137,10 @@ public class ReportPanel extends TabPanel {
 		
 		switch (reportModel.getDisplayType().getValue()) {
 			case BAR_CHART:
-				chartPanel.setChart(BarChart.render(reportModel, dataset));
+				new BarChart().render(chartPanel, reportModel, dataset);
 				break;
 			case LINE_GRAPH:
-				chartPanel.setChart(LineChart.render(reportModel, dataset));
+				chartPanel.setChart(new LineChart().render(reportModel, dataset));
 				break;
 			default:
 				break;
@@ -157,7 +157,7 @@ public class ReportPanel extends TabPanel {
 		dataset = executor.createDataSet(groupExpressions);
 //		switch (reportModel.getDisplayType().getValue()) {
 //			case GRAPH:
-				chartPanel.setChart(LineChart.render(reportModel, dataset, groupExpressions));
+				chartPanel.setChart(new LineChart().render(reportModel, dataset, groupExpressions));
 //				break;
 //			default:
 //				break;

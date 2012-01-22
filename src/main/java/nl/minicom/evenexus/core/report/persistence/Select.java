@@ -235,6 +235,7 @@ public class Select extends Expression {
 					query.append(",");
 				}
 				order.writeTranslation(query);
+				query.append("ASC");
 				index++;
 			}
 		}

@@ -2,17 +2,16 @@ package nl.minicom.evenexus.gui.panels.report.renderers;
 
 import java.awt.Color;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
-import nl.minicom.evenexus.core.report.definition.components.ReportGroup.Type;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem.Unit;
 import nl.minicom.evenexus.core.report.engine.Dataset;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
 import nl.minicom.evenexus.core.report.persistence.expressions.Expression;
 
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -24,39 +23,29 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.Range;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import com.google.common.collect.Lists;
-
 /**
  * This class is responsible for drawing a graph for the report engine.
  * 
  * @author michael
  */
-public final class BarChart {
+public final class BarChart extends Chart {
 
 	private static final int LIMIT = 20;
+	
+//	private static Set<CategoryMarker> markers = Sets.newHashSet();
 
-	public static JFreeChart render(ReportModel reportModel, Dataset dataset, Expression... groupExpressions) {
+	public JFreeChart render(ChartPanel chartPanel, ReportModel reportModel, Dataset dataset, Expression... groupExpressions) {
 		ReportGroup currentGroup = getCurrentGroup(reportModel, groupExpressions);
-		return render(reportModel, currentGroup, dataset, groupExpressions);
+		return render(chartPanel, reportModel, currentGroup, dataset, groupExpressions);
 	}
 	
-	private static ReportGroup getCurrentGroup(ReportModel reportModel, Expression... groupExpressions) {
-		int index = 0;
-		for (Expression expression : groupExpressions) {
-			if (expression == null) {
-				continue;
-			}
-			index++;
-		}
-		return reportModel.getReportGroups().get(index);
-	}
-
-	public static JFreeChart render(ReportModel reportModel, ReportGroup currentGroup, 
+	public JFreeChart render(final ChartPanel chartPanel, ReportModel reportModel, ReportGroup currentGroup, 
 			Dataset dataset, Expression[] groupExpressions) {
 
-		CategoryPlot plot = new CategoryPlot();
+		final CategoryPlot plot = new CategoryPlot();
 		
 		List<Color> colors = createColorSequence(Math.min(LIMIT, reportModel.getReportItems().size()));
+		
 		BarRenderer currencyRenderer = createRenderer();
 		BarRenderer quantityRenderer = createRenderer();
 
@@ -68,8 +57,8 @@ public final class BarChart {
 		boolean hasCurrencyItems = false;
 		for (ReportItem reportItem : reportModel.getReportItems()) {
 			int index = 0;
-			currencyRenderer.setSeriesFillPaint(count, colors.get(count));
-			quantityRenderer.setSeriesFillPaint(count, colors.get(count));
+			currencyRenderer.setSeriesPaint(count, colors.get(count));
+			quantityRenderer.setSeriesPaint(count, colors.get(count));
 			
 			if (reportItem.getUnit() == Unit.CURRENCY) {
 				currencyRenderer.setSeriesVisibleInLegend(count, true);
@@ -138,44 +127,62 @@ public final class BarChart {
 		CategoryAxis categoryAxis = new CategoryAxis(currentGroup.getKey());
 		categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
 		plot.setDomainAxis(categoryAxis);
-
+		
 		JFreeChart chart = new JFreeChart(plot);
+		chartPanel.setChart(chart);
+		
+//		chartPanel.addChartMouseListener(new ChartMouseListener() {
+//			@Override
+//			public void chartMouseMoved(ChartMouseEvent arg0) {
+//				int x = arg0.getTrigger().getX();
+//				CategoryItemEntity entity = null;
+//				for (int y = 0; y < (int) chartPanel.getSize().getHeight(); y++) {
+//					ChartEntity entityForPoint = chartPanel.getEntityForPoint(x, y);
+//					if (entityForPoint instanceof CategoryItemEntity) {
+//						entity = (CategoryItemEntity) entityForPoint;
+//						if (entity != null) {
+//							break;
+//						}
+//					}
+//				}
+//
+//				synchronized (markers) {
+//					if (!markers.isEmpty()) {
+//						for (CategoryMarker marker : markers) {
+//							plot.removeDomainMarker(marker);
+//						}
+//					}
+//					
+//					if (entity != null) {
+//						CategoryMarker marker = new CategoryMarker(entity.getColumnKey());
+//						marker.setAlpha(0.2f);
+//						chartPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//						plot.addDomainMarker(marker);
+//						
+//						markers.add(marker);
+//					}
+//					else {
+//						chartPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//					}
+//				}
+//			}
+//			
+//			@Override
+//			public void chartMouseClicked(ChartMouseEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+		
 		return chart;
 	}
 	
-	private static BarRenderer createRenderer() {
+	private BarRenderer createRenderer() {
 		IntervalBarRenderer renderer = new IntervalBarRenderer();
 		renderer.setShadowVisible(false);
 		renderer.setItemMargin(0.05);
 		renderer.setBarPainter(new StandardBarPainter());
 		return renderer;
-	}
-	
-	private static boolean matches(ReportGroup group, Type... types) {
-		Type currentType = group.getType();
-		for (Type type : types) {
-			if (type == currentType) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private static List<Color> createColorSequence(int length) {
-		List<Color> colors = Lists.newArrayList();
-		double count = 0.0;
-		while (count < length) {
-			int r = (int) (127.5 * (Math.cos(count) + 1.00));
-			int g = (int) (127.5 * (Math.cos(count + Math.PI) + 1.00));
-			int b = (int) (127.5 * (Math.sin(count + (1.5 * Math.PI)) + 1.00));
-			colors.add(new Color(r, g, b));
-			count = count + 1.0;
-		}
-		return Collections.unmodifiableList(colors);
-	}
-	
-	private BarChart() {
-		// Prevent instatiation.
 	}
 
 }
