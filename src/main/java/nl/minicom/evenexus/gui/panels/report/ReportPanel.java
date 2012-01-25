@@ -12,12 +12,12 @@ import javax.swing.GroupLayout;
 import nl.minicom.evenexus.core.report.engine.Dataset;
 import nl.minicom.evenexus.core.report.engine.ReportExecutor;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
-import nl.minicom.evenexus.core.report.persistence.expressions.Expression;
 import nl.minicom.evenexus.gui.GuiConstants;
 import nl.minicom.evenexus.gui.icons.Icon;
 import nl.minicom.evenexus.gui.panels.TabPanel;
 import nl.minicom.evenexus.gui.panels.report.dialogs.ReportWizardDialog;
 import nl.minicom.evenexus.gui.panels.report.renderers.BarChart;
+import nl.minicom.evenexus.gui.panels.report.renderers.Chart;
 import nl.minicom.evenexus.gui.panels.report.renderers.LineChart;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
@@ -43,8 +43,9 @@ public class ReportPanel extends TabPanel {
 	private final ReportExecutor executor;
 	private final Provider<ReportWizardDialog> dialogProvider;
 	
+	private Chart currentChart = null;
 	private Dataset dataset = null;
-	private ReportModel reportModel = null;
+	private DisplayConfiguration configuration;
 	
 	/**
 	 * Constructs a new {@link ReportPanel}.
@@ -83,17 +84,39 @@ public class ReportPanel extends TabPanel {
         	}
         });
         
+        ToolBarButton moveLeft = new ToolBarButton(Icon.LEFT_48, "Move left");
+        moveLeft.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		configuration.modifyOffset(-5);
+        		currentChart.refreshGraph();
+        	}
+        });
+        
+        ToolBarButton moveRight = new ToolBarButton(Icon.RIGHT_48, "Move right");
+        moveRight.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		configuration.modifyOffset(5);
+        		currentChart.refreshGraph();
+        	}
+        });
+        
         ToolBar toolBar = new ToolBar(settingsManager);
         GroupLayout layout = new GroupLayout(toolBar);
         toolBar.setLayout(layout);        
         layout.setHorizontalGroup(
         	layout.createSequentialGroup()
     		.addComponent(createReport)
+    		.addComponent(moveLeft)
+    		.addComponent(moveRight)
     	);
     	layout.setVerticalGroup(
     		layout.createSequentialGroup()
     		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(createReport)
+				.addComponent(moveLeft)
+				.addComponent(moveRight)
 			)
     	);
         
@@ -130,38 +153,25 @@ public class ReportPanel extends TabPanel {
 	 * 		The {@link ReportModel} to display.
 	 */
 	public void displayReport(ReportModel reportModel) {
+		if (currentChart != null) {
+			currentChart.removeListeners();
+		}
+		
 		executor.deleteReport();
-		this.reportModel = reportModel;
 		executor.initialize(reportModel);
 		this.dataset = executor.createDataSet();
+		configuration = new DisplayConfiguration(dataset.groupSize());
 		
 		switch (reportModel.getDisplayType().getValue()) {
 			case BAR_CHART:
-				new BarChart().render(chartPanel, reportModel, dataset);
+				currentChart = new BarChart(chartPanel, reportModel, dataset, configuration);
 				break;
 			case LINE_GRAPH:
-				chartPanel.setChart(new LineChart().render(reportModel, dataset));
+				new LineChart().render(chartPanel, reportModel, dataset, configuration);
 				break;
 			default:
 				break;
 		}
-	}
-
-	/**
-	 * This method displays a subselection of a report in this {@link ReportPanel}.
-	 * 
-	 * @param groupExpressions
-	 * 		The expressions which define what data to select from the {@link Dataset}.
-	 */
-	public void displayReport(Expression... groupExpressions) {
-		dataset = executor.createDataSet(groupExpressions);
-//		switch (reportModel.getDisplayType().getValue()) {
-//			case GRAPH:
-				chartPanel.setChart(new LineChart().render(reportModel, dataset, groupExpressions));
-//				break;
-//			default:
-//				break;
-//		}
 	}
 	
 }

@@ -12,8 +12,9 @@ import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem.Unit;
 import nl.minicom.evenexus.core.report.engine.Dataset;
 import nl.minicom.evenexus.core.report.engine.ReportModel;
-import nl.minicom.evenexus.core.report.persistence.expressions.Expression;
+import nl.minicom.evenexus.gui.panels.report.DisplayConfiguration;
 
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -33,13 +34,13 @@ import org.jfree.data.time.Week;
  */
 public final class LineChart extends Chart {
 
-	public JFreeChart render(ReportModel reportModel, Dataset dataset, Expression... groupExpressions) {
-		ReportGroup currentGroup = getCurrentGroup(reportModel, groupExpressions);
-		return render(reportModel, currentGroup, dataset, groupExpressions);
+	public JFreeChart render(ChartPanel chartPanel, ReportModel reportModel, Dataset dataset, DisplayConfiguration configuration) {
+		ReportGroup currentGroup = getCurrentGroup(reportModel, configuration.getExpressions());
+		return render(chartPanel, reportModel, currentGroup, dataset, configuration);
 	}
 	
-	public JFreeChart render(ReportModel reportModel, ReportGroup currentGroup, 
-			Dataset dataset, Expression[] groupExpressions) {
+	public JFreeChart render(ChartPanel chartPanel, ReportModel reportModel, ReportGroup currentGroup, 
+			Dataset dataset, DisplayConfiguration configuration) {
 
 		XYPlot plot = new XYPlot();
 		
@@ -95,8 +96,10 @@ public final class LineChart extends Chart {
 		}
 		
 		plot.setDomainAxis(new DateAxis(currentGroup.getKey()));
+		JFreeChart chart = new JFreeChart(plot);
+		chartPanel.setChart(chart);
 		
-		return new JFreeChart(plot);
+		return chart;
 	}
 	
 	private static TimePeriod getPeriod(ReportGroup currentGroup, String input) {
@@ -125,6 +128,18 @@ public final class LineChart extends Chart {
 		else {
 			throw new IllegalArgumentException("Unsupported type: " + currentGroup.getType().name());
 		}
+	}
+
+	@Override
+	public void removeListeners() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void refreshGraph() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

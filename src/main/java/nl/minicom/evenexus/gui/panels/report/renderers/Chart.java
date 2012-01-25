@@ -10,9 +10,9 @@ import nl.minicom.evenexus.core.report.persistence.expressions.Expression;
 
 import com.google.common.collect.Lists;
 
-public class Chart {
+public abstract class Chart {
 	
-	protected ReportGroup getCurrentGroup(ReportModel reportModel, Expression... groupExpressions) {
+	protected static ReportGroup getCurrentGroup(ReportModel reportModel, Expression... groupExpressions) {
 		int index = 0;
 		for (Expression expression : groupExpressions) {
 			if (expression == null) {
@@ -22,6 +22,10 @@ public class Chart {
 		}
 		return reportModel.getReportGroups().get(index);
 	}
+	
+	public abstract void removeListeners();
+	
+	public abstract void refreshGraph();
 	
 	protected List<Color> createColorSequence(int length) {
 		List<Color> colors = Lists.newArrayList();
