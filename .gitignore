@@ -52,3 +52,5 @@ session.properties
 /target
 /.settings
 /.externalToolBuilders
+
+bin/
