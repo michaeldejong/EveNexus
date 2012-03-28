@@ -43,7 +43,7 @@ public class InventoryManager {
 		
 		this.workerProvider = workerProvider;
 		this.database = database;
-		this.executor = new ThreadPoolExecutor(5, 10, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		this.executor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 		this.listeners = new ArrayList<InventoryListener>();
 		
 		executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
