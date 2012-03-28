@@ -50,6 +50,10 @@ public class InventoryWorker implements Runnable {
 		final Queue<WalletTransaction> buyTransactions = queryRemainingBuyTransactions();
 		final Queue<WalletTransaction> sellTransactions = queryRemainingSellTransactions();
 		
+		if (!sellTransactions.isEmpty()) {
+			LOG.info("Matching " + sellTransactions.size() + " unprocessed transactions for type: " + typeId);
+		}
+		
 		while (!sellTransactions.isEmpty()) {
 			if (match(buyTransactions, sellTransactions)) {
 				break;
@@ -61,13 +65,13 @@ public class InventoryWorker implements Runnable {
 		Timestamp timestamp = getEarliestMatchErrorTimestamp();
 		if (timestamp != null) {
 			List<TransactionMatch> matches = listInvalidMatches(timestamp);
-			LOG.info("Found " + matches.size() + " invalid matches for type: " + typeId + ", now de-matching...");
-			
-			for (TransactionMatch match : matches) {
-				revertMatch(match);
+			if (!matches.isEmpty()) {
+				LOG.info("Found " + matches.size() + " invalid matches for type: " + typeId + ", now de-matching...");
+				for (TransactionMatch match : matches) {
+					revertMatch(match);
+				}
+				LOG.info("Finished de-matching " + matches.size() + " invalid matches for type: " + typeId + ".");
 			}
-			
-			LOG.info("Finished de-matching " + matches.size() + " invalid matches for type: " + typeId + ".");
 		}
 	}
 
@@ -110,51 +114,84 @@ public class InventoryWorker implements Runnable {
 	}
 
 	private Timestamp getEarliestMatchErrorTimestamp() {
-		Timestamp result = null;
-		boolean buyTransactionsWithoutStock = false;
-		boolean sellTransactionsWithoutStock = false;
+		State previousBuyState = null;
+		Timestamp buyMismatch = null;
 		
-		List<WalletTransaction> transactions = listTransactionsInDescendingOrder();
+		State previousSellState = null;
+		Timestamp sellMismatch = null;
+		
+		List<WalletTransaction> transactions = listTransactionsInAscendingOrder();
 		for (WalletTransaction transaction : transactions) {
-			Timestamp time = transaction.getTransactionDateTime();
+			long remaining = transaction.getRemaining();
+			long quantity = transaction.getQuantity();
 			if (transaction.isBuy()) {
-				if (buyTransactionsWithoutStock && transaction.getRemaining() > 0) {
-					result = getEarliest(result, time);
+				if (previousBuyState == null || buyMismatch != null) {
+					continue;
 				}
-				else if (transaction.getRemaining() == 0) {
-					buyTransactionsWithoutStock = true;
+				else if (remaining == quantity) { // UNTOUCHED
+					if (previousBuyState != State.UNTOUCHED) {
+						buyMismatch = transaction.getTransactionDateTime();
+					}
+					previousBuyState = State.UNTOUCHED;
+				}
+				else if (remaining > 0) { // PARTIAL
+					if (previousBuyState == State.PARTIAL || previousBuyState == State.UNTOUCHED) {
+						buyMismatch = transaction.getTransactionDateTime();
+					}
+					previousBuyState = State.PARTIAL;
+				}
+				else { // EXHAUSTED
+					previousBuyState = State.EXHAUSTED;
 				}
 			} 
 			else {
-				if (sellTransactionsWithoutStock && transaction.getRemaining() > 0) {
-					result = getEarliest(result, time);
+				if (previousSellState == null || sellMismatch != null) {
+					continue;
 				}
-				else if (transaction.getRemaining() == 0) {
-					sellTransactionsWithoutStock = true;
+				else if (remaining == quantity) { // UNTOUCHED
+					if (previousSellState != State.UNTOUCHED) {
+						sellMismatch = transaction.getTransactionDateTime();
+					}
+					previousSellState = State.UNTOUCHED;
 				}
-			}
+				else if (remaining > 0) { // PARTIAL
+					if (previousSellState == State.PARTIAL || previousSellState == State.UNTOUCHED) {
+						sellMismatch = transaction.getTransactionDateTime();
+					}
+					previousSellState = State.PARTIAL;
+				}
+				else { // EXHAUSTED
+					previousSellState = State.EXHAUSTED;
+				}
+			} 
 		}
 		
-		return result;
+		return getEarliest(buyMismatch, sellMismatch);
+	}
+	
+	private Timestamp getEarliest(Timestamp original, Timestamp timestamp) {
+		if (original == null) {
+			return timestamp;
+		}
+		else if (timestamp == null) {
+			return original;
+		}
+		else if (original != null && timestamp != null) {
+			return original.after(timestamp) ? timestamp : original;
+		}
+		return null;
 	}
 
 	@Transactional
 	@SuppressWarnings("unchecked")
-	List<WalletTransaction> listTransactionsInDescendingOrder() {
+	List<WalletTransaction> listTransactionsInAscendingOrder() {
 		Session session = database.getCurrentSession();
 		return session.createCriteria(WalletTransaction.class)
 				.add(Restrictions.eq(WalletTransaction.TYPE_ID, typeId))
-				.addOrder(Order.desc(WalletTransaction.TRANSACTION_DATE_TIME))
+				.addOrder(Order.asc(WalletTransaction.TRANSACTION_DATE_TIME))
 				.list();
 	}
 	
-	private Timestamp getEarliest(Timestamp result, Timestamp time) {
-		if (result == null || time.before(result)) {
-			return time;
-		}
-		return result;
-	}
-
 	@Transactional
 	boolean match(Queue<WalletTransaction> buys, Queue<WalletTransaction> sales) {
 		WalletTransaction buyTransaction = buys.peek();
@@ -251,4 +288,8 @@ public class InventoryWorker implements Runnable {
 		);
 	}
 
+	private enum State {
+		EXHAUSTED, PARTIAL, UNTOUCHED;
+	}
+	
 }

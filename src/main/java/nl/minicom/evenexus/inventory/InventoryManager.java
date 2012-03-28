@@ -69,8 +69,6 @@ public class InventoryManager {
 			List<Number> typeIds = queryUnprocessedTypeIds();
 			
 			if (!typeIds.isEmpty()) {
-				LOG.info("Calculating inventory and profits for " + typeIds.size() + " unprocessed transaction(s)");
-				
 				triggerEvent(InventoryEvent.STARTING);
 				
 				for (Number typeId : typeIds) {
