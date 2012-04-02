@@ -56,11 +56,6 @@ public class InventoryWorkerTest {
 		testProfitMatching("/inventory/test-case-03.json");
 	}
 	
-	@Test
-	public void testInvalidlyMatchedTransactions() throws IOException {
-		testProfitMatching("/inventory/test-case-04.json");
-	}
-	
 	private void testProfitMatching(String fileName) throws IOException {
 		// Read test case from file.
 		InventoryTestCase testCase = parseTestCase(fileName);
