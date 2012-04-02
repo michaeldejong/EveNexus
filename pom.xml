@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.minicom</groupId>
 	<artifactId>evenexus</artifactId>
-	<version>0.1.16</version>
+	<version>0.1.17</version>
 	<name>EveNexus</name>
 	<issueManagement>
 		<system>GitHub</system>
