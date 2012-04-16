@@ -5,10 +5,12 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.persistence.Database;
+import nl.minicom.evenexus.persistence.dao.Item;
 import nl.minicom.evenexus.persistence.dao.TransactionMatch;
 import nl.minicom.evenexus.persistence.dao.TransactionMatchIdentifier;
 import nl.minicom.evenexus.persistence.dao.WalletTransaction;
@@ -21,7 +23,7 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InventoryWorker implements Runnable {
+public class InventoryWorker implements Callable<String> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryWorker.class);
 	
@@ -39,7 +41,7 @@ public class InventoryWorker implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public String call() {
 		if (typeId < 0) {
 			throw new IllegalStateException("InventoryWorker not yet initialized!");
 		}
@@ -59,8 +61,25 @@ public class InventoryWorker implements Runnable {
 				break;
 			}
 		}
+		
+		return getName();
 	}
 	
+	@Transactional
+	protected String getName() {
+		Session currentSession = database.getCurrentSession();
+		Item item = (Item) currentSession.createCriteria(Item.class)
+				.add(Restrictions.eq(Item.TYPE_ID, typeId))
+				.setMaxResults(1)
+				.uniqueResult();
+		
+		if (item == null) {
+			return "Unknown";
+		}
+		
+		return item.getTypeName();
+	}
+
 	private void revertMostRecentTransactionsIfRequired() {
 		Timestamp timestamp = getEarliestMatchErrorTimestamp();
 		if (timestamp != null) {

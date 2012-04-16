@@ -66,7 +66,7 @@ public class InventoryWorkerTest {
 		// Run InventoryWorker on test case.
 		InventoryWorker worker = workerProvider.get();
 		worker.initialize(1L);
-		worker.run();
+		worker.call();
 		
 		// Check results.
 		preparer.checkTestCaseResults(testCase);

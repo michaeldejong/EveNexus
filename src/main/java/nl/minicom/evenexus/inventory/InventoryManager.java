@@ -61,7 +61,16 @@ public class InventoryManager {
 		});
 	}
 	
-	public void processUnprocessedTransactions() {
+	public void requestTransactionProcessing() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				processUnprocessedTransactions();
+			}
+		}).start();
+	}
+	
+	private void processUnprocessedTransactions() {
 		synchronized (state) {
 			state = State.RUNNING;
 			
@@ -78,12 +87,11 @@ public class InventoryManager {
 					futures.add(future);
 				}
 				
-				double finished = 0;
+				double count = 0;
 				for (Future<?> future : futures) {
 					try {
-						future.get();
-						double progress = (double) (++finished / futures.size());
-						triggerEvent(new InventoryEvent(false, InventoryEvent.RUNNING_MESSAGE, progress));
+						count++;
+						triggerEvent(new InventoryEvent(false, "Processed transactions for: " + future.get(), count / futures.size()));
 					} catch (Exception e) {
 						LOG.error(e.getLocalizedMessage(), e);
 					}

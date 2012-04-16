@@ -48,8 +48,8 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		add(label);
 		
 		progress = new JProgressBar();
-		progress.setMaximumSize(new Dimension(200, GuiConstants.PROGRESS_BAR_HEIGHT));
-		progress.setMinimumSize(new Dimension(200, GuiConstants.PROGRESS_BAR_HEIGHT));
+		progress.setMaximumSize(new Dimension(400, GuiConstants.PROGRESS_BAR_HEIGHT));
+		progress.setMinimumSize(new Dimension(400, GuiConstants.PROGRESS_BAR_HEIGHT));
 		progress.setForeground(new Color(0, 114, 186));
 		progress.setBackground(Color.WHITE);
 		add(progress);
@@ -108,7 +108,7 @@ public class InventoryProgressPanel extends JPanel implements InventoryListener 
 		
 		progress.setMinimum(0);
 		progress.setMaximum(1000);
-		progress.setValue((int) percentage * 1000);
+		progress.setValue((int) (percentage * 1000));
 		
 		image.setEnabled(isBusy);
 	}

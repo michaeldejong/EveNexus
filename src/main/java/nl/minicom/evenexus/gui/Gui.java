@@ -123,6 +123,7 @@ public class Gui extends JFrame {
 		
 		createGUI();
 		setVisible(true);
+		toFront();
 	}
 
 	public void setSizeAndPosition() {

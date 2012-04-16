@@ -130,7 +130,7 @@ public class Application {
 		// 4. Create inventory manager.
 		LOG.info("Initializing inventory manager...");
 		progressManager.update(9, 5, "Initializing inventory manager...");
-		inventoryManager.processUnprocessedTransactions();
+		inventoryManager.requestTransactionProcessing();
 		
 		// 5. Initializing importers.
 		LOG.info("Initializing API importers...");
