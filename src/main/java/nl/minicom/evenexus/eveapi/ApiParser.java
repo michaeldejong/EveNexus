@@ -102,10 +102,10 @@ public class ApiParser {
 	}
 	
 	public Node parseApi(Api api, ApiKey apiKey) {
-		return parseApi(api, apiKey, null);
+		return parseApi(api, apiKey, null, false);
 	}
 	
-	public Node parseApi(Api api, ApiKey apiKey, Map<String, String> additionalArguments) {
+	public Node parseApi(Api api, ApiKey apiKey, Map<String, String> additionalArguments, boolean ignoreCooldown) {
 		Map<String, String> arguments = new TreeMap<String, String>();
 		if (apiKey != null) {
 			arguments.put("keyID", Long.toString(apiKey.getKeyId()));
@@ -122,12 +122,12 @@ public class ApiParser {
 		
 		String urlWithAdditionalArguments = createURL(allArguments, importer.getPath());
 		if (apiKey != null) {
-			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, apiKey.getCharacterId())) {
+			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, apiKey.getCharacterId(), ignoreCooldown)) {
 				return parseAPI(urlWithAdditionalArguments, importer.getPath(), api.getImporterId());
 			}
 		}
 		else {
-			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, 0)) {
+			if (checkIfWeNeedToImportAndIfSoUpdateCooldown(importer, 0, ignoreCooldown)) {
 				return parseAPI(urlWithAdditionalArguments, importer.getPath(), api.getImporterId());
 			}
 		}
@@ -135,7 +135,7 @@ public class ApiParser {
 	}
 	
 	@Transactional
-	protected boolean checkIfWeNeedToImportAndIfSoUpdateCooldown(Importer importer, long characterId) {
+	protected boolean checkIfWeNeedToImportAndIfSoUpdateCooldown(Importer importer, long characterId, boolean ignoreCooldown) {
 		Session session = database.getCurrentSession();
 		ImportLogIdentifier id = new ImportLogIdentifier(importer.getId(), characterId);
 		ImportLog log = (ImportLog) session.get(ImportLog.class, id);
@@ -147,7 +147,7 @@ public class ApiParser {
 			session.save(log);
 			return true;
 		}
-		else if (log.getLastRun().getTime() + importer.getCooldown() < TimeUtils.getServerTime()) {
+		else if (ignoreCooldown || log.getLastRun().getTime() + importer.getCooldown() < TimeUtils.getServerTime()) {
 			log.setLastRun(new Timestamp(TimeUtils.getServerTime()));
 			session.update(log);
 			return true;

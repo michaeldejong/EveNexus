@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
@@ -30,6 +31,7 @@ public class CharacterPanel extends JPanel {
 	private final Database database;
 	
 	private StateRule addRule;
+	private String warning = null;
 	
 	@Inject
 	public CharacterPanel(Database database) {
@@ -88,13 +90,20 @@ public class CharacterPanel extends JPanel {
 			}
 		};
 		
-		for (EveCharacter c : characterMap.keySet()) {
-			final JCheckBox box = characterMap.get(c);
-			box.setBounds(3, 6 + 18 * position, 250, 15);
-			box.addActionListener(new ValidationListener(validationRule));
-			add(box);
-			position++;
-		}		
+		if (warning == null) {
+			for (EveCharacter c : characterMap.keySet()) {
+				final JCheckBox box = characterMap.get(c);
+				box.setBounds(3, 6 + 18 * position, 250, 15);
+				box.addActionListener(new ValidationListener(validationRule));
+				add(box);
+				position++;
+			}
+		}
+		else {
+			JLabel label = new JLabel(warning);
+			label.setBounds(3, 6, 360, 15);
+			add(label);
+		}
 		
 		invalidate();
 		repaint();		
@@ -103,6 +112,12 @@ public class CharacterPanel extends JPanel {
 	public void clear() {
 		characterMap.clear();
 		reload();
-	}	
+	}
+
+	public void setWarning(String warning) {
+		this.warning = warning;
+		reload();
+		this.warning = null;
+	}
 
 }

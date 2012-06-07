@@ -1,13 +1,18 @@
 package nl.minicom.evenexus.gui.panels.accounts.dialogs;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -38,11 +43,21 @@ import org.mortbay.xml.XmlParser.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
+
 public class AddCharacterFrame extends CustomDialog {
 
 	private static final long serialVersionUID = 5630084784234969950L;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AddCharacterFrame.class);
+	
+	private static final Cache<Long, List<EveCharacter>> CACHE = createCharacterCache();
+	
+	private static Cache<Long, List<EveCharacter>> createCharacterCache() {
+		return CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.MINUTES).build();
+	}
 	
 	private final AccountsPanel panel;
 	private final Provider<ApiParser> apiParserProvider;
@@ -98,13 +113,14 @@ public class AddCharacterFrame extends CustomDialog {
 	}
 
 	@Override
-	public void createGui(JPanel guiPanel) {		
+	public void createGui(JPanel guiPanel) {
 		final JLabel userIDLabel = new JLabel("Key ID");
 		final JLabel apiKeyLabel = new JLabel("Verification Code");
 		final JTextField keyIdField = new JTextField();
 		final JTextField verificationCodeField = new JTextField();
 		final JButton check = new JButton("Check API credentials");
 		final JButton add = new JButton("Add character(s)");
+		final JButton create = new JButton("Create new API key");
 		
 		characterPanel.initialize(add);
 		
@@ -118,37 +134,44 @@ public class AddCharacterFrame extends CustomDialog {
 		characterPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 		check.setMaximumSize(new Dimension(160, 32));
 		add.setMaximumSize(new Dimension(160, 32));
+		create.setMaximumSize(new Dimension(160, 32));
 		
 		GroupLayout layout = new GroupLayout(guiPanel);
 		guiPanel.setLayout(layout);
-layout.setHorizontalGroup(
-	layout.createSequentialGroup()
-		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(userIDLabel)
+					.addComponent(keyIdField)
+					.addComponent(apiKeyLabel)
+					.addComponent(verificationCodeField)
+					.addComponent(check)
+					.addComponent(characterPanel)
+					.addGroup(layout.createSequentialGroup()
+						.addComponent(create)
+						.addComponent(add)
+					)
+			)
+		);
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
 				.addComponent(userIDLabel)
 				.addComponent(keyIdField)
+				.addGap(7)
 				.addComponent(apiKeyLabel)
 				.addComponent(verificationCodeField)
+				.addGap(7)
 				.addComponent(check)
+				.addGap(7)
 				.addComponent(characterPanel)
-				.addComponent(add)
-		)
-	);
-	layout.setVerticalGroup(
-		layout.createSequentialGroup()
-		.addComponent(userIDLabel)
-			.addComponent(keyIdField)
-			.addGap(7)
-			.addComponent(apiKeyLabel)
-			.addComponent(verificationCodeField)
-			.addGap(7)
-			.addComponent(check)
-			.addGap(7)
-			.addComponent(characterPanel)
-			.addGap(7)
-			.addComponent(add)
-	);
+				.addGap(7)
+				.addGroup(layout.createParallelGroup()
+					.addComponent(create)
+					.addComponent(add)
+				)
+		);
 	
-	check.addActionListener(new ActionListener() {
+		check.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new Thread() {
@@ -160,11 +183,19 @@ layout.setHorizontalGroup(
 						String vCode = verificationCodeField.getText();
 						
 						characterPanel.clear();
-						List<EveCharacter> characters = checkCredentials(keyId, vCode);
-						if (characters != null) {
-							for (EveCharacter character : characters) {
-								characterPanel.addCharacter(character);
+						try {
+							List<EveCharacter> characters = checkCredentials(keyId, vCode);
+							if (characters != null && !characters.isEmpty()) {
+								for (EveCharacter character : characters) {
+									characterPanel.addCharacter(character);
+								}
 							}
+							else {
+								characterPanel.setWarning("API call refused! Wait a few minutes before trying again.");
+							}
+						}
+						catch (SecurityNotHighEnoughException e) {
+							characterPanel.setWarning("The provided API key is missing required permissions!");
 						}
 						
 						check.setEnabled(true);
@@ -172,8 +203,23 @@ layout.setHorizontalGroup(
 				}.start();
 			}
 		});
+		
+		create.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://support.eveonline.com/api/Key/CreatePredefined/6819848"));
+				} 
+				catch (IOException e) {
+					LOG.error(e.getLocalizedMessage(), e);
+				} 
+				catch (URISyntaxException e) {
+					LOG.error(e.getLocalizedMessage(), e);
+				}
+			}
+		});
 	
-	add.addActionListener(new ActionListener() {
+		add.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new Thread() {
@@ -216,7 +262,7 @@ layout.setHorizontalGroup(
 		return api;
 	}
 	
-	private List<EveCharacter> checkCredentials(long keyId, String vCode) {
+	private List<EveCharacter> checkCredentials(long keyId, String vCode) throws SecurityNotHighEnoughException {
 		List<EveCharacter> characters = getCharacterList(keyId, vCode);
 		if (characters == null || characters.isEmpty()) {
 			LOG.warn("Account has no characters listed!");
@@ -226,15 +272,18 @@ layout.setHorizontalGroup(
 		return characters;
 	}
 	
-	private List<EveCharacter> getCharacterList(long keyId, String vCode) {
+	private List<EveCharacter> getCharacterList(long keyId, String vCode) throws SecurityNotHighEnoughException {
 		try {
 			Map<String, String> request = new HashMap<String, String>();
 			request.put("keyID", Long.toString(keyId));
 			request.put("vCode", vCode);
 			
 			ApiParser parser = apiParserProvider.get();
-			Node root = parser.parseApi(Api.KEY_INFO, null, request);
+			Node root = parser.parseApi(Api.KEY_INFO, null, request, true);
 			return processParser(root, keyId, vCode);
+		}
+		catch (SecurityNotHighEnoughException e) {
+			throw e;
 		}
 		catch (WarnableException e) {
 			LOG.warn(e.getLocalizedMessage(), e);
@@ -253,8 +302,16 @@ layout.setHorizontalGroup(
 			if (node != null) {
 				processKey(keyId, vCode, characters, node);
 			}
+			CACHE.put(keyId, characters);
+			return characters;
 		}
-		return characters;
+		
+		List<EveCharacter> cacheResult = CACHE.getIfPresent(keyId);
+		if (cacheResult == null) {
+			return Lists.newArrayList();
+		}
+		
+		return cacheResult;
 	}
 
 	private void processKey(long keyId, String vCode, List<EveCharacter> characters, Node node) throws 
