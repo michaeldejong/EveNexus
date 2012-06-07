@@ -223,7 +223,7 @@ public final class BarChart extends Chart implements MouseWheelListener, ChartMo
 
 	@Override
 	public void chartMouseClicked(ChartMouseEvent arg0) {
-		// Do nothing.
+		
 	}
 
 	@Override

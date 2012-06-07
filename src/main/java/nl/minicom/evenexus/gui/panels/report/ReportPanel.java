@@ -19,6 +19,7 @@ import nl.minicom.evenexus.gui.panels.report.dialogs.ReportWizardDialog;
 import nl.minicom.evenexus.gui.panels.report.renderers.BarChart;
 import nl.minicom.evenexus.gui.panels.report.renderers.Chart;
 import nl.minicom.evenexus.gui.panels.report.renderers.LineChart;
+import nl.minicom.evenexus.gui.panels.report.renderers.PieChart;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBar;
 import nl.minicom.evenexus.gui.utils.toolbar.ToolBarButton;
 import nl.minicom.evenexus.utils.SettingsManager;
@@ -169,6 +170,8 @@ public class ReportPanel extends TabPanel {
 			case LINE_GRAPH:
 				new LineChart().render(chartPanel, reportModel, dataset, configuration);
 				break;
+			case PIE:
+				currentChart = new PieChart(chartPanel, reportModel, dataset, configuration);
 			default:
 				break;
 		}

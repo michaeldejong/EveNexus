@@ -147,4 +147,8 @@ public class Dataset {
 		
 	}
 
+	public BigDecimal getMinimumCurrencyValue() {
+		return null;
+	}
+
 }

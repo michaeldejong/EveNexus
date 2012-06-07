@@ -50,7 +50,7 @@ public class DisplayConfiguration {
 	public void modifyScale(int i) {
 		boolean allowModification = false;
 		if (i < 0) {
-			allowModification = scale + i >= 1;
+			allowModification = scale + i >= Math.min(numberOfGroups, 5);
 		}
 		else if (i > 0) {
 			allowModification = offset + scale + i <= numberOfGroups;
