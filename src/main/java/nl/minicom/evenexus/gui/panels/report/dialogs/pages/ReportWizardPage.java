@@ -84,6 +84,12 @@ public abstract class ReportWizardPage extends JPanel {
 			return false;
 		}
 		
+		for (ReportGroup group : reportModel.getReportGroups()) {
+			if (!displayType.getValue().supports(group.getType())) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 

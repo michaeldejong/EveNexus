@@ -13,9 +13,9 @@ import nl.minicom.evenexus.gui.icons.Icon;
  */
 public enum DisplayType {
 
-	TABLE(1, Icon.TABLE_48, "Table", 
-			"Selecting this option will format your report in the form of a table.",
-			Type.DAY, Type.WEEK, Type.MONTH, Type.NAME), 
+//	TABLE(1, Icon.TABLE_48, "Table", 
+//			"Selecting this option will format your report in the form of a table.",
+//			Type.DAY, Type.WEEK, Type.MONTH, Type.NAME), 
 			
 	BAR_CHART(2, Icon.BAR_CHART_48, "Bar chart", 
 			"Selecting this option will format your report in the form of a bar chart.",
@@ -25,9 +25,11 @@ public enum DisplayType {
 			"Selecting this option will format your report in the form of a line graph.",
 			Type.DAY, Type.WEEK, Type.MONTH),
 			
-	PIE(4, Icon.PIE_CHART_48, "Pie chart", 
-			"Selecting this option will format your report in the form of a pie chart.",
-			Type.NAME);
+//	PIE(4, Icon.PIE_CHART_48, "Pie chart", 
+//			"Selecting this option will format your report in the form of a pie chart.",
+//			Type.NAME),
+	
+	;
 	
 	private final int id;
 	private final Icon icon;

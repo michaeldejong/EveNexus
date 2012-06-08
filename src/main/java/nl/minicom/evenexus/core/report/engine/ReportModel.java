@@ -52,7 +52,7 @@ public class ReportModel implements ModificationListener {
 		this.itemListeners = Sets.newHashSet();
 		this.groupListeners = Sets.newHashSet();
 		this.modificationListeners = Sets.newHashSet();
-		this.displayType = createModel(DisplayType.TABLE);
+		this.displayType = createModel(DisplayType.values()[0]);
 		this.reportItems = new LinkedHashMap<String, ReportItem>();
 		this.reportGroups = new ArrayList<Model<ReportGroup>>();
 

@@ -4,14 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import nl.minicom.evenexus.core.report.definition.components.ReportGroup;
-import nl.minicom.evenexus.core.report.definition.components.ReportGroup.Type;
 import nl.minicom.evenexus.core.report.definition.components.ReportItem;
 import nl.minicom.evenexus.core.report.persistence.QueryBuilder;
 import nl.minicom.evenexus.core.report.persistence.Select;
@@ -28,6 +26,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * This class is responsible for executing the report and drawing it. 
@@ -146,24 +145,38 @@ public class ReportExecutor {
 	}
 
 	private Dataset createDataset(ReportGroup currentGroup) {
-		if (Type.DAY == currentGroup.getType()) {
-			Date start = model.getStartDate().getValue();
-			Date end = model.getEndDate().getValue();
-			
-			Calendar c = Calendar.getInstance();
-			c.setTime(start);
-			
-			Set<String> groupKeys = new LinkedHashSet<String>();
-			groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR));
-			while (c.getTime().before(end)) {
-				groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR));
-				c.add(Calendar.DAY_OF_YEAR, 1);
-			}
-			
-			return new Dataset(groupKeys, false);
-		}
+		Date start = model.getStartDate().getValue();
+		Date end = model.getEndDate().getValue();
 		
-		return new Dataset(true);
+		Calendar c = Calendar.getInstance();
+		c.setTime(start);
+		
+		Set<String> groupKeys = Sets.newLinkedHashSet();
+		switch (currentGroup.getType()) {
+			case DAY:
+				groupKeys.add(c.get(Calendar.YEAR) + "-" + (c.get(Calendar.DAY_OF_YEAR) - 1));
+				while (c.getTime().before(end)) {
+					groupKeys.add(c.get(Calendar.YEAR) + "-" + (c.get(Calendar.DAY_OF_YEAR) - 1));
+					c.add(Calendar.DAY_OF_YEAR, 1);
+				}
+				return new Dataset(groupKeys, false);
+			case WEEK:
+				groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.WEEK_OF_YEAR));
+				while (c.getTime().before(end)) {
+					groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.WEEK_OF_YEAR));
+					c.add(Calendar.WEEK_OF_YEAR, 1);
+				}
+				return new Dataset(groupKeys, false);
+			case MONTH:
+				groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH));
+				while (c.getTime().before(end)) {
+					groupKeys.add(c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH));
+					c.add(Calendar.MONTH, 1);
+				}
+				return new Dataset(groupKeys, false);
+			default:
+				return new Dataset(true);
+		}
 	}
 	
 	/**
