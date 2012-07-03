@@ -2,7 +2,6 @@ package nl.minicom.evenexus.eveapi.importers.implementations;
 
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 
 import javax.inject.Inject;
@@ -168,18 +167,13 @@ public class TransactionImporter extends ImporterTask {
 			boolean isBuy = ("buy").equals(row.getAttribute("transactionType")); 
 			boolean isPersonal = ("personal").equals(row.getAttribute("transactionFor"));
 			
-			BigDecimal corporationStanding = getCorporationStanding(apiKey, stationId);
-			BigDecimal factionStanding = getFactionStanding(apiKey, stationId);
+			double corporationStanding = getCorporationStanding(apiKey, stationId);
+			double factionStanding = getFactionStanding(apiKey, stationId);
 			
-			BigDecimal taxes = (BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.0005)
-					.multiply(BigDecimal.valueOf(brokerRelation))))
-					.divide(BigDecimal.valueOf(Math.exp(((BigDecimal.valueOf(0.1).multiply(factionStanding))
-					.add(BigDecimal.valueOf(0.04).multiply(corporationStanding)).doubleValue()
-					))), 3, RoundingMode.HALF_UP);
-			
+			double brokerFees = (0.01 - 0.0005 * brokerRelation / Math.pow(2.0, 0.14 * factionStanding + 0.06 * corporationStanding));
+			double marketTax = 0.0;
 			if (!isBuy) {
-				taxes = taxes.add(BigDecimal.valueOf(0.01).subtract(BigDecimal.valueOf(0.001)
-						.multiply(BigDecimal.valueOf(accounting))));
+				marketTax += 0.01 - 0.0005 * accounting;
 			}
 			
 			WalletTransaction transaction = (WalletTransaction) session.get(WalletTransaction.class, transactionID);
@@ -198,7 +192,7 @@ public class TransactionImporter extends ImporterTask {
 				transaction.setTypeName(typeName);
 				transaction.setTypeId(typeId);
 				transaction.setPrice(actualPrice);
-				transaction.setTaxes(taxes.multiply(price.abs()).negate());
+				transaction.setTaxes(BigDecimal.valueOf(brokerFees + marketTax).multiply(price.abs()).negate());
 				transaction.setClientId(clientId);
 				transaction.setClientName(clientName);
 				transaction.setStationId(stationId);
@@ -231,7 +225,7 @@ public class TransactionImporter extends ImporterTask {
 	 * 		The corporation's standing of this character with a certain station's owner.
 	 */
 	@Transactional
-	BigDecimal getCorporationStanding(ApiKey apiKey, long stationId) {
+	double getCorporationStanding(ApiKey apiKey, long stationId) {
 		Session session = getDatabase().getCurrentSession();
 		Station station = (Station) session.get(Station.class, stationId);
 		if (station != null) {
@@ -239,10 +233,10 @@ public class TransactionImporter extends ImporterTask {
 			StandingIdentifier id = new StandingIdentifier(characterId, station.getCorporationId());
 			Standing standing = (Standing) session.get(Standing.class, id);
 			if (standing != null) {
-				return standing.getStanding();
+				return standing.getStanding().doubleValue();
 			}
 		}
-		return BigDecimal.ZERO;
+		return 0.0;
 	}
 
 	/**
@@ -258,16 +252,16 @@ public class TransactionImporter extends ImporterTask {
 	 * 		The faction standing of this character with this region's empire.
 	 */
 	@Transactional
-	BigDecimal getFactionStanding(ApiKey apiKey, long mapRegionId) {
+	double getFactionStanding(ApiKey apiKey, long mapRegionId) {
 		Session session = getDatabase().getCurrentSession();
 		MapRegion region = (MapRegion) session.get(MapRegion.class, mapRegionId);
 		if (region != null) {
 			long characterId = apiKey.getCharacterId();
 			StandingIdentifier id = new StandingIdentifier(characterId, region.getFactionId());
 			Standing standing = (Standing) session.get(Standing.class, id);
-			return standing.getStanding();
+			return standing.getStanding().doubleValue();
 		}
-		return BigDecimal.ZERO;
+		return 0.0;
 	}
 	
 	@Override
